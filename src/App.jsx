@@ -1,8 +1,8 @@
+import { RouterApp } from "./RouterApp"
 function App() {
-
   return (
     <>
-      <h1>hello word</h1>
+      <RouterApp/>
     </>
   )
 }

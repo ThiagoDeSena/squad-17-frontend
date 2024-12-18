@@ -1,0 +1,35 @@
+@charset "utf-8";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "moonjelly";
+    src: url('/fonts/Moonjelly-Bold.otf');
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #89398A;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ff2a007a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #FF2A00;
+}
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #000;
+}
