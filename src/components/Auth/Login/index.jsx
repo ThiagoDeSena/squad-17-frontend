@@ -30,20 +30,18 @@ export const Login = () => {
                 <BannerLateral />
             </div>
 
-            {/* Formulário */}
-            {/* Formulário */}
             <div
-                className="absolute right-0 top-0 w-full h-screen xl:w-2/4 flex flex-col items-center justify-center overflow-hidden p-5"
+                className="absolute right-0 top-0 w-full h-screen xl:w-2/4 flex flex-col items-center justify-center overflow-hidden p-2"
                 data-aos="zoom-in"
             >
                 <div className="w-full md:w-2/4 xl:w-3/4 flex justify-center gap-5 items-center border border-neutral60 rounded-xl shadow-lg">
-                    <div className="w-full flex flex-col gap-6 p-10 xl:px-12 rounded-lg text-white">
+                    <div className="w-full flex flex-col gap-4 p-4 xl:px-12 rounded-lg text-white">
                         {/* Logo em Destaque */}
-                        <div className="flex flex-col items-center mb-2">
+                        <div className="flex flex-col items-center mb-4">
                             <img
                                 src="/images/logo.svg"
                                 alt="Logo da Aplicação"
-                                className="w-32 h-32 xl:w-24 xl:h-24 mb-2"
+                                className="w-32 h-32 xl:w-24 xl:h-24"
                             />
                             <p className="text-[1em] xl:text-[1.2em] font-semibold text-primary30 text-center">
                                 Descubra, avalie e compartilhe filmes e séries
@@ -86,6 +84,17 @@ export const Login = () => {
                                     )}
                                 </button>
                             </div>
+                            <div className="mt-2 flex flex-row justify-between text-sm xl:text-lg">
+                                <label htmlFor="remember-me" className="flex items-center gap-2">
+                                    <input type="checkbox" className="w-4 h-4 border-primary60" id="remember-me"/>
+                                    Lembrar-me
+                                </label>
+
+                                <a href="#" className="text-primary40 hover:underline">
+                                    Esqueceu a senha?
+                                </a>
+                            </div>
+
                         </div>
 
                         {/* Botão de Login */}
