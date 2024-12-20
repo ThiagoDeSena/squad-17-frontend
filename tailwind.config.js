@@ -36,7 +36,7 @@ export default {
         'poppins': ['Poppins', 'sans-serif'],
       },
       screens: {
-        'xl': '1240px',
+        'xl': '1320px',
       }
     },
   },

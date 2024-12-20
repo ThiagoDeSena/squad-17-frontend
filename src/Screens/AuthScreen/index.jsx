@@ -1,8 +1,12 @@
 import React from "react";
 import {Login} from '../../components/Auth/Login'
-
-export const AuthScreen = () => {
+import { Cadastro } from "../../components/Auth/Cadastro";
+export const AuthScreen = (props) => {
     return (
-        <Login/>
+        <>
+
+            {props.c === 1 && <Login/>}
+            {props.c === 2 && <Cadastro/>}
+        </>
     )
 };

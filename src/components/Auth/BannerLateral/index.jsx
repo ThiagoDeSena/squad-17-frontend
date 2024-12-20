@@ -12,8 +12,8 @@ export const BannerLateral = () => {
     return (
         <div className="w-[50vw] h-screen overflow-hidden">
             <div
-                className="bg-[url('/images/banner-auth.png')] bg-no-repeat bg-center bg-cover h-[100%] w-[100%] "
-                data-aos = 'slide-right'
+                className="bg-[url('/images/banner-auth.png')] bg-no-repeat bg-center bg-cover h-[100%] w-[100%]"
+                data-aos = 'flip-right'
             ></div>
         </div>
 
