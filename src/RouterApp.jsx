@@ -1,6 +1,6 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { AuthScreen } from "./Screens/AuthScreen";
-import {HomeScreen} from "./Screens/HomeScreen"
+import {FeedScreen} from "./Screens/FeedScreen"
 import { Navigate } from "react-router-dom";
 
 export const RouterApp = () => {
@@ -11,7 +11,7 @@ export const RouterApp = () => {
                     path="/"
                     element={
                         localStorage.getItem('jwtToken')
-                        ? <Navigate to="/home" />
+                        ? <Navigate to="/feed"/>
                         : <AuthScreen c={1} />
                     }/>
                     <Route
@@ -22,10 +22,10 @@ export const RouterApp = () => {
                         : <AuthScreen c={2} />
                     }/>
                     <Route
-                    path='/home'
+                    path='/feed'
                     element={
                         localStorage.getItem('jwtToken')
-                        ? <HomeScreen />
+                        ? <FeedScreen />
                         : <Navigate to="/" />
                     }/>
                 </Routes>

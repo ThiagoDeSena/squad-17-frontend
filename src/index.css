@@ -3,10 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
     font-family: "moonjelly";
-    src: url('/fonts/Moonjelly-Bold.otf');
+    src: url("/fonts/Moonjelly-Bold.otf");
 }
 
 ::-webkit-scrollbar {
@@ -14,16 +13,16 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: #89398A;
+    background: #1A1A1A;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #ff2a007a;
+    background: #F25430;
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #FF2A00;
+    background: rgba(255, 42, 0, 0.664);
 }
 * {
     padding: 0px;
@@ -34,3 +33,4 @@
 body {
     background-color: #000;
 }
+
