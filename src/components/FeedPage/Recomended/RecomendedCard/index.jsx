@@ -1,9 +1,9 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
 
-export const RecomendedCard = ({ image, title, genre, onAddToWatchlist }) => {
+export const RecomendedCard = ({ image, title, genre, onAddToWatchlist, className }) => {
     return (
-        <div className="relative w-48 h-72 rounded-lg overflow-hidden shadow-md cursor-pointer hover:scale-90">
+        <div className={className}>
             <div
                 className="absolute inset-0 bg-cover bg-no-repeat bg-center"
                 style={{ backgroundImage: `url(${image})` }}
