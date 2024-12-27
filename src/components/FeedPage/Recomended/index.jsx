@@ -69,6 +69,7 @@ export const Recomended = () => {
                     spaceBetween={0}
                     slidesPerView={3}
                     centeredSlides={false}
+                    loop={true}
                     breakpoints={{
                         320: { slidesPerView: 2, spaceBetween: 20, centeredSlides: true },
                         640: { slidesPerView: 2, centeredSlides: true },

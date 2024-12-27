@@ -5,6 +5,7 @@ import "swiper/css";
 import "swiper/swiper-bundle.css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/navigation";
+import "swiper/css/autoplay";
 import { EffectCoverflow, Navigation } from "swiper/modules";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { AiOutlinePlayCircle } from "react-icons/ai";
@@ -66,18 +67,18 @@ export const TrendingBanner = () => {
     const openTrailerModal = async (mediaType, movieId) => {
         try {
             setError(false);
-            setTrailerUrl(""); 
+            setTrailerUrl("");
             const trailer = await getMovieTrailer(mediaType, movieId);
 
             if (trailer) {
                 setTrailerUrl(trailer);
-                setIsModalOpen(true); 
+                setIsModalOpen(true);
             } else {
-                setError(true); 
+                setError(true);
                 setTrailerUrl("");
             }
         } catch (error) {
-            console.error("Erro ao carregar trailer:", error); 
+            console.error("Erro ao carregar trailer:", error);
             setError(true);
             setTrailerUrl("");
         }
@@ -97,201 +98,210 @@ export const TrendingBanner = () => {
     }
 
     return (
-        <div className="relative w-[65%] md:w-full h-[700px] top-10 mx-auto flex justify-center items-center text-white overflow-hidden z-20">
-            {trendingMovies.length > 0 ? (
-                <Swiper
-                    slidesPerView={1}
-                    effect={"coverflow"}
-                    grabCursor={true}
-                    centeredSlides={true}
-                    breakpoints={{
-                        640: { slidesPerView: 1 },
-                        768: { slidesPerView: 2 },
-                        1024: { slidesPerView: 2 },
-                    }}
-                    navigation={{
-                        nextEl: ".custom-next",
-                        prevEl: ".custom-prev",
-                    }}
-                    modules={[EffectCoverflow, Navigation]}
-                    coverflowEffect={{
-                        rotate: 50,
-                        stretch: 0,
-                        depth: 100,
-                        modifier: 1,
-                        slideShadows: true,
-                    }}
-                    className="w-full h-full"
-                >
-                    {trendingMovies.map(
-                        (movie) =>
-                            movie.overview &&
-                            movie.overview.length > 0 && (
-                                <SwiperSlide key={movie.id}>
-                                    <div className="h-full w-full rounded-xl flex justify-center items-center">
-                                        {!imageLoaded && (
-                                            <div className="absolute inset-0 flex justify-center items-center bg-black/50 z-10 rounded-xl">
-                                                <CircleSpinner
-                                                    size={50}
-                                                    color="#ffffff"
-                                                />
-                                            </div>
-                                        )}
-                                        <img
-                                            src={`https://image.tmdb.org/t/p/w1280/${movie.backdrop_path}`}
-                                            alt={
-                                                movie.title ||
-                                                "Imagem não disponível"
-                                            }
-                                            onLoad={() => setImageLoaded(true)}
-                                            onError={() => setImageLoaded(true)}
-                                            className="hidden"
-                                        />
-                                        <div
-                                            className={`h-full w-full bg-cover bg-center bg-no-repeat relative rounded-xl transition-opacity duration-500 ${
-                                                imageLoaded
-                                                    ? "opacity-100"
-                                                    : "opacity-0"
-                                            }`}
-                                            style={{
-                                                backgroundImage: `url(https://image.tmdb.org/t/p/w1280/${movie.backdrop_path})`,
-                                            }}
-                                        >
-                                            <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+        <>
+            <div className="w-full text-center  flex items-center justify-center space-x-4 absolute z-50 top-2 font-moonjelly">
+                <h2 className="text-2xl md:text-4xl font-bold text-primary60 uppercase tracking-widest">
+                    <span className="text-white">🔥</span> Em Alta
+                </h2>
+            </div>
+            <div className="relative w-[65%] md:w-full h-[700px] top-10 mx-auto flex justify-center items-center text-white overflow-hidden z-20">
+                {trendingMovies.length > 0 ? (
+                    <Swiper
+                        slidesPerView={1}
+                        effect={"coverflow"}
+                        grabCursor={true}
+                        loop={true}
+                        onAutoplay={true}
+                        centeredSlides={true}
+                        breakpoints={{
+                            640: { slidesPerView: 1 },
+                            768: { slidesPerView: 2 },
+                            1024: { slidesPerView: 2 },
+                        }}
+                        navigation={{
+                            nextEl: ".custom-next",
+                            prevEl: ".custom-prev",
+                        }}
+                        modules={[EffectCoverflow, Navigation]}
+                        coverflowEffect={{
+                            rotate: 50,
+                            stretch: 0,
+                            depth: 100,
+                            modifier: 1,
+                            slideShadows: true,
+                        }}
+                        className="w-full h-full mt-4"
+                    >
+                        {trendingMovies.map(
+                            (movie) =>
+                                movie.overview &&
+                                movie.overview.length > 0 && (
+                                    <SwiperSlide key={movie.id}>
+                                        <div className="h-full w-full rounded-xl flex justify-center items-center">
+                                            {!imageLoaded && (
+                                                <div className="absolute inset-0 flex justify-center items-center bg-black/50 z-10 rounded-xl">
+                                                    <CircleSpinner
+                                                        size={50}
+                                                        color="#ffffff"
+                                                    />
+                                                </div>
+                                            )}
+                                            <img
+                                                src={`https://image.tmdb.org/t/p/w1280/${movie.backdrop_path}`}
+                                                alt={
+                                                    movie.title ||
+                                                    "Imagem não disponível"
+                                                }
+                                                onLoad={() => setImageLoaded(true)}
+                                                onError={() => setImageLoaded(true)}
+                                                className="hidden"
+                                            />
+                                            <div
+                                                className={`h-full w-full bg-cover bg-center bg-no-repeat relative rounded-xl transition-opacity duration-500 ${
+                                                    imageLoaded
+                                                        ? "opacity-100"
+                                                        : "opacity-0"
+                                                }`}
+                                                style={{
+                                                    backgroundImage: `url(https://image.tmdb.org/t/p/w1280/${movie.backdrop_path})`,
+                                                }}
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
 
-                                            <div className="absolute bottom-0 left-0 w-auto p-0">
-                                                <div className="relative bg-gradient-to-r from-black/80 to-transparent bg-opacity-40 backdrop-blur-sm p-6 rounded-r-xl max-w-2xl mx-auto">
-                                                    <h1 className="text-3xl md:text-6xl font-light text-white font-moonjelly mb-4 md:mb-8">
-                                                        {movie.title ||
-                                                            movie.name ||
-                                                            "Título não disponível"}
-                                                    </h1>
-                                                    <div className="text-sm md:text-md text-white mb-4 md:mb-6 font-poppins">
-                                                        {movie.genre_ids
-                                                            .map(
-                                                                (genre) =>
-                                                                    genres[
-                                                                        genre
-                                                                    ] ||
-                                                                    genres.default
-                                                            )
-                                                            .map(
-                                                                (
-                                                                    genre,
-                                                                    index,
-                                                                    arr
-                                                                ) => (
-                                                                    <span
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                    >
-                                                                        {genre}
-                                                                        {index <
-                                                                            arr.length -
-                                                                                1 && (
-                                                                            <span className="text-primary60 mx-1">
-                                                                                |
-                                                                            </span>
-                                                                        )}
-                                                                    </span>
+                                                <div className="absolute bottom-0 left-0 w-auto p-0">
+                                                    <div className="relative bg-gradient-to-r from-black/80 to-transparent bg-opacity-40 backdrop-blur-sm p-6 rounded-r-xl max-w-2xl mx-auto">
+                                                        <h1 className="text-3xl md:text-6xl font-light text-white font-moonjelly mb-4 md:mb-8">
+                                                            {movie.title ||
+                                                                movie.name ||
+                                                                "Título não disponível"}
+                                                        </h1>
+                                                        <div className="text-sm md:text-md text-white mb-4 md:mb-6 font-poppins">
+                                                            {movie.genre_ids
+                                                                .map(
+                                                                    (genre) =>
+                                                                        genres[
+                                                                            genre
+                                                                        ] ||
+                                                                        genres.default
                                                                 )
-                                                            )}
-                                                    </div>
+                                                                .map(
+                                                                    (
+                                                                        genre,
+                                                                        index,
+                                                                        arr
+                                                                    ) => (
+                                                                        <span
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                        >
+                                                                            {genre}
+                                                                            {index <
+                                                                                arr.length -
+                                                                                    1 && (
+                                                                                <span className="text-primary60 mx-1">
+                                                                                    |
+                                                                                </span>
+                                                                            )}
+                                                                        </span>
+                                                                    )
+                                                                )}
+                                                        </div>
 
-                                                    <p className="text-sm md:text-md text-gray-200 mb-4 md:mb-6 font-poppins">
-                                                        {movie.overview.length >
-                                                        200
-                                                            ? `${movie.overview.substring(
-                                                                  0,
-                                                                  200
-                                                              )}...`
-                                                            : movie.overview}
-                                                    </p>
-                                                    <button
-                                                        onClick={() => {
-                                                            setIsModalOpen(
-                                                                true
-                                                            );
-                                                            openTrailerModal(
-                                                                movie.media_type,
-                                                                movie.id
-                                                            );
-                                                        }}
-                                                        className="bg-primary60 text-neutral10 py-2 px-4 rounded-full text-sm md:text-lg flex items-center justify-center uppercase"
-                                                    >
-                                                        <AiOutlinePlayCircle
-                                                            size={20}
-                                                            className="mr-2"
-                                                        />
-                                                        Trailer
-                                                    </button>
+                                                        <p className="text-sm md:text-md text-gray-200 mb-4 md:mb-6 font-poppins">
+                                                            {movie.overview.length >
+                                                            200
+                                                                ? `${movie.overview.substring(
+                                                                    0,
+                                                                    200
+                                                                )}...`
+                                                                : movie.overview}
+                                                        </p>
+                                                        <button
+                                                            onClick={() => {
+                                                                setIsModalOpen(
+                                                                    true
+                                                                );
+                                                                openTrailerModal(
+                                                                    movie.media_type,
+                                                                    movie.id
+                                                                );
+                                                            }}
+                                                            className="bg-primary60 text-neutral10 py-2 px-4 rounded-full text-sm md:text-lg flex items-center justify-center uppercase"
+                                                        >
+                                                            <AiOutlinePlayCircle
+                                                                size={20}
+                                                                className="mr-2"
+                                                            />
+                                                            Trailer
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </SwiperSlide>
-                            )
-                    )}
-                    <button className="custom-prev absolute bottom-0 right-20 transform -translate-y-1/2 bg-primary60 text-white p-2 rounded-full shadow-lg hover:bg-primary40 transition z-50 hidden md:hidden sm:block">
-                        <FaArrowLeft size={24} />
-                    </button>
-                    <button className="custom-next absolute bottom-0 right-4 transform -translate-y-1/2 bg-primary60 text-white p-2 rounded-full shadow-lg hover:bg-primary40 transition z-50 hidden md:hidden sm:block">
-                        <FaArrowRight size={24} />
-                    </button>
-                </Swiper>
-            ) : (
-                <div className="text-white">
-                    Nenhum Filme em tendência encontrado.
-                </div>
-            )}
-
-            <Modal
-                isOpen={isModalOpen}
-                onRequestClose={closeModal}
-                contentLabel="Trailer Modal"
-                className="modal-content relative bg-black rounded-lg shadow-lg p-2"
-                overlayClassName="modal-overlay fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center"
-                style={{
-                    overlay: {
-                        zIndex: 2001,
-                    },
-                }}
-            >
-                {trailerUrl ? (
-                    <div className="relative h-[350px] md:h-[60vh] w-[450px] md:w-[60vw] mx-auto p-2">
-                        <button
-                            onClick={closeModal}
-                            className="absolute top-[-15px] right-[-15px] bg-red-600 text-white text-2xl w-10 h-10 flex justify-center items-center rounded-full shadow-lg hover:bg-red-700 transition duration-200"
-                        >
-                            <IoCloseCircleOutline size={44} />
-                        </button>
-                        {trailerUrl !== "timeout" ? (
-                            <iframe
-                                src={trailerUrl}
-                                width={"100%"}
-                                height={"100%"}
-                                title="Trailer"
-                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                className="rounded-md"
-                            ></iframe>
-                        ) : (
-                            <div className="text-white text-center">
-                                O trailer demorou muito para carregar.
-                            </div>
+                                    </SwiperSlide>
+                                )
                         )}
-                    </div>
-                ) : error ? (
-                    <div className="text-white text-center">
-                        Trailer não encontrado.
-                    </div>
+                        <button className="custom-prev absolute bottom-0 right-20 transform -translate-y-1/2 bg-primary60 text-white p-2 rounded-full shadow-lg hover:bg-primary40 transition z-50 hidden md:hidden sm:block">
+                            <FaArrowLeft size={24} />
+                        </button>
+                        <button className="custom-next absolute bottom-0 right-4 transform -translate-y-1/2 bg-primary60 text-white p-2 rounded-full shadow-lg hover:bg-primary40 transition z-50 hidden md:hidden sm:block">
+                            <FaArrowRight size={24} />
+                        </button>
+                    </Swiper>
                 ) : (
-                    <div className="text-white text-center">
-                        <CircleSpinner size={40} color="#fff" />
+                    <div className="text-white">
+                        Nenhum Filme em tendência encontrado.
                     </div>
                 )}
-            </Modal>
-        </div>
+
+                <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Trailer Modal"
+                    className="modal-content relative bg-black rounded-lg shadow-lg p-2"
+                    overlayClassName="modal-overlay fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center"
+                    style={{
+                        overlay: {
+                            zIndex: 2001,
+                        },
+                    }}
+                >
+                    {trailerUrl ? (
+                        <div className="relative h-[350px] md:h-[60vh] w-[450px] md:w-[60vw] mx-auto p-2">
+                            <button
+                                onClick={closeModal}
+                                className="absolute top-[-15px] right-[-15px] bg-red-600 text-white text-2xl w-10 h-10 flex justify-center items-center rounded-full shadow-lg hover:bg-red-700 transition duration-200"
+                            >
+                                <IoCloseCircleOutline size={44} />
+                            </button>
+                            {trailerUrl !== "timeout" ? (
+                                <iframe
+                                    src={trailerUrl}
+                                    width={"100%"}
+                                    height={"100%"}
+                                    title="Trailer"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="rounded-md"
+                                ></iframe>
+                            ) : (
+                                <div className="text-white text-center">
+                                    O trailer demorou muito para carregar.
+                                </div>
+                            )}
+                        </div>
+                    ) : error ? (
+                        <div className="text-white text-center">
+                            Trailer não encontrado.
+                        </div>
+                    ) : (
+                        <div className="text-white text-center">
+                            <CircleSpinner size={40} color="#fff" />
+                        </div>
+                    )}
+                </Modal>
+            </div>
+        </>
     );
 };

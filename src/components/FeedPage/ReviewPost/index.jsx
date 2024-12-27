@@ -52,7 +52,7 @@ export const ReviewPost = () => {
     };
 
     return (
-        <div className="bg-transparent-800 border-2 border-neutral-700 text-white p-2 md:p-8 rounded-lg w-[350px] md:w-[600px] lg:w-full max-w-xl md:max-w-4xl md:mx-auto mt-8 md:mt-12 flex flex-col gap-6 font-poppins md:relative transform -translate-x-[-22vw] md:translate-x-0 overflow-hidden">
+        <div className="bg-transparent-800 border-2 border-neutral-700 text-white p-2 md:p-8 rounded-lg w-[350px] md:w-[600px] lg:w-full max-w-xl md:max-w-4xl md:mx-auto mt-8 md:mt-12 flex flex-col gap-6 font-poppins md:relative transform -translate-x-[-20vw] md:translate-x-0 overflow-hidden">
             {/* Cabeçalho */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
                 <h2 className=" text-lg md:text-xl font-semibold">

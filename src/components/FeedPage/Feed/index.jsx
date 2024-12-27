@@ -7,7 +7,7 @@ export const Feed = () => {
 
 
     return (
-        <div className="bg-transparent text-white p-4 max-w-2xl md:max-w-4xl mx-auto mt-12 font-poppins mb-12">
+        <div className="bg-transparent  p-4 max-w-2xl md:max-w-4xl mx-auto mt-12 font-poppins mb-12">
             {/* Abas */}
             <div className="flex flex-col md:flex-row gap-4 justify-center lg:justify-start mb-8 max-w-[300px] md:max-w-2xl relative left-[10%] md:left-0 mx-auto">
                 <button
@@ -41,8 +41,8 @@ export const Feed = () => {
                 {activeTab === "bestReviews" && (
                     <div>
                         {/* Resenhas mais relevantes */}
-                        <ReviewContainer movieId={845781} plataform="movie" />
-                        <ReviewContainer movieId={125988} plataform="tv" />
+                        <ReviewContainer movieId={845781} plataform="movie" profileImage={"/images/user-img2.png"} profileName={"Ava Andersson"} profileId={1}/>
+                        <ReviewContainer movieId={125988} plataform="tv" profileImage={"/images/user-img2.png"} profileName={"Ava Andersson"} profileId={1}/>
                     </div>
                 )}
                 {activeTab === "followedReviews" && (

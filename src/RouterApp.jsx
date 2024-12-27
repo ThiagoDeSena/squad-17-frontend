@@ -3,8 +3,11 @@ import { AuthScreen } from "./Screens/AuthScreen";
 import { FeedScreen } from "./Screens/FeedScreen";
 import { Navigate } from "react-router-dom";
 import { NotFoundScreen } from "./Screens/NotFoundScreen"; 
+import { UserScreen } from "./Screens/UserScreen";
+import { OutherUserScreen } from "./Screens/OtherUsersScreen";
 
 export const RouterApp = () => {
+    const userId = localStorage.getItem("userId");
     return (
         <BrowserRouter basename="/">
             <Routes>
@@ -16,6 +19,23 @@ export const RouterApp = () => {
                         : <AuthScreen c={1} />
                     }
                 />
+                <Route
+                    path={`/profile`}
+                    element={
+                        localStorage.getItem('jwtToken')
+                        ? <UserScreen/>
+                        : <AuthScreen c={1} />
+                    }
+                />
+                <Route
+                    path={`/user/:id`}
+                    element={
+                        localStorage.getItem('jwtToken')
+                        ? <OutherUserScreen/>
+                        : <AuthScreen c={1} />
+                    }
+                />
+
                 <Route
                     path="/register"
                     element={
