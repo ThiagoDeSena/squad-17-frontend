@@ -4,25 +4,48 @@ import { getMediaDetails } from "../../../../services/movieAPI";
 import { RecomendedCard } from "../../Recomended/RecomendedCard";
 import { BiSolidDislike, BiSolidLike } from "react-icons/bi";
 import { PiChatCircleTextFill } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
+import {Loading} from "../../../Loading";
 
-export const ReviewContainer = ({ movieId, plataform }) => {
+export const ReviewContainer = ({
+    movieId,
+    plataform,
+    profileImage,
+    profileName,
+    profileId,
+}) => {
     const [containsSpoilers, setContainsSpoilers] = useState(false);
     const [liked, setLiked] = useState(false);
     const [disliked, setDisliked] = useState(false);
-    const [mediaData, setMediaData] = useState([]);
+    const [mediaData, setMediaData] = useState(null); // Altere para `null` inicialmente
+    const [isLoading, setIsLoading] = useState(true); // Controle de carregamento
+    const navigate = useNavigate();
 
     useEffect(() => {
-        try {
-            const fetchMediaDetails = async () => {
+        const fetchMediaDetails = async () => {
+            try {
                 const data = await getMediaDetails(plataform, movieId);
                 setMediaData(data);
-            };
-            fetchMediaDetails();
-        } catch (error) {
-            console.error("Erro ao buscar detalhes do filme:", error);
-        }
-    }, []);
+            } catch (error) {
+                console.error("Erro ao buscar detalhes do filme:", error);
+            } finally {
+                setIsLoading(false); // Finalize o carregamento
+            }
+        };
 
+        fetchMediaDetails();
+    }, [plataform, movieId]);
+
+    // Se estiver carregando, exiba o componente de Loading
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-80 w-full">
+                <Loading message="Carregando detalhes..." />
+            </div>
+        );
+    }
+
+    // Exiba o conteúdo quando os dados estiverem prontos
     return (
         <div className="bg-transparent border-2 border-neutral60 p-4 rounded-lg mb-[10%] flex flex-col-reverse md:flex-row-reverse gap-6 w-[80%] lg:w-full m-auto">
             {/* Imagem da Avaliação */}
@@ -47,23 +70,27 @@ export const ReviewContainer = ({ movieId, plataform }) => {
                     className="relative w-full h-56 md:h-96 rounded-lg overflow-hidden shadow-sm shadow-neutral60 cursor-pointer transform ease-in-out hover:scale-105 font-poppins text-center border-2 border-neutral80"
                 />
             </div>
-    
+
             {/* Conteúdo */}
-            <div className="w-full md:w-2/3 flex flex-col justify-between font-poppins">
+            <div className="w-full md:w-2/3 flex flex-col justify-between font-poppins text-white">
                 {/* Header */}
                 <div>
                     <div className="flex items-center gap-4 mb-4">
                         <img
-                            src="/images/user-img2.png"
+                            src={profileImage}
                             alt="Profile"
                             className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-primary20 hover:scale-125 transition duration-300 hover:cursor-pointer"
+                            onClick={() => navigate(`/user/${profileId}`)}
                         />
                         <div>
                             <p className="text-xs md:text-sm text-gray-400">
                                 2 horas atrás
                             </p>
-                            <p className="font-semibold text-sm md:text-base hover:underline hover:cursor-pointer">
-                                Ava Anderson
+                            <p
+                                className="font-semibold text-sm md:text-base hover:underline hover:cursor-pointer"
+                                onClick={() => navigate(`/user/${profileId}`)}
+                            >
+                                {profileName}
                             </p>
                             <div className="flex gap-1">
                                 {[...Array(5)].map((_, i) => (
@@ -79,7 +106,7 @@ export const ReviewContainer = ({ movieId, plataform }) => {
                             </div>
                         </div>
                     </div>
-    
+
                     {/* Conteúdo da Resenha */}
                     {containsSpoilers ? (
                         <div className="bg-semanticWarning opacity-80 text-white p-2 mb-4 rounded">
@@ -98,7 +125,7 @@ export const ReviewContainer = ({ movieId, plataform }) => {
                     ) : (
                         // Resenha do usuário
                         <p className="text-neutral20 max-h-48 md:max-h-64 leading-relaxed tracking-wide text-justify indent-6 text-xs md:text-sm overflow-auto p-2">
-                             A Esse é um filme de aventura e
+                            A Esse é um filme de aventura e
                             fantasia que se destaca por sua trama envolvente e
                             personagens cativantes. Dirigido por um cineasta
                             renomado, o longa apresenta uma história clássica de
@@ -145,7 +172,7 @@ export const ReviewContainer = ({ movieId, plataform }) => {
                         </p>
                     )}
                 </div>
-    
+
                 {/* Interações */}
                 <div className="flex gap-4 mt-4">
                     <button
@@ -154,7 +181,9 @@ export const ReviewContainer = ({ movieId, plataform }) => {
                     >
                         <BiSolidLike
                             className={`text-lg md:text-xl ${
-                                liked ? "text-semanticInfo" : "text-neutral50"
+                                liked
+                                    ? "text-semanticInfo"
+                                    : "text-neutral50"
                             }`}
                         />
                         10K
@@ -180,5 +209,4 @@ export const ReviewContainer = ({ movieId, plataform }) => {
             </div>
         </div>
     );
-    
 };

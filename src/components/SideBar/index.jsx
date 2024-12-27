@@ -4,16 +4,20 @@ import {
     AiOutlineSetting,
     AiOutlineQuestionCircle,
     AiOutlineBell,
+    AiOutlinePoweroff,
+    AiOutlineUser,
 } from "react-icons/ai";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { FiGrid, FiBookmark, FiBookOpen, FiStar } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const SideBar = () => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState();
     const [showToggle, setShowToggle] = useState(false);
-
+    const navigate = useNavigate();
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
 
     const menuItems = [
         { name: "Feed", path: "/feed", icon: <FiGrid size={28} /> },
@@ -79,44 +83,85 @@ export const SideBar = () => {
                         <div className="relative flex items-center group">
                             <Link
                                 to="/help"
-                                className="flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105"
+                                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${
+                                    location.pathname === "/help"
+                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                        : ""
+                                }`}
                             >
                                 <AiOutlineQuestionCircle
                                     size={28}
                                     className="text-xl"
                                 />
                             </Link>
-                            <span className="absolute left-full ml-2 hidden text-sm text-white bg-gray-800 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
+                            <span className="absolute left-full ml-2 hidden text-sm text-white bg-neutral50 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
                                 Help
-                                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-800"></span>
+                                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-neutral50"></span>
                             </span>
                         </div>
 
                         <div className="relative flex items-center group">
                             <Link
                                 to="/settings"
-                                className="flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105"
+                                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${
+                                    location.pathname === "/settings"
+                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                        : ""
+                                }`}
                             >
                                 <AiOutlineSetting
                                     size={28}
                                     className="text-xl"
                                 />
                             </Link>
-                            <span className="absolute left-full ml-2 hidden text-sm text-white bg-gray-800 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
+                            <span className="absolute left-full ml-2 hidden text-sm text-white bg-neutral50 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
                                 Settings
-                                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-gray-800"></span>
+                                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-neutral50"></span>
                             </span>
                         </div>
 
-                        <Link to="/profile">
-                            <div className="border border-primary60 p-1 rounded-full absolute bottom-2">
-                                <img
-                                    src="/images/user-img.jpeg"
-                                    alt="User Avatar"
-                                    className="w-12 h-12 rounded-full"
-                                />
+                        <div
+                            className={` group cursor-pointer border border-primary60 p-1 rounded-full absolute bottom-2 ${
+                                location.pathname === "/profile"
+                                    ? "bg-primary60"
+                                    : ""
+                            }`}
+                            onClick={() => setShowProfileMenu(!showProfileMenu)}
+                        >
+                            <img
+                                src="/images/user-img.jpeg"
+                                alt="User Avatar"
+                                className="w-12 h-12 rounded-full"
+                            />
+                            <span className="absolute left-full ml-2 hidden text-sm text-white bg-primary30 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out w-20 bottom-4">
+                                    User
+                                    <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary30"></span>
+                            </span>
+                        </div>
+
+                        {showProfileMenu && (
+                            <div className="absolute bottom-20 left-2 bg-neutral90 text-white shadow-lg rounded-tl-xl w-40 z-50 ">
+                                <button
+                                    className=" w-full text-left px-4 py-2 hover:bg-neutral80 justify-center flex items-center "
+                                    onClick={() => navigate("/profile")}
+                                >
+                                    User Profile
+                                    <AiOutlineUser className="inline-block ml-2" size={20}/>
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-2 hover:bg-neutral80 justify-center flex items-center text-primary10"
+                                    onClick={() => {
+                                        localStorage.removeItem("jwtToken");
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 2000);
+                                    }}
+                                >
+                                    Logout
+                                    <AiOutlinePoweroff className="inline-block ml-2" />
+                                </button>
                             </div>
-                        </Link>
+                        )}
                     </nav>
                 </div>
             )}
@@ -199,7 +244,11 @@ export const SideBar = () => {
                             <hr className="border-gray-700 my-4" />
                             <Link
                                 to="/help"
-                                className="flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700"
+                                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${
+                                    location.pathname === "/help"
+                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                        : ""
+                                }`}
                             >
                                 <AiOutlineQuestionCircle
                                     size={28}
@@ -209,7 +258,11 @@ export const SideBar = () => {
                             </Link>
                             <Link
                                 to="/settings"
-                                className="flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700"
+                                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${
+                                    location.pathname === "/settings"
+                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                        : ""
+                                }`}
                             >
                                 <AiOutlineSetting
                                     size={28}
@@ -220,20 +273,56 @@ export const SideBar = () => {
                         </nav>
 
                         <div className="flex items-center gap-4 p-2 rounded-full border border-gray-500 hover:border-primary90 cursor-pointer absolute bottom-2">
-                            <Link to={"/profile"}>
-                                <div className="border border-primary60 p-1 rounded-full">
-                                    <img
-                                        src="/images/user-img.jpeg"
-                                        alt="User Avatar"
-                                        className="w-12 h-12 rounded-full"
-                                    />
-                                </div>
-                            </Link>
-                            <span className="flex-1">Klark Crente</span>
+                            <div
+                                className={`border border-primary60 p-1 rounded-full ${
+                                    location.pathname === "/profile"
+                                        ? "border-2 border-primary60"
+                                        : ""
+                                }`}
+                                onClick={() =>
+                                    setShowProfileMenu(!showProfileMenu)
+                                }
+                            >
+                                <img
+                                    src="/images/user-img.jpeg"
+                                    alt="User Avatar"
+                                    className="w-12 h-12 rounded-full"
+                                />
+                            </div>
+                            <span
+                                className="flex-1"
+                                onClick={() =>
+                                    setShowProfileMenu(!showProfileMenu)
+                                }
+                            >
+                                Klark Crente
+                            </span>
                             <Link to="/notifications">
                                 <AiOutlineBell size={28} color="#FFD700" />
                             </Link>
                         </div>
+                        {showProfileMenu && (
+                            <div className="absolute bottom-24 right-0 bg-neutral90 text-white shadow-lg rounded-tl-xl w-auto z-50 ">
+                                <button
+                                    className=" w-full text-left px-4 py-2 hover:bg-neutral80 justify-center flex items-center "
+                                    onClick={() => navigate("/profile")}
+                                >
+                                    User Profile
+                                </button>
+                                <button
+                                    className="w-full text-left px-4 py-2 hover:bg-neutral80 justify-center flex items-center text-primary10"
+                                    onClick={() => {
+                                        localStorage.removeItem("jwtToken");
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 2000);
+                                    }}
+                                >
+                                    Logout
+                                    <AiOutlinePoweroff className="inline-block ml-2" />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </Menu>
             </div>
