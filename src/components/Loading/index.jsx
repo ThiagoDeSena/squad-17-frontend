@@ -1,7 +1,7 @@
 import React from "react";
 import { RotateSpinner } from "react-spinners-kit";
 
-export const Loading = ({ message = "Carregando...", size = 50, color = "#FFD700" }) => {
+export const Loading = ({ message = "Carregando...", size = 50, color = "#F9370B" }) => {
     return (
         <div className="flex flex-col items-center justify-center h-full w-full">
             <RotateSpinner size={size} color={color} />

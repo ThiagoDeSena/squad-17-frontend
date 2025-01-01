@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { NotFoundScreen } from "./Screens/NotFoundScreen"; 
 import { UserScreen } from "./Screens/UserScreen";
 import { OutherUserScreen } from "./Screens/OtherUsersScreen";
+import { MediaScreen } from "./Screens/MediaScreen";
 
 export const RouterApp = () => {
     const userId = localStorage.getItem("userId");
@@ -36,6 +37,14 @@ export const RouterApp = () => {
                     }
                 />
 
+                <Route
+                    path="/media/:type/:id"
+                    element={
+                        localStorage.getItem('jwtToken')
+                        ? <MediaScreen/>
+                        : <AuthScreen c={1} />
+                    }
+                />
                 <Route
                     path="/register"
                     element={

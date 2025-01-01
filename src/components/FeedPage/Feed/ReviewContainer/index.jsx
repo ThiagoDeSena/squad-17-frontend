@@ -68,6 +68,8 @@ export const ReviewContainer = ({
                         )
                     }
                     className="relative w-full h-56 md:h-96 rounded-lg overflow-hidden shadow-sm shadow-neutral60 cursor-pointer transform ease-in-out hover:scale-105 font-poppins text-center border-2 border-neutral80"
+                    id={movieId}
+                    type={plataform}
                 />
             </div>
 

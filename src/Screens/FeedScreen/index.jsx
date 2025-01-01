@@ -12,7 +12,7 @@ export const FeedScreen = () => {
             <SideBar/>
             <div className="overflow-hidden">
                 <TrendingBanner/>
-                <Recomended/>
+                <Recomended mt={36} title={"Recomendado para você"}/>
                 <ReviewPost/>
                 <Feed/>
             </div>

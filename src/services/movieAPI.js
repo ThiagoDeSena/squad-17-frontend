@@ -21,7 +21,7 @@ export const getTrendingMovies = async () => {
 };
 
 export const getMovieTrailer = async (mediaType, mediaId) => {
-    const TIMEOUT = 10000; 
+    const TIMEOUT = 10000;
 
     const timeout = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Tempo limite excedido")), TIMEOUT)
@@ -39,14 +39,16 @@ export const getMovieTrailer = async (mediaType, mediaId) => {
         const response = await Promise.race([request, timeout]);
 
         const trailer = response.data.results.find(
-            (video) => video.type === "Trailer" && video.site === "YouTube"
+            (video) =>
+                video.type === "Trailer" ||
+                (video.type === "Teaser" && video.site === "YouTube")
         );
 
         if (trailer) {
             return `https://www.youtube.com/embed/${trailer.key}`;
         }
 
-        return "Trailer não encontrado.";
+        return null;
     } catch (error) {
         console.error(
             `Erro ao buscar trailer: ${error.response || error.message}`
@@ -94,3 +96,40 @@ export const getMediaDetails = async (mediaType, mediaId) => {
         return null;
     }
 };
+
+export const getMediaMoreDetails = async (mediaType, mediaId) => {
+    try {
+        const detailsEndpoint = `/${mediaType}/${mediaId}?language=pt-BR`;
+        const creditsEndpoint = `/${mediaType}/${mediaId}/credits?language=en-US`;
+        
+
+        // Fazer as requisições simultaneamente
+        const [details, credits] = await Promise.all([
+            api.get(detailsEndpoint) || null,
+            api.get(creditsEndpoint) || null,
+        ]);
+        
+        // Retornar os dados combinados
+        return {
+            details: details.data,
+            credits: credits.data,
+        };
+    } catch (error) {
+        console.error("Error fetching series details:", error);
+        throw new Error("Unable to fetch series details.");
+    }
+};
+
+export const getSimilarMedia = async (mediaType, mediaId) => {
+    try {
+        const response = await api.get(
+            `/${mediaType}/${mediaId}/recommendations?language=pt-BR`
+        );
+        return response.data.results;
+    } catch (error) {
+        console.error(
+            `Erro ao buscar filmes similares: ${error.response || error.message}`
+        );
+        return [];
+    }
+}

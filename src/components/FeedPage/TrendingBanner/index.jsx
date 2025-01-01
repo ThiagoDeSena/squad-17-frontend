@@ -12,6 +12,7 @@ import { AiOutlinePlayCircle } from "react-icons/ai";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Modal from "react-modal";
 import { CircleSpinner } from "react-spinners-kit";
+import { useNavigate } from "react-router-dom";
 
 const genres = {
     28: "Ação",
@@ -48,6 +49,7 @@ export const TrendingBanner = () => {
     const [trailerUrl, setTrailerUrl] = useState("");
     const [error, setError] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchTrendingMovies = async () => {
@@ -142,20 +144,10 @@ export const TrendingBanner = () => {
                                                 <div className="absolute inset-0 flex justify-center items-center bg-black/50 z-10 rounded-xl">
                                                     <CircleSpinner
                                                         size={50}
-                                                        color="#ffffff"
+                                                        color="#F9370B"
                                                     />
                                                 </div>
                                             )}
-                                            <img
-                                                src={`https://image.tmdb.org/t/p/w1280/${movie.backdrop_path}`}
-                                                alt={
-                                                    movie.title ||
-                                                    "Imagem não disponível"
-                                                }
-                                                onLoad={() => setImageLoaded(true)}
-                                                onError={() => setImageLoaded(true)}
-                                                className="hidden"
-                                            />
                                             <div
                                                 className={`h-full w-full bg-cover bg-center bg-no-repeat relative rounded-xl transition-opacity duration-500 ${
                                                     imageLoaded
@@ -165,12 +157,22 @@ export const TrendingBanner = () => {
                                                 style={{
                                                     backgroundImage: `url(https://image.tmdb.org/t/p/w1280/${movie.backdrop_path})`,
                                                 }}
+                                                onLoad={() =>
+                                                    setImageLoaded(true)
+                                                }
                                             >
                                                 <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
 
                                                 <div className="absolute bottom-0 left-0 w-auto p-0">
                                                     <div className="relative bg-gradient-to-r from-black/80 to-transparent bg-opacity-40 backdrop-blur-sm p-6 rounded-r-xl max-w-2xl mx-auto">
-                                                        <h1 className="text-3xl md:text-6xl font-light text-white font-moonjelly mb-4 md:mb-8">
+                                                        <h1
+                                                            className="text-3xl md:text-6xl font-light text-white font-moonjelly mb-4 md:mb-8 hover:underline cursor-pointer"
+                                                            onClick={() => {
+                                                                navigate(
+                                                                    `/media/${movie.media_type}/${movie.id}`
+                                                                );
+                                                            }}
+                                                        >
                                                             {movie.title ||
                                                                 movie.name ||
                                                                 "Título não disponível"}
@@ -195,7 +197,9 @@ export const TrendingBanner = () => {
                                                                                 index
                                                                             }
                                                                         >
-                                                                            {genre}
+                                                                            {
+                                                                                genre
+                                                                            }
                                                                             {index <
                                                                                 arr.length -
                                                                                     1 && (
@@ -209,12 +213,12 @@ export const TrendingBanner = () => {
                                                         </div>
 
                                                         <p className="text-sm md:text-md text-gray-200 mb-4 md:mb-6 font-poppins">
-                                                            {movie.overview.length >
-                                                            200
+                                                            {movie.overview
+                                                                .length > 200
                                                                 ? `${movie.overview.substring(
-                                                                    0,
-                                                                    200
-                                                                )}...`
+                                                                      0,
+                                                                      200
+                                                                  )}...`
                                                                 : movie.overview}
                                                         </p>
                                                         <button

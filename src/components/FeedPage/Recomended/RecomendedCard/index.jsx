@@ -1,9 +1,11 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-export const RecomendedCard = ({ image, title, genre, onAddToWatchlist, className }) => {
+export const RecomendedCard = ({ image, title, genre, onAddToWatchlist, className, type, id}) => {
+    const navigate = useNavigate()
     return (
-        <div className={className}>
+        <div className={className} onClick={() => navigate(`/media/${type}/${id}`)}>
             <div
                 className="absolute inset-0 bg-cover bg-no-repeat bg-center"
                 style={{ backgroundImage: `url(${image})` }}
