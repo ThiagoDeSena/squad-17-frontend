@@ -255,7 +255,15 @@ export const TrendingBanner = () => {
                     </Swiper>
                 ) : (
                     <div className="text-white">
-                        Nenhum Filme em tendência encontrado.
+                        <p className="text-white flex flex-col justify-center items-center gap-4">
+                            <img
+                                src="/images/asking-question.svg"
+                                height={300}
+                                width={300}
+                                alt=""
+                            />
+                            Nenhum Filme em tendência encontrado.
+                        </p>
                     </div>
                 )}
 

@@ -26,7 +26,7 @@ export const UserPage = () => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
 
     return (
-        <div className="relative w-full lg:w-[90%] mx-auto top-0 flex flex-col">
+        <div className="relative w-full lg:w-[90%] mx-auto top-0 flex flex-col overflow-hidden">
             {/* Banner Section */}
             <div
                 className="banner bg-cover bg-center h-[344px] w-full rounded-lg absolute"

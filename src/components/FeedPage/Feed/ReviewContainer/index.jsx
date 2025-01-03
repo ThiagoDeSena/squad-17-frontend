@@ -5,7 +5,7 @@ import { RecomendedCard } from "../../Recomended/RecomendedCard";
 import { BiSolidDislike, BiSolidLike } from "react-icons/bi";
 import { PiChatCircleTextFill } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
-import {Loading} from "../../../Loading";
+import {Loading} from "../../../Utils/Loading";
 
 export const ReviewContainer = ({
     movieId,
@@ -45,6 +45,21 @@ export const ReviewContainer = ({
         );
     }
 
+    if (!mediaData) {
+        return (
+            <div className="inset-0 w-full mx-auto text-center">
+                <p className="text-white flex flex-col justify-center items-center gap-2">
+                    <img
+                        src="/images/asking-question.svg"
+                        height={300}
+                        width={300}
+                        alt=""
+                    />
+                  Nenhum Dado Encontrado.
+                </p>
+            </div>
+        );
+    }
     // Exiba o conteúdo quando os dados estiverem prontos
     return (
         <div className="bg-transparent border-2 border-neutral60 p-4 rounded-lg mb-[10%] flex flex-col-reverse md:flex-row-reverse gap-6 w-[80%] lg:w-full m-auto">

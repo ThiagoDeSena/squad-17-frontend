@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BannerLateral } from "../BannerLateral";
+import { BannerLateral } from "../../Utils/BannerLateral";
 import {
     AiOutlineMail,
     AiOutlineLock,
@@ -7,7 +7,7 @@ import {
     AiFillEyeInvisible,
 } from "react-icons/ai";
 import { MdDriveFileRenameOutline } from "react-icons/md";
-
+import { AlertWindow } from "../../Utils/AlertWindow";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { FcGoogle } from "react-icons/fc";
@@ -23,6 +23,8 @@ export const Cadastro = () => {
         confirmPassword: "",
     });
     const [errors, setErrors] = useState({});
+    const [alert, setAlert] = useState({ visible: false, message: "", type: "" });
+    const [showCriteries, setsShowCriteries] = useState(false);
 
     const navigate = useNavigate();
 
@@ -60,8 +62,19 @@ export const Cadastro = () => {
         // Password validation
         if (!formData.password) {
             newErrors.password = "Senha é obrigatória.";
-        } else if (formData.password.length < 8) {
-            newErrors.password = "Senha deve ter pelo menos 8 caracteres.";
+        } else {
+            const passwordCriteria = [
+                { regex: /.{8,}/, message: "Pelo menos 8 caracteres." },
+                { regex: /[A-Z]/, message: "Pelo menos uma letra maiúscula." },
+                { regex: /[a-z]/, message: "Pelo menos uma letra minúscula." },
+                { regex: /\d/, message: "Pelo menos um número." },
+                { regex: /[!@#$%^&*]/, message: "Pelo menos um caractere especial." },
+            ];
+
+            const failedCriteria = passwordCriteria.filter((criterion) => !criterion.regex.test(formData.password));
+            if (failedCriteria.length > 0) {
+                newErrors.password = `Senha não atende aos critérios: ${failedCriteria.map((c) => c.message).join(", ")}`;
+            }
         }
 
         // Confirm Password validation
@@ -79,13 +92,17 @@ export const Cadastro = () => {
         e.preventDefault();
 
         if (validateForm()) {
-            console.log("Formulário enviado com sucesso:", formData);
-            navigate("/");
+            setAlert({ visible: true, message: "Registro concluído com sucesso!", type: "success" });
+            setTimeout(() => navigate("/"), 2000);
+        } else {
+            setAlert({ visible: true, message: "Por favor, corrija os erros no formulário.", type: "error" });
         }
     };
 
     return (
         <>
+            {alert.visible && <AlertWindow message={alert.message} type={alert.type} onClose={() => setAlert({ visible: false })} />}
+
             <div className="hidden xl:block">
                 <BannerLateral />
             </div>
@@ -142,6 +159,8 @@ export const Cadastro = () => {
                                     placeholder="Senha"
                                     value={formData.password}
                                     onChange={handleInputChange}
+                                    onFocus={() => setsShowCriteries(true)}
+                                    onBlur={() => setsShowCriteries(false)}
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                 />
                                 <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
@@ -153,6 +172,28 @@ export const Cadastro = () => {
                                     {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
                                 </button>
                                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+
+                                {/* Critérios de Senha */}
+                                { showCriteries && <ul className="mt-2 text-sm text-gray-400">
+                                    <li className={/.{8,}/.test(formData.password) ? "text-green-500 line-through" : ""}>
+                                        Pelo menos 8 caracteres.
+                                    </li>
+                                    <li className={/[A-Z]/.test(formData.password) ? "text-green-500 line-through" : ""}>
+                                        Pelo menos uma letra maiúscula.
+                                    </li>
+                                    <li className={/[a-z]/.test(formData.password) ? "text-green-500 line-through" : ""}>
+                                        Pelo menos uma letra minúscula.
+                                    </li>
+                                    <li className={/\d/.test(formData.password) ? "text-green-500 line-through" : ""}>
+                                        Pelo menos um número.
+                                    </li>
+                                    <li className={/[!@#$%^&*]/.test(formData.password) ? "text-green-500 line-through" : ""}>
+                                        Pelo menos um caractere especial.
+                                    </li>
+                                    <li className={formData.password === formData.confirmPassword && formData.confirmPassword.length > 0 ? "text-green-500 line-through" : ""}>
+                                        As senhas devem iguais
+                                    </li>
+                                </ul>}
                             </div>
 
                             {/* Confirmação de Senha */}
@@ -163,6 +204,8 @@ export const Cadastro = () => {
                                     placeholder="Confirmar Senha"
                                     value={formData.confirmPassword}
                                     onChange={handleInputChange}
+                                    onFocus={() => setsShowCriteries(true)}
+                                    onBlur={() => setsShowCriteries(false)}
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                 />
                                 <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
@@ -182,32 +225,31 @@ export const Cadastro = () => {
                             Register
                         </button>
 
-                            {/* Continue com Google */}
-                            <div className="flex items-center my-2 xl:text-lg text-gray-400">
-                                <span className="flex-grow border-t border-gray-400"></span>
-                                <span className="mx-2">Continuar Com</span>
-                                <span className="flex-grow border-t border-gray-400"></span>
-                            </div>
-
-                            
-                            <button className="w-[6em] flex justify-center m-auto items-center gap-3 bg-zinc-800 p-3 xl:p-4 text-base xl:text-2xl rounded-xl     hover:bg-zinc-700 transition">
-                                <FcGoogle size={44} />
-                            </button>
-
-                            {/* Criar conta */}
-                            <p className="text-center text-sm xl:text-lg text-gray-400">
-                                Já Possui uma Conta?{" "}
-                                <a
-                                    href="#"
-                                    className="text-primary70 hover:underline"
-                                    onClick={() => navigate("/")}
-                                >
-                                    Login   !
-                                </a>
-                            </p>
+                        {/* Continue com Google */}
+                        <div className="flex items-center my-2 xl:text-lg text-gray-400">
+                            <span className="flex-grow border-t border-gray-400"></span>
+                            <span className="mx-2">Continuar Com</span>
+                            <span className="flex-grow border-t border-gray-400"></span>
                         </div>
-                    </form>
-                </div>
-            </>
-        );
-    };
+
+                        <button className="w-[6em] flex justify-center m-auto items-center gap-3 bg-zinc-800 p-3 xl:p-4 text-base xl:text-2xl rounded-xl hover:bg-zinc-700 transition">
+                            <FcGoogle size={44} />
+                        </button>
+
+                        {/* Criar conta */}
+                        <p className="text-center text-sm xl:text-lg text-gray-400">
+                            Já Possui uma Conta?{" "}
+                            <a
+                                href="#"
+                                className="text-primary70 hover:underline"
+                                onClick={() => navigate("/")}
+                            >
+                                Login!
+                            </a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </>
+    );
+};

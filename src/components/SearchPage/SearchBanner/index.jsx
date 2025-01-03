@@ -30,20 +30,23 @@ const genres = {
     10767: "Comédia de Drama",
     default: "Outro",
 };
-
-export const RecomendedCard = ({
+export const SearchBanner = ({
     image,
     title,
-    genre = [],
+    genre,
     onAddToWatchlist,
     className,
     type,
+    year,
     id,
 }) => {
     const navigate = useNavigate();
-    const genreString = Array.isArray(genre) && genre.length > 0
-        ? genre.map((g) => genres[g] || genres.default).join(", ")
-        : genres.default;
+    const genreString =
+        Array.isArray(genre) && genre.length > 0
+            ? genre.map((g) => genres[g] || genres.default).join(", ")
+            : genres.default;
+
+    const realeseYear = year && year.slice(0, 4);
     return (
         <div
             className={className}
@@ -54,22 +57,18 @@ export const RecomendedCard = ({
                 style={{ backgroundImage: `url(${image})` }}
             ></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+            <span className="absolute top-2 left-2 bg-black/20 p-2 rounded-full text-white">{`${realeseYear}`}</span>
             <button
                 className="absolute top-2 right-2 bg-black/20 p-2 rounded-full text-white hover:bg-red-600 transition"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onAddToWatchlist();
-                }}
+                onClick={onAddToWatchlist}
             >
                 <FaHeart size={18} />
             </button>
+
             <div className="absolute bottom-0 w-full p-2 bg-black/20 backdrop-blur-md text-white">
                 <h3 className="text-md font-semibold truncate">{title}</h3>
-                <p className="text-sm text-gray-300 truncate">
-                    {genreString}
-                </p>
+                <p className="text-sm text-gray-300 truncate">{genreString}</p>
             </div>
         </div>
     );
 };
-

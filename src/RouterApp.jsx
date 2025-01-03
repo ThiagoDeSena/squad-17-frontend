@@ -6,34 +6,33 @@ import { NotFoundScreen } from "./Screens/NotFoundScreen";
 import { UserScreen } from "./Screens/UserScreen";
 import { OutherUserScreen } from "./Screens/OtherUsersScreen";
 import { MediaScreen } from "./Screens/MediaScreen";
+import { SearchScreen } from "./Screens/SearchScreen";
 
 export const RouterApp = () => {
-    const userId = localStorage.getItem("userId");
     return (
         <BrowserRouter basename="/">
             <Routes>
-                <Route
-                    path="/"
-                    element={
+                <Route path="/" element={
                         localStorage.getItem('jwtToken')
-                        ? <Navigate to="/feed"/>
+                        ? <FeedScreen />
                         : <AuthScreen c={1} />
-                    }
-                />
+                    } />
+                <Route path="/register" element={<AuthScreen c={2} />} />
+                <Route path="/forgot-password" element={<AuthScreen c={3} />} />
                 <Route
-                    path={`/profile`}
+                    path="/profile"
                     element={
                         localStorage.getItem('jwtToken')
                         ? <UserScreen/>
-                        : <AuthScreen c={1} />
+                        : <Navigate to="/" />
                     }
                 />
                 <Route
-                    path={`/user/:id`}
+                    path="/user/:id"
                     element={
                         localStorage.getItem('jwtToken')
                         ? <OutherUserScreen/>
-                        : <AuthScreen c={1} />
+                        : <Navigate to="/" />
                     }
                 />
 
@@ -42,17 +41,10 @@ export const RouterApp = () => {
                     element={
                         localStorage.getItem('jwtToken')
                         ? <MediaScreen/>
-                        : <AuthScreen c={1} />
+                        : <Navigate to="/" />
                     }
                 />
-                <Route
-                    path="/register"
-                    element={
-                        localStorage.getItem('jwtToken')
-                        ? <Navigate to="/home" />
-                        : <AuthScreen c={2} />
-                    }
-                />
+
                 <Route
                     path="/feed"
                     element={
@@ -61,8 +53,18 @@ export const RouterApp = () => {
                         : <Navigate to="/" />
                     }
                 />
+                <Route
+                    path="/search"
+                    element={
+                        localStorage.getItem('jwtToken')
+                        ? <SearchScreen />
+                        : <Navigate to="/" />
+                    }
+                />
+
                 <Route path="*" element={<NotFoundScreen />} />
             </Routes>
         </BrowserRouter>
     );
 };
+

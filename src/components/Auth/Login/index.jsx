@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BannerLateral } from "../BannerLateral";
+import { BannerLateral } from "../../Utils/BannerLateral";
 import {
     AiOutlineMail,
     AiOutlineLock,
@@ -10,9 +10,16 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { AlertWindow } from "../../Utils/AlertWindow";
+import { MetroSpinner   } from "react-spinners-kit";
 
 export const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+    const [isLoading, setIsLoading] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,8 +31,67 @@ export const Login = () => {
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+    const validateFields = () => {
+        if (!email || !password) {
+            setAlert({
+                show: true,
+                type: "error",
+                message: "Por favor, preencha todos os campos!",
+            });
+            return false;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setAlert({
+                show: true,
+                type: "error",
+                message: "Por favor, insira um e-mail válido!",
+            });
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleLogin = () => {
+        if (!validateFields()) return;
+
+        setIsLoading(true);
+        setTimeout(() => {
+            setIsLoading(false);
+
+            if (email === "test@exemple.com" && password === "123456") {
+                const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"; // JWT fictício
+                localStorage.setItem("jwtToken", jwtToken);
+
+                setAlert({
+                    show: true,
+                    type: "success",
+                    message: "Login realizado com sucesso! Redirecionando...",
+                });
+
+                setTimeout(() => window.location.reload(), 4000);
+            } else {
+                setAlert({
+                    show: true,
+                    type: "error",
+                    message: "E-mail ou senha inválidos!",
+                });
+            }
+        }, 4000);
+    };
+
     return (
         <>
+            {/* Alert Window */}
+            {alert.show && (
+                <AlertWindow
+                    type={alert.type}
+                    message={alert.message}
+                    onClose={() => setAlert({ ...alert, show: false })}
+                />
+            )}
+
             <div className="hidden xl:block">
                 <BannerLateral />
             </div>
@@ -61,6 +127,8 @@ export const Login = () => {
                                     type="email"
                                     placeholder="m@exemple.com"
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm  text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
                             </div>
@@ -70,6 +138,10 @@ export const Login = () => {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="********"
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                 />
                                 <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
                                 <button
@@ -85,21 +157,35 @@ export const Login = () => {
                                 </button>
                             </div>
                             <div className="mt-2 flex flex-row justify-between text-sm xl:text-lg">
-                                <label htmlFor="remember-me" className="flex items-center gap-2">
-                                    <input type="checkbox" className="w-4 h-4 border-primary60" id="remember-me"/>
+                                <label
+                                    htmlFor="remember-me"
+                                    className="flex items-center gap-2"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        className="w-4 h-4 border-primary60"
+                                        id="remember-me"
+                                    />
                                     Lembrar-me
                                 </label>
 
-                                <a href="#" className="text-primary40 hover:underline">
+                                <a
+                                    href="#"
+                                    className="text-primary40 hover:underline"
+                                    onClick={() => navigate("/forgot-password")}
+                                >
                                     Esqueceu a senha?
                                 </a>
                             </div>
-
                         </div>
 
                         {/* Botão de Login */}
-                        <button className="w-full bg-primary60 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary50 transition hover:scale-110 ">
-                            Login
+                        <button
+                            className="w-full bg-primary60 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary50 transition hover:scale-110 disabled:opacity-50 flex items-center justify-center gap-2"
+                            onClick={handleLogin}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <MetroSpinner  size={40} color="white" /> : "Login"}
                         </button>
 
                         {/* Continue com Google */}

@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SideBar } from "../../components/SideBar";
 import { OutherUserPage } from "../../components/OutherUserPage";
 import { useParams } from "react-router-dom";
 export const OutherUserScreen = () => {
-    document.body.style.backgroundColor = '#191919'
+    document.body.style.backgroundColor = "#191919";
     const params = useParams();
-    const userId = params.id
-
+    const userId = params.id;
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }, [userId]);
     return (
         <>
-            <SideBar/>
-            <OutherUserPage id={userId}/>
+            <SideBar />
+            <OutherUserPage id={userId} />
         </>
-    
-    )
+    );
 };

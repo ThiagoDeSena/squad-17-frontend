@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import { getMediaDetails, getMovieTrailer } from "../../../services/movieAPI";
 import { CircleSpinner, RotateSpinner } from "react-spinners-kit";
-import { FaStar } from "react-icons/fa";
+import { FaBookmark, FaStar } from "react-icons/fa";
 import Modal from "react-modal";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -47,10 +47,10 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
             </div>
         );
     }
-
+    console.log(mediaDetails);
     if (!mediaDetails) {
         return (
-            <div className="absolute inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50 text-center">
+            <div className="absolute inset-0 flex justify-center items-center bg-neutral90 bg-opacity-50 z-10 text-center">
                 <p className="text-white flex flex-col justify-center items-center gap-4">
                     <img
                         src="/images/asking-question.svg"
@@ -79,7 +79,6 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
         genres,
         runtime,
         number_of_seasons,
-        first_air_date,
         vote_average,
         tagline,
     } = mediaDetails;
@@ -91,8 +90,12 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
         ? `${Math.floor(runtime / 60)}h ${runtime % 60}m`
         : `${number_of_seasons} seasons`;
 
-    const releaseYear = first_air_date
-        ? `(${first_air_date.split("-")[0]})`
+    const releaseYear = mediaDetails.release_date
+        ? mediaDetails.release_date.slice(0, 4)
+        : mediaDetails.first_air_date
+        ? mediaDetails.first_air_date.slice(0, 4)
+        : mediaDetails.realesed_date
+        ? mediaDetails.realesed_date.slice(0, 4)
         : "";
     const closeModal = () => {
         setTrailerModalOpen(false);
@@ -129,7 +132,7 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
                 }}
             >
                 <div>
-                    <h1 className="text-2xl sm:text-3xl md:text-5xl font-moonjelly text-white mb-4">
+                    <h1 className="text-2xl sm:text-2xl md:text-5xl font-moonjelly text-white mb-4 relative md:right-6">
                         {mediaTitle}{" "}
                         <span className="text-gray-400">{releaseYear}</span>
                     </h1>
@@ -149,7 +152,7 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
                         ))}
                     </div>
                     {/* Tagline */}
-                    {tagline && (
+                    {tagline && tagline.length > 0 && (
                         <div className="flex flex-wrap items-center gap-2 mb-6 p-2">
                             <span className="text-primary40 text-md font-extralight font-moonjelly tracking-wide bg-neutral90 px-4 py-2 rounded-full shadow-lg border-2 border-primary30">
                                 {tagline}
@@ -163,13 +166,22 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
                             ? `${overview}`
                             : overview || "No description available."}
                     </p>
-                    <button
-                        onClick={() => setTrailerModalOpen(true)}
-                        className="bg-transparent border-2 border-primary90 text-primary40 px-6 py-3 rounded-full flex items-center justify-center text-xs sm:text-sm md:text-lg shadow-md hover:text-white hover:bg-primary80 transition duration-300"
-                    >
-                        <AiOutlinePlayCircle size={20} className="mr-2" />
-                        Watch Trailer
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setTrailerModalOpen(true)}
+                            className="bg-transparent border-2 border-primary90 text-primary40 px-6 py-3 rounded-full flex items-center justify-center text-xs sm:text-sm md:text-lg shadow-md hover:text-white hover:bg-primary80 transition duration-300"
+                        >
+                            <AiOutlinePlayCircle size={20} className="mr-2" />
+                            Watch Trailer
+                        </button>
+                        <button
+                            onClick={() => console.log(`${mediaTitle} added to watchlist`)}
+                            className="bg-primary30 text-white px-8 py-4 rounded-full flex items-center justify-center text-sm sm:text-md md:text-lg shadow-lg hover:bg-primary60 hover:scale-110 transition duration-300 transform hover:shadow-xl"
+                        >
+                            <FaBookmark size={24} className="mr-3" />
+                            Add to Watchlist
+                        </button>
+                    </div>
                 </div>
 
                 {/* Rating */}

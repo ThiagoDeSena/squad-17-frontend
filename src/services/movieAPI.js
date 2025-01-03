@@ -133,3 +133,47 @@ export const getSimilarMedia = async (mediaType, mediaId) => {
         return [];
     }
 }
+
+export const searchResults = async (query, options = {}) => {
+    if (!query || query.trim().length < 2) {
+        return {
+            success: false,
+            message: "O termo de busca deve ter pelo menos 2 caracteres.",
+            data: [],
+        };
+    }
+
+    const { language = "pt-BR", timeout = 5000, page, ...extraParams } = options;
+
+    try {
+        const response = await api.get("/search/multi", {
+            params: {
+                query,
+                include_adult: false,
+                language,
+                page,
+                ...extraParams,
+            },
+            timeout,
+        });
+
+        return {
+            success: true,
+            data: response.data.results,
+        };
+    } catch (error) {
+        console.error(
+            `Erro ao buscar resultados: ${
+                error.response?.data?.status_message || error.message
+            }`
+        );
+
+        return {
+            success: false,
+            message:
+                error.response?.data?.status_message ||
+                "Erro ao buscar os resultados. Tente novamente mais tarde.",
+            data: [],
+        };
+    }
+};

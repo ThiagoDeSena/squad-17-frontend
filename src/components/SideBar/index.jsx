@@ -8,9 +8,17 @@ import {
     AiOutlineUser,
 } from "react-icons/ai";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import { FiGrid, FiBookmark, FiBookOpen, FiStar } from "react-icons/fi";
+import {
+    FiGrid,
+    FiBookmark,
+    FiBookOpen,
+    FiStar,
+    FiSearch,
+} from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { RotateSpinner } from "react-spinners-kit";
+import { ScrollToTop } from "../Utils/ScrollToTop";
 
 export const SideBar = () => {
     const location = useLocation();
@@ -18,6 +26,7 @@ export const SideBar = () => {
     const [showToggle, setShowToggle] = useState(false);
     const navigate = useNavigate();
     const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const menuItems = [
         { name: "Feed", path: "/feed", icon: <FiGrid size={28} /> },
@@ -27,6 +36,11 @@ export const SideBar = () => {
             icon: <FiBookmark size={28} />,
         },
         { name: "Blog", path: "/blog", icon: <FiBookOpen size={28} /> },
+        {
+            name: "Search",
+            path: "/search",
+            icon: <FiSearch size={28} />,
+        },
         {
             name: "Tier Rank",
             path: "/tier-rank",
@@ -134,8 +148,8 @@ export const SideBar = () => {
                                 className="w-12 h-12 rounded-full"
                             />
                             <span className="absolute left-full ml-2 hidden text-sm text-white bg-primary30 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out w-20 bottom-4">
-                                    User
-                                    <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary30"></span>
+                                User
+                                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary30"></span>
                             </span>
                         </div>
 
@@ -146,19 +160,37 @@ export const SideBar = () => {
                                     onClick={() => navigate("/profile")}
                                 >
                                     User Profile
-                                    <AiOutlineUser className="inline-block ml-2" size={20}/>
+                                    <AiOutlineUser
+                                        className="inline-block ml-2"
+                                        size={20}
+                                    />
                                 </button>
                                 <button
                                     className="w-full text-left px-4 py-2 hover:bg-neutral80 justify-center flex items-center text-primary10"
-                                    onClick={() => {
-                                        localStorage.removeItem("jwtToken");
-                                        setTimeout(() => {
+                                    onClick={async () => {
+                                        setLoading(true);
+                                        setTimeout(async () => {
+                                            localStorage.removeItem("jwtToken");
                                             window.location.reload();
                                         }, 2000);
                                     }}
                                 >
-                                    Logout
-                                    <AiOutlinePoweroff className="inline-block ml-2" />
+                                    <div className="flex items-center gap-2">
+                                        {loading ? (
+                                            <RotateSpinner
+                                                size={25}
+                                                color="#F9370B"
+                                            />
+                                        ) : (
+                                            <>
+                                                Logout
+                                                <AiOutlinePoweroff className="inline-block ml-2" />
+                                            </>
+                                        )}
+                                        <span>
+                                            {loading ? "Loading..." : ""}
+                                        </span>
+                                    </div>
                                 </button>
                             </div>
                         )}
@@ -311,21 +343,37 @@ export const SideBar = () => {
                                 </button>
                                 <button
                                     className="w-full text-left px-4 py-2 hover:bg-neutral80 justify-center flex items-center text-primary10"
-                                    onClick={() => {
-                                        localStorage.removeItem("jwtToken");
-                                        setTimeout(() => {
+                                    onClick={async () => {
+                                        setLoading(true);
+                                        setTimeout(async () => {
+                                            localStorage.removeItem("jwtToken");
                                             window.location.reload();
                                         }, 2000);
                                     }}
                                 >
-                                    Logout
-                                    <AiOutlinePoweroff className="inline-block ml-2" />
+                                    <div className="flex items-center gap-2">
+                                        {loading ? (
+                                            <RotateSpinner
+                                                size={25}
+                                                color="#F9370B"
+                                            />
+                                        ) : (
+                                            <>
+                                                Logout
+                                                <AiOutlinePoweroff className="inline-block ml-2" />
+                                            </>
+                                        )}
+                                        <span>
+                                            {loading ? "Loading..." : ""}
+                                        </span>
+                                    </div>
                                 </button>
                             </div>
                         )}
                     </div>
                 </Menu>
             </div>
+            <ScrollToTop/>
         </>
     );
 };

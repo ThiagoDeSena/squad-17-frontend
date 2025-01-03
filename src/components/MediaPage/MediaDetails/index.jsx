@@ -20,8 +20,9 @@ const ficticieUser = {
 export const MediaDetails = ({ mediaType, mediaId }) => {
     const [mediaData, setMediaData] = useState(null);
     const [activeTab, setActiveTab] = useState("information");
-    const [isOpen, setIsOpen] = React.useState(false);
-    const [selectedLanguage, setSelectedLanguage] = React.useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] = useState("");
+    const [moreGenresVisible, setMoreGenresVisible] = useState(false);
 
     const handleSelectLanguage = (language) => {
         setSelectedLanguage(language);
@@ -202,24 +203,25 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
                                         />
                                         <strong>Onde assitir:</strong>
                                     </span>
-                                    <span>
+                                    <div className="flex flex-wrap">
                                         {details.networks &&
                                         details.networks.length > 0
                                             ? details.networks.map((i) => (
                                                   <span
                                                       key={i.name}
-                                                      className="inline-flex items-center bg-neutral10 p-2 rounded-xl mr-2"
+                                                      className="inline-flex items-center bg-neutral10 p-2 rounded-xl mr-2 mb-2"
                                                   >
                                                       {i.logo_path && (
                                                           <img
                                                               src={`https://image.tmdb.org/t/p/w45${i.logo_path}`}
                                                               alt={`${i.name} logo`}
+                                                              className="max-w-[50px]"
                                                           />
                                                       )}
                                                   </span>
                                               ))
                                             : "N/A"}
-                                    </span>
+                                    </div>
                                 </p>
                             )}
                         </div>
@@ -322,11 +324,46 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
                                         <strong>Gêneros:</strong>
                                     </span>
                                     <span>
-                                        {details.genres.length >= 0
-                                            ? details.genres
-                                                  .map((genre) => genre.name)
-                                                  .join(", ")
-                                            : "N/A"}
+                                        {details.genres.length > 0 ? (
+                                            <>
+                                                {details.genres
+                                                    .slice(0, 3)
+                                                    .map((genre) => genre.name)
+                                                    .join(", ")}
+                                                {details.genres.length > 3 && (
+                                                    <button
+                                                        onClick={() =>
+                                                            setMoreGenresVisible(
+                                                                !moreGenresVisible
+                                                            )
+                                                        }
+                                                        className="text-primary40 ml-2"
+                                                    >
+                                                        {moreGenresVisible
+                                                            ? "-"
+                                                            : "+"}
+                                                    </button>
+                                                )}
+                                                {moreGenresVisible && (
+                                                    <div className="mt-2">
+                                                        {details.genres
+                                                            .slice(3)
+                                                            .map((genre) => (
+                                                                <span
+                                                                    key={
+                                                                        genre.id
+                                                                    }
+                                                                    className="mr-2"
+                                                                >
+                                                                    {genre.name}
+                                                                </span>
+                                                            ))}
+                                                    </div>
+                                                )}
+                                            </>
+                                        ) : (
+                                            "N/A"
+                                        )}
                                     </span>
                                 </p>
                             )}
@@ -387,6 +424,7 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
                             </span>
                         }
                         viewMore={false}
+                        
                     />
                 </div>
             )}
