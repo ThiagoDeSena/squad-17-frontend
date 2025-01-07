@@ -23,7 +23,6 @@ export const Recomended = ({mt, title, viewMore}) => {
 
         fetchRecomended();
     }, []);
-    console.log(recomended);
     return (
         <div className={`${mt} px-4 flex items-center justify-center`}>
             <div className="max-w-[1200px] w-full mx-auto">

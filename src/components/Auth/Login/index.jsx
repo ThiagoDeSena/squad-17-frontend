@@ -11,7 +11,8 @@ import "aos/dist/aos.css";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { AlertWindow } from "../../Utils/AlertWindow";
-import { MetroSpinner   } from "react-spinners-kit";
+import { MetroSpinner } from "react-spinners-kit";
+import { loginUser } from "../../../services/authAPI";
 
 export const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -53,32 +54,45 @@ export const Login = () => {
         return true;
     };
 
-    const handleLogin = () => {
-        if (!validateFields()) return;
+    const handleLogin = async (e) => {
+        e.preventDefault();
 
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
+        if (validateFields()) {
+            setIsLoading(true);
+            try {
+                const response = await loginUser(email, password);
 
-            if (email === "test@exemple.com" && password === "123456") {
-                const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"; // JWT fictício
-                localStorage.setItem("jwtToken", jwtToken);
-
+                if (response.error) {
+                    setAlert({
+                        show: true,
+                        message: response.message,
+                        type: "error",
+                    });
+                } else {
+                    setAlert({
+                        show: true,
+                        message:
+                            "Login realizado com sucesso! Redirecionando...",
+                        type: "success",
+                    });
+                    setTimeout(() => window.location.reload(), 4000);
+                }
+            } catch (error) {
                 setAlert({
                     show: true,
-                    type: "success",
-                    message: "Login realizado com sucesso! Redirecionando...",
-                });
-
-                setTimeout(() => window.location.reload(), 4000);
-            } else {
-                setAlert({
-                    show: true,
+                    message: "Ocorreu um erro inesperado. Tente novamente.",
                     type: "error",
-                    message: "E-mail ou senha inválidos!",
                 });
+            } finally {
+                setIsLoading(false);
             }
-        }, 4000);
+        } else {
+            setAlert({
+                visible: true,
+                message: "Por favor, corrija os erros no formulário.",
+                type: "error",
+            });
+        }
     };
 
     return (
@@ -120,73 +134,83 @@ export const Login = () => {
                         </h1>
 
                         {/* Inputs */}
-                        <div className="flex flex-col gap-6">
-                            {/* Email */}
-                            <div className="relative">
-                                <input
-                                    type="email"
-                                    placeholder="m@exemple.com"
-                                    className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm  text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
+                        <form onSubmit={handleLogin}>
+                            <div className="flex flex-col gap-6">
+                                {/* Email */}
+                                <div className="relative">
+                                    <input
+                                        type="email"
+                                        placeholder="m@exemple.com"
+                                        className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm  text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                                        value={email}
+                                        required
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
+                                </div>
+                                {/* Senha */}
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="********"
+                                        className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                                        required
+                                        value={password}
+                                        onChange={(e) =>
+                                            setPassword(e.target.value)
+                                        }
+                                    />
+                                    <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
+                                    <button
+                                        type="button"
+                                        onClick={togglePasswordVisibility}
+                                        className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
+                                    >
+                                        {showPassword ? (
+                                            <AiFillEye />
+                                        ) : (
+                                            <AiFillEyeInvisible />
+                                        )}
+                                    </button>
+                                </div>
+                                <div className="mt-2 flex flex-row justify-between text-sm xl:text-lg">
+                                    <label
+                                        htmlFor="remember-me"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            className="w-4 h-4 border-primary60"
+                                            id="remember-me"
+                                        />
+                                        Lembrar-me
+                                    </label>
+                                    <a
+                                        href="#"
+                                        className="text-primary40 hover:underline"
+                                        onClick={() => navigate("/forgot-password")}
+                                    >
+                                        Esqueceu a senha?
+                                    </a>
+                                </div>
                             </div>
-                            {/* Senha */}
-                            <div className="relative">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="********"
-                                    className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
-                                    value={password}
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
-                                />
-                                <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
+                            {/* Botão de Login */}
+                            <div className="flex items-center justify-center w-full">
                                 <button
-                                    type="button"
-                                    onClick={togglePasswordVisibility}
-                                    className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
+                                    className={`${
+                                        isLoading ? "opacity-50" : "w-full"
+                                    } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110`}
+                                    disabled={isLoading}
+                                    type="submit"
                                 >
-                                    {showPassword ? (
-                                        <AiFillEye />
+                                    {isLoading ? (
+                                        <MetroSpinner size={50} color="#fff" />
                                     ) : (
-                                        <AiFillEyeInvisible />
+                                        "Login"
                                     )}
                                 </button>
                             </div>
-                            <div className="mt-2 flex flex-row justify-between text-sm xl:text-lg">
-                                <label
-                                    htmlFor="remember-me"
-                                    className="flex items-center gap-2"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        className="w-4 h-4 border-primary60"
-                                        id="remember-me"
-                                    />
-                                    Lembrar-me
-                                </label>
-
-                                <a
-                                    href="#"
-                                    className="text-primary40 hover:underline"
-                                    onClick={() => navigate("/forgot-password")}
-                                >
-                                    Esqueceu a senha?
-                                </a>
-                            </div>
-                        </div>
-
-                        {/* Botão de Login */}
-                        <button
-                            className="w-full bg-primary60 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary50 transition hover:scale-110 disabled:opacity-50 flex items-center justify-center gap-2"
-                            onClick={handleLogin}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? <MetroSpinner  size={40} color="white" /> : "Login"}
-                        </button>
+                        </form>
 
                         {/* Continue com Google */}
                         <div className="flex items-center my-2 xl:text-lg text-gray-400">

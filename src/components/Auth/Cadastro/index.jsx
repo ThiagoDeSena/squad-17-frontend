@@ -12,6 +12,8 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../../../services/authAPI";
+import { SphereSpinner } from "react-spinners-kit";
 
 export const Cadastro = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -23,9 +25,13 @@ export const Cadastro = () => {
         confirmPassword: "",
     });
     const [errors, setErrors] = useState({});
-    const [alert, setAlert] = useState({ visible: false, message: "", type: "" });
+    const [alert, setAlert] = useState({
+        visible: false,
+        message: "",
+        type: "",
+    });
     const [showCriteries, setsShowCriteries] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,7 +42,8 @@ export const Cadastro = () => {
     }, []);
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
-    const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+    const toggleConfirmPasswordVisibility = () =>
+        setShowConfirmPassword(!showConfirmPassword);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -68,12 +75,19 @@ export const Cadastro = () => {
                 { regex: /[A-Z]/, message: "Pelo menos uma letra maiúscula." },
                 { regex: /[a-z]/, message: "Pelo menos uma letra minúscula." },
                 { regex: /\d/, message: "Pelo menos um número." },
-                { regex: /[!@#$%^&*]/, message: "Pelo menos um caractere especial." },
+                {
+                    regex: /[!@#$%^&*]/,
+                    message: "Pelo menos um caractere especial.",
+                },
             ];
 
-            const failedCriteria = passwordCriteria.filter((criterion) => !criterion.regex.test(formData.password));
+            const failedCriteria = passwordCriteria.filter(
+                (criterion) => !criterion.regex.test(formData.password)
+            );
             if (failedCriteria.length > 0) {
-                newErrors.password = `Senha não atende aos critérios: ${failedCriteria.map((c) => c.message).join(", ")}`;
+                newErrors.password = `Senha não atende aos critérios: ${failedCriteria
+                    .map((c) => c.message)
+                    .join(", ")}`;
             }
         }
 
@@ -88,20 +102,52 @@ export const Cadastro = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (validateForm()) {
-            setAlert({ visible: true, message: "Registro concluído com sucesso!", type: "success" });
-            setTimeout(() => navigate("/"), 2000);
+            setLoading(true);
+            try {
+                const response = await registerUser(formData);
+                if (response.message) {
+                    formData.name = "";
+                    formData.email = "";
+                    formData.password = "";
+                    formData.confirmPassword = "";
+                    setAlert({
+                        visible: true,
+                        message: "Cadastro realizado com sucesso!",
+                        type: "success",
+                    });
+                    setTimeout(() => navigate("/"), 4000);
+                }
+            } catch (error) {
+                setAlert({
+                    visible: true,
+                    message: error.message,
+                    type: "error",
+                });
+            } finally {
+                setLoading(false);
+            }
         } else {
-            setAlert({ visible: true, message: "Por favor, corrija os erros no formulário.", type: "error" });
+            setAlert({
+                visible: true,
+                message: "Por favor, corrija os erros no formulário.",
+                type: "error",
+            });
         }
     };
 
     return (
         <>
-            {alert.visible && <AlertWindow message={alert.message} type={alert.type} onClose={() => setAlert({ visible: false })} />}
+            {alert.visible && (
+                <AlertWindow
+                    message={alert.message}
+                    type={alert.type}
+                    onClose={() => setAlert({ visible: false })}
+                />
+            )}
 
             <div className="hidden xl:block">
                 <BannerLateral />
@@ -118,7 +164,7 @@ export const Cadastro = () => {
                 >
                     <div className="w-full flex flex-col gap-6 p-4 xl:px-12 rounded-lg text-white">
                         <h1 className="text-5xl xl:text-6xl font-bold font-moonjelly text-center mb-6 text-white">
-                            Register
+                            Cadastro
                         </h1>
 
                         {/* Inputs */}
@@ -134,7 +180,11 @@ export const Cadastro = () => {
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                 />
                                 <MdDriveFileRenameOutline className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
-                                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Email */}
@@ -148,7 +198,11 @@ export const Cadastro = () => {
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                 />
                                 <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
-                                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                                {errors.email && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.email}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Senha */}
@@ -169,37 +223,92 @@ export const Cadastro = () => {
                                     onClick={togglePasswordVisibility}
                                     className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
                                 >
-                                    {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+                                    {showPassword ? (
+                                        <AiFillEye />
+                                    ) : (
+                                        <AiFillEyeInvisible />
+                                    )}
                                 </button>
-                                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.password}
+                                    </p>
+                                )}
 
                                 {/* Critérios de Senha */}
-                                { showCriteries && <ul className="mt-2 text-sm text-gray-400">
-                                    <li className={/.{8,}/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                                        Pelo menos 8 caracteres.
-                                    </li>
-                                    <li className={/[A-Z]/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                                        Pelo menos uma letra maiúscula.
-                                    </li>
-                                    <li className={/[a-z]/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                                        Pelo menos uma letra minúscula.
-                                    </li>
-                                    <li className={/\d/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                                        Pelo menos um número.
-                                    </li>
-                                    <li className={/[!@#$%^&*]/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                                        Pelo menos um caractere especial.
-                                    </li>
-                                    <li className={formData.password === formData.confirmPassword && formData.confirmPassword.length > 0 ? "text-green-500 line-through" : ""}>
-                                        As senhas devem iguais
-                                    </li>
-                                </ul>}
+                                {showCriteries && (
+                                    <ul className="mt-2 text-sm text-gray-400">
+                                        <li
+                                            className={
+                                                /.{8,}/.test(formData.password)
+                                                    ? "text-green-500 line-through"
+                                                    : ""
+                                            }
+                                        >
+                                            Pelo menos 8 caracteres.
+                                        </li>
+                                        <li
+                                            className={
+                                                /[A-Z]/.test(formData.password)
+                                                    ? "text-green-500 line-through"
+                                                    : ""
+                                            }
+                                        >
+                                            Pelo menos uma letra maiúscula.
+                                        </li>
+                                        <li
+                                            className={
+                                                /[a-z]/.test(formData.password)
+                                                    ? "text-green-500 line-through"
+                                                    : ""
+                                            }
+                                        >
+                                            Pelo menos uma letra minúscula.
+                                        </li>
+                                        <li
+                                            className={
+                                                /\d/.test(formData.password)
+                                                    ? "text-green-500 line-through"
+                                                    : ""
+                                            }
+                                        >
+                                            Pelo menos um número.
+                                        </li>
+                                        <li
+                                            className={
+                                                /[!@#$%^&*]/.test(
+                                                    formData.password
+                                                )
+                                                    ? "text-green-500 line-through"
+                                                    : ""
+                                            }
+                                        >
+                                            Pelo menos um caractere especial.
+                                        </li>
+                                        <li
+                                            className={
+                                                formData.password ===
+                                                    formData.confirmPassword &&
+                                                formData.confirmPassword
+                                                    .length > 0
+                                                    ? "text-green-500 line-through"
+                                                    : ""
+                                            }
+                                        >
+                                            As senhas devem iguais
+                                        </li>
+                                    </ul>
+                                )}
                             </div>
 
                             {/* Confirmação de Senha */}
                             <div className="relative">
                                 <input
-                                    type={showConfirmPassword ? "text" : "password"}
+                                    type={
+                                        showConfirmPassword
+                                            ? "text"
+                                            : "password"
+                                    }
                                     name="confirmPassword"
                                     placeholder="Confirmar Senha"
                                     value={formData.confirmPassword}
@@ -214,16 +323,36 @@ export const Cadastro = () => {
                                     onClick={toggleConfirmPasswordVisibility}
                                     className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
                                 >
-                                    {showConfirmPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+                                    {showConfirmPassword ? (
+                                        <AiFillEye />
+                                    ) : (
+                                        <AiFillEyeInvisible />
+                                    )}
                                 </button>
-                                {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
+                                {errors.confirmPassword && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        {errors.confirmPassword}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         {/* Botão de Registrar */}
-                        <button className="w-full bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110">
-                            Register
-                        </button>
+                        <div className="flex items-center justify-center w-full">
+                            <button
+                                className={`${
+                                    loading ? "opacity-50" : "w-full"
+                                } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110`}
+                                disabled={loading}
+                                type="submit"
+                            >
+                                {loading ? (
+                                    <SphereSpinner size={50} color="#fff" />
+                                ) : (
+                                    "Cadastro"
+                                )}
+                            </button>
+                        </div>
 
                         {/* Continue com Google */}
                         <div className="flex items-center my-2 xl:text-lg text-gray-400">

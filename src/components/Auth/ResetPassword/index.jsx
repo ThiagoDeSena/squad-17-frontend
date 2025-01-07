@@ -10,18 +10,17 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import { useNavigate } from "react-router-dom";
 import { AlertWindow } from "../../Utils/AlertWindow";
+import { resetPassword, sendEmailRecoverPassword, validateCode } from "../../../services/authAPI";
 
 export const ResetPassword = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         email: "",
-        code: "",
         newPassword: "",
         confirmPassword: "",
     });
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
-    const [sentCode, setSentCode] = useState("");
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({ message: "", type: "" });
     const [passwordCriteria, setPasswordCriteria] = useState({
@@ -31,6 +30,26 @@ export const ResetPassword = () => {
         match: false,
     });
 
+    const [code, setCode] = useState(new Array(6).fill(""));
+
+    const handleChange = (value, index) => {
+      if (!/^\d$/.test(value) && value !== "") return; // Aceita apenas números
+  
+      const newCode = [...code];
+      newCode[index] = value;
+      setCode(newCode);
+  
+      // Avança automaticamente para o próximo campo
+      if (value && index < 5) {
+        document.getElementById(`code-input-${index + 1}`).focus();
+      }
+    };
+  
+    const handleKeyDown = (e, index) => {
+      if (e.key === "Backspace" && !code[index] && index > 0) {
+        document.getElementById(`code-input-${index - 1}`).focus();
+      }
+    };
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,19 +85,13 @@ export const ResetPassword = () => {
         e.preventDefault();
         setLoading(true);
         setErrors({});
-
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // Simula requisição
-
-            if (formData.email === "usuario@teste.com") {
-                setSentCode("123456");
-                setAlert({
-                    message: "Código enviado com sucesso.",
-                    type: "success",
-                });
+            const response = await sendEmailRecoverPassword(formData.email);
+            if (response.message) {
+                setAlert({ message: response.message, type: "success" });
                 setStep(2);
-            } else {
-                throw new Error("Email não cadastrado.");
+            }else if(response.error){
+                setAlert({ message: response.error, type: "error" });
             }
         } catch (error) {
             setAlert({ message: error.message, type: "error" });
@@ -93,9 +106,9 @@ export const ResetPassword = () => {
         setErrors({});
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000)); // Simula requisição
-
-            if (formData.code === sentCode) {
+            let transformCode = code.join("");
+            const response = await validateCode(transformCode);
+            if (response.sucess) {
                 setAlert({ message: "Código correto.", type: "success" });
                 setStep(3);
             } else {
@@ -113,15 +126,11 @@ export const ResetPassword = () => {
         setLoading(true);
         setErrors({});
 
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+        try { 
+            let transformCode = code.join("");
+            const response = await resetPassword(transformCode,formData.email, formData.newPassword, formData.confirmPassword);
 
-            if (
-                passwordCriteria.length &&
-                passwordCriteria.uppercase &&
-                passwordCriteria.special &&
-                passwordCriteria.match
-            ) {
+            if (response.message) {
                 setAlert({
                     message: "Senha alterada com sucesso! Redirecionando...",
                     type: "success",
@@ -182,6 +191,7 @@ export const ResetPassword = () => {
                             <form
                                 onSubmit={handleSubmitEmail}
                                 className="flex flex-col gap-4 p-6 bg-black rounded-xl shadow-lg text-white"
+                                data-aos="fade-left"
                             >
                                 <div className="relative">
                                     <input
@@ -191,6 +201,7 @@ export const ResetPassword = () => {
                                         value={formData.email}
                                         onChange={handleInputChange}
                                         className="w-full p-3 bg-gray-800 border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50"
+                                        required
                                     />
                                     <AiOutlineMail className="absolute right-3 top-3 text-gray-400 text-xl" />
                                 </div>
@@ -205,33 +216,38 @@ export const ResetPassword = () => {
 
                         {!loading && step === 2 && (
                             <form
-                                onSubmit={handleSubmitCode}
-                                className="flex flex-col gap-4 p-6 bg-black rounded-xl shadow-lg text-white"
+                            onSubmit={handleSubmitCode}
+                            className="flex flex-col gap-4 p-6 bg-black rounded-xl shadow-lg text-white"
+                            data-aos="fade-left"
+                          >
+                            <div className="flex justify-center gap-2">
+                              {code.map((digit, index) => (
+                                <input
+                                  key={index}
+                                  id={`code-input-${index}`}
+                                  type="text"
+                                  value={digit}
+                                  onChange={(e) => handleChange(e.target.value, index)}
+                                  onKeyDown={(e) => handleKeyDown(e, index)}
+                                  maxLength={1}
+                                  className="w-12 h-12 text-center bg-gray-800 border-b rounded-sm text-white text-2xl focus:outline-none focus:ring-2 focus:ring-primary50"
+                                />
+                              ))}
+                            </div>
+                            <button
+                              type="submit"
+                              className="w-full bg-primary90 text-white p-3 rounded-full hover:bg-primary70"
                             >
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="code"
-                                        placeholder="Digite o código enviado"
-                                        value={formData.code}
-                                        onChange={handleInputChange}
-                                        className="w-full p-3 bg-gray-800 border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50"
-                                    />
-                                    <AiOutlineLock className="absolute right-3 top-3 text-gray-400 text-xl" />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="w-full bg-primary90 text-white p-3 rounded-full hover:bg-primary70"
-                                >
-                                    Confirmar Código
-                                </button>
-                            </form>
+                              Confirmar Código
+                            </button>
+                          </form>
                         )}
 
                         {!loading && step === 3 && (
                             <form
                                 onSubmit={handleSubmitNewPassword}
                                 className="flex flex-col gap-4 p-6 bg-black rounded-xl shadow-lg text-white"
+                                data-aos='fade-laft'
                             >
                                 <div className="relative">
                                     <input

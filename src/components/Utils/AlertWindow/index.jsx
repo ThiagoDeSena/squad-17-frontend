@@ -13,10 +13,10 @@ export const AlertWindow = ({ message, type }) => {
     };
 
     const iconType = {
-        error: <AiOutlineCloseCircle className="text-semanticError text-xl mr-2" />,
-        success: <AiOutlineCheckCircle className="text-semanticSucess text-xl mr-2" />,
-        info: <AiOutlineInfoCircle className="text-semanticInfo text-xl mr-2" />,
-        warning: <AiOutlineWarning className="text-semanticWarning text-xl mr-2" />,
+        error: <AiOutlineCloseCircle size={34} className="text-semanticError text-xl mr-2" />,
+        success: <AiOutlineCheckCircle size={34} className="text-semanticSucess text-xl mr-2" />,
+        info: <AiOutlineInfoCircle size={34} className="text-semanticInfo text-xl mr-2" />,
+        warning: <AiOutlineWarning size={34} className="text-semanticWarning text-xl mr-2" />,
     };
 
     useEffect(() => {
@@ -35,21 +35,21 @@ export const AlertWindow = ({ message, type }) => {
 
     useEffect(() => {
         setShowAlert(true);
-        setCounter(5);
+        setCounter(6);
     }, [message, type]);
 
     if (!showAlert) return null;
 
     return (
         <div
-            className={`fixed top-4 right-4 z-50 max-w-sm w-full p-4 rounded-lg shadow-lg border ${colorType[type]} transition-transform duration-500 ease-in-out transform ${
+            className={`fixed top-4 right-4 z-50 max-w-sm w-full p-2 rounded-lg shadow-lg border ${colorType[type]} font-poppins transition-transform duration-500 ease-in-out transform ${
                 showAlert ? "translate-y-0" : "-translate-y-10"
-            }`}
+            } max-h-72 overflow-y-auto`}
         >
-            <div className="flex items-center">
+            <div className="flex items-center text-lg">
                 {iconType[type]}
                 <div className="flex-grow">
-                    <p className="font-semibold">{message}</p>
+                    <p className="font-semibold whitespace-pre-wrap break-words">{message}</p>
                 </div>
                 <span className="text-sm text-gray-500">{counter}s</span>
             </div>
