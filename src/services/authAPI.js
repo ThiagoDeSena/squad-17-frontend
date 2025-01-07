@@ -4,19 +4,21 @@ const authAPI = axios.create({
     baseURL: "http://localhost:8081/auth"
 });
 
-export const registerUser = async (data) => {
-    const { name, email, password, confirmPassword } = data;
+export const registerUser = async ({ name, email, password, confirmPassword }) => {
     try {
         const response = await authAPI.post('/register', {
             nome: name,
-            email: email,
+            email,
             senha: password,
             confirmacaoSenha: confirmPassword
         });
         return response.data;
     } catch (error) {
         console.error("Erro ao registrar usuário:", error);
-        return response.data.error;
+        if (error.response && error.response.data) {
+            return error.response.data;
+        }
+        return { error: true, message: "Ocorreu um erro inesperado. Tente novamente mais tarde." };
     }
 }
 
@@ -27,8 +29,6 @@ export const loginUser = async (email, senha) => {
             login: email,
             senha: senha
         });
-        const { token } = response.data;
-        localStorage.setItem("jwtToken", token);
         return response.data;
     } catch (error) {
         if (error.response && error.response.status === 403) {
@@ -51,7 +51,6 @@ export const sendEmailRecoverPassword = async (email) => {
 }
 
 export const validateCode = async (code) => {
-    console.log(code);
     try {
         const response = await authAPI.post('/recover/code', {codigo: code});
         return response.data;
@@ -74,5 +73,4 @@ export const resetPassword = async (code,email, password, confirmPassword) =>{
         console.error("Erro ao resetar senha:", error);
         return response.data.error;
     }
-
 }

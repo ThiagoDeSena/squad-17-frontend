@@ -2,69 +2,52 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { AuthScreen } from "./Screens/AuthScreen";
 import { FeedScreen } from "./Screens/FeedScreen";
 import { Navigate } from "react-router-dom";
-import { NotFoundScreen } from "./Screens/NotFoundScreen"; 
+import { NotFoundScreen } from "./Screens/NotFoundScreen";
 import { UserScreen } from "./Screens/UserScreen";
 import { OutherUserScreen } from "./Screens/OtherUsersScreen";
 import { MediaScreen } from "./Screens/MediaScreen";
 import { SearchScreen } from "./Screens/SearchScreen";
+import { useContext } from "react";
+import { UserContext } from "./Contexts/UserContext";
+import { Loading } from "./components/Utils/Loading";
 
 export const RouterApp = () => {
+    const { user, loading } = useContext(UserContext);
+
+    if (loading) {
+        return <Loading />;
+    }
     return (
         <BrowserRouter basename="/">
             <Routes>
-                <Route path="/" element={
-                        localStorage.getItem('jwtToken')
-                        ? <FeedScreen />
-                        : <AuthScreen c={1} />
-                    } />
+                <Route
+                    path="/"
+                    element={user ? <FeedScreen /> : <AuthScreen c={1} />}
+                />
                 <Route path="/register" element={<AuthScreen c={2} />} />
                 <Route path="/forgot-password" element={<AuthScreen c={3} />} />
                 <Route
                     path="/profile"
-                    element={
-                        localStorage.getItem('jwtToken')
-                        ? <UserScreen/>
-                        : <Navigate to="/" />
-                    }
+                    element={user ? <UserScreen /> : <Navigate to="/" />}
                 />
                 <Route
                     path="/user/:id"
-                    element={
-                        localStorage.getItem('jwtToken')
-                        ? <OutherUserScreen/>
-                        : <Navigate to="/" />
-                    }
+                    element={user ? <OutherUserScreen /> : <Navigate to="/" />}
                 />
-
                 <Route
                     path="/media/:type/:id"
-                    element={
-                        localStorage.getItem('jwtToken')
-                        ? <MediaScreen/>
-                        : <Navigate to="/" />
-                    }
+                    element={user ? <MediaScreen /> : <Navigate to="/" />}
                 />
-
                 <Route
                     path="/feed"
-                    element={
-                        localStorage.getItem('jwtToken')
-                        ? <FeedScreen />
-                        : <Navigate to="/" />
-                    }
+                    element={user ? <FeedScreen /> : <Navigate to="/" />}
                 />
                 <Route
                     path="/search"
-                    element={
-                        localStorage.getItem('jwtToken')
-                        ? <SearchScreen />
-                        : <Navigate to="/" />
-                    }
+                    element={user ? <SearchScreen /> : <Navigate to="/" />}
                 />
-
                 <Route path="*" element={<NotFoundScreen />} />
             </Routes>
         </BrowserRouter>
     );
 };
-

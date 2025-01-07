@@ -109,7 +109,7 @@ export const Cadastro = () => {
             setLoading(true);
             try {
                 const response = await registerUser(formData);
-                if (response.message) {
+                if (response.message && !response.error) {
                     formData.name = "";
                     formData.email = "";
                     formData.password = "";
@@ -120,11 +120,17 @@ export const Cadastro = () => {
                         type: "success",
                     });
                     setTimeout(() => navigate("/"), 4000);
+                } else if (response.error) {
+                    setAlert({
+                        visible: true,
+                        message: response.error,
+                        type: "error",
+                    });
                 }
             } catch (error) {
                 setAlert({
                     visible: true,
-                    message: error.message,
+                    message: error || "Ocorreu um erro inesperado.",
                     type: "error",
                 });
             } finally {

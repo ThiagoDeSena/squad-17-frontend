@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BannerLateral } from "../../Utils/BannerLateral";
 import {
     AiOutlineMail,
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { AlertWindow } from "../../Utils/AlertWindow";
 import { MetroSpinner } from "react-spinners-kit";
 import { loginUser } from "../../../services/authAPI";
+import { UserContext } from "../../../Contexts/UserContext";
 
 export const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +21,7 @@ export const Login = () => {
     const [password, setPassword] = useState("");
     const [alert, setAlert] = useState({ show: false, type: "", message: "" });
     const [isLoading, setIsLoading] = useState(false);
+    const { login } = useContext(UserContext); 
 
     const navigate = useNavigate();
 
@@ -56,7 +58,6 @@ export const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
         if (validateFields()) {
             setIsLoading(true);
             try {
@@ -69,13 +70,14 @@ export const Login = () => {
                         type: "error",
                     });
                 } else {
+                    const { token } = response
                     setAlert({
                         show: true,
                         message:
                             "Login realizado com sucesso! Redirecionando...",
                         type: "success",
                     });
-                    setTimeout(() => window.location.reload(), 4000);
+                    setTimeout(() => login(token), 4000);
                 }
             } catch (error) {
                 setAlert({

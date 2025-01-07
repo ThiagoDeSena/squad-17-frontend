@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { slide as Menu } from "react-burger-menu";
 import {
     AiOutlineSetting,
@@ -19,6 +19,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
 import { ScrollToTop } from "../Utils/ScrollToTop";
+import { UserContext } from "../../Contexts/UserContext";
 
 export const SideBar = () => {
     const location = useLocation();
@@ -27,7 +28,7 @@ export const SideBar = () => {
     const navigate = useNavigate();
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [loading, setLoading] = useState(false);
-
+    const { logout } = useContext(UserContext);
     const menuItems = [
         { name: "Feed", path: "/feed", icon: <FiGrid size={28} /> },
         {
@@ -170,8 +171,7 @@ export const SideBar = () => {
                                     onClick={async () => {
                                         setLoading(true);
                                         setTimeout(async () => {
-                                            localStorage.removeItem("jwtToken");
-                                            window.location.reload();
+                                            logout()
                                         }, 2000);
                                     }}
                                 >
@@ -346,8 +346,7 @@ export const SideBar = () => {
                                     onClick={async () => {
                                         setLoading(true);
                                         setTimeout(async () => {
-                                            localStorage.removeItem("jwtToken");
-                                            window.location.reload();
+                                            logout();
                                         }, 2000);
                                     }}
                                 >

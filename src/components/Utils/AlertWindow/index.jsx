@@ -35,7 +35,7 @@ export const AlertWindow = ({ message, type }) => {
 
     useEffect(() => {
         setShowAlert(true);
-        setCounter(6);
+        setCounter(4);
     }, [message, type]);
 
     if (!showAlert) return null;
