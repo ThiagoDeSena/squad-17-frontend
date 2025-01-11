@@ -115,7 +115,7 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
             {/* Poster Section */}
             <div className="w-full md:w-1/3 h-[600px] md:h-auto border-b-4 md:border-b-0 md:border-r-4 border-dashed border-neutral30">
                 <img
-                    src={`https://image.tmdb.org/t/p/w500/${poster_path}`}
+                    src={`https://image.tmdb.org/t/p/w500/${poster_path || backdrop_path}`}
                     alt={mediaTitle}
                     className="w-full h-[597px] lg:h-full object-cover"
                 />
@@ -185,20 +185,24 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
                 </div>
 
                 {/* Rating */}
-                <div className="flex justify-center items-center mt-6 cursor-pointer">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                        <span key={index}>
-                            {index + 1 <= Math.round(vote_average / 2) ? (
-                                <FaStar size={30} className="text-yellow-500 hover:scale-125" />
-                            ) : (
-                                <FaStar
-                                    size={30}
-                                    className="text-neutral10 opacity-50"
-                                />
-                            )}
-                        </span>
-                    ))}
+                <div className="flex flex-col justify-center items-center mt-6">
+                    <div className="flex cursor-pointer">
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <span key={index}>
+                               
+                                {index + 1 <= Math.round(vote_average / 2) ? (
+                                    <FaStar size={40} className="text-yellow-500 hover:scale-125" />
+                                ) : (
+                                    <FaStar
+                                        size={35}
+                                        className="text-neutral10 opacity-50"
+                                    />
+                                )}
+                            </span>
+                        ))}
+                    </div>
                 </div>
+
             </div>
 
             {/* Trailer Modal */}

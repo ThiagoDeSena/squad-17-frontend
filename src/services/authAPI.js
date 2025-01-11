@@ -40,7 +40,6 @@ export const loginUser = async (email, senha) => {
 }
 
 export const sendEmailRecoverPassword = async (email) => {
-    console.log(email);
     try {
         const response = await authAPI.post(`/recover?login=${email}`);
         return response.data;

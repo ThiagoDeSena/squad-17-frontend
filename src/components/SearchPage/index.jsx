@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FiX } from "react-icons/fi";
 import { searchResults } from "../../services/movieAPI";
 import { SearchBanner } from "./SearchBanner";
 import { Loading } from "../Utils/Loading";
-import { FaTrash } from "react-icons/fa";
 
 export const SearchPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -11,7 +10,15 @@ export const SearchPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
+    const observer = useRef();
+    const lastResultElementRef = useRef(null);
+    useEffect(() => {
+        if (!searchTerm) return;
+        setPage(1);
+        searchResults([]);
+    }, [searchTerm]);
 
     useEffect(() => {
         if (!searchTerm) return;
@@ -37,6 +44,7 @@ export const SearchPage = () => {
                                   ),
                               ]
                     );
+                    setHasMore(data.length > 0);
                 } else {
                     setError(message);
                 }
@@ -52,15 +60,31 @@ export const SearchPage = () => {
         fetchData();
     }, [searchTerm, page]);
 
+    useEffect(() => {
+        if (isLoading || !hasMore) return;
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setPage((prevPage) => prevPage + 1);
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        if (lastResultElementRef.current) {
+            console.log("observando o ultimo");
+            observer.current.observe(lastResultElementRef.current);
+        } else {
+            console.log("Nada para observar");
+        }
+    }, [isLoading, hasMore]);
+
     const handleSearch = async (e) => {
         e.preventDefault();
         setPage(1);
         setResults([]);
-    };
-
-    
-    const loadMore = async () => {
-        setPage((page) => page + 1);
     };
 
     return (
@@ -75,7 +99,6 @@ export const SearchPage = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     enterKeyHint="search"
-                    onFocus={() => setVisibleHistory(true)}
                     placeholder="Busque por filmes, séries..."
                     className="flex-grow border border-gray-600 rounded-full py-3 px-5 focus:outline-none focus:ring-2 focus:ring-primary60 bg-gray-700 text-white placeholder-gray-400 sm:w-full"
                 />
@@ -107,7 +130,11 @@ export const SearchPage = () => {
                     results.map(
                         (item) =>
                             item.backdrop_path && (
-                                <div className="p-2">
+                                <div
+                                    key={item.id}
+                                    className="p-2"
+                                    ref={lastResultElementRef}
+                                >
                                     <SearchBanner
                                         image={`https://image.tmdb.org/t/p/w500/${
                                             item.poster_path ||
@@ -156,16 +183,6 @@ export const SearchPage = () => {
                 <p className="mt-4 text-semanticError absolute top-20">
                     {error}
                 </p>
-            )}
-
-            {/* Botão para carregar mais */}
-            {results.length > 0 && !isLoading && searchTerm && (
-                <button
-                    onClick={loadMore}
-                    className="mt-8 px-8 py-3 bg-gradient-to-r from-primary40 to-primary60 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 font-poppins relative left-12"
-                >
-                    Carregar mais
-                </button>
             )}
 
             {/* Caso não haja nenhum resultado */}

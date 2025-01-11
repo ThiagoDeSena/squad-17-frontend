@@ -7,7 +7,7 @@ export const SearchScreen = () => {
     return (
         <>
             <SideBar/>
-            <SearchPage/>
+            <div className="overflow-hidden"><SearchPage/></div>
         </>
     );
 };

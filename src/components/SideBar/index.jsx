@@ -48,7 +48,7 @@ export const SideBar = () => {
             icon: <FiStar size={28} color="#FFD700" />,
         },
     ];
-
+    const userImg = localStorage.getItem("profilePath") || "/images/profile.png";
     const toggleMenu = () => setIsOpen(!isOpen);
 
     useEffect(() => {
@@ -144,7 +144,7 @@ export const SideBar = () => {
                             onClick={() => setShowProfileMenu(!showProfileMenu)}
                         >
                             <img
-                                src="/images/user-img.jpeg"
+                                src={userImg}
                                 alt="User Avatar"
                                 className="w-12 h-12 rounded-full"
                             />
@@ -316,7 +316,7 @@ export const SideBar = () => {
                                 }
                             >
                                 <img
-                                    src="/images/user-img.jpeg"
+                                    src={userImg}
                                     alt="User Avatar"
                                     className="w-12 h-12 rounded-full"
                                 />

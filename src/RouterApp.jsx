@@ -10,6 +10,7 @@ import { SearchScreen } from "./Screens/SearchScreen";
 import { useContext } from "react";
 import { UserContext } from "./Contexts/UserContext";
 import { Loading } from "./components/Utils/Loading";
+import { WatchlistScreen } from "./Screens/WatchListScreen";
 
 export const RouterApp = () => {
     const { user, loading } = useContext(UserContext);
@@ -46,6 +47,11 @@ export const RouterApp = () => {
                     path="/search"
                     element={user ? <SearchScreen /> : <Navigate to="/" />}
                 />
+                <Route
+                    path="/watchlist"
+                    element={user ? <WatchlistScreen /> : <Navigate to="/" />}
+                />
+
                 <Route path="*" element={<NotFoundScreen />} />
             </Routes>
         </BrowserRouter>

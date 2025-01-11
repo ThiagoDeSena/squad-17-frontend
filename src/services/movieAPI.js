@@ -121,10 +121,17 @@ export const getMediaMoreDetails = async (mediaType, mediaId) => {
 };
 
 export const getSimilarMedia = async (mediaType, mediaId) => {
+    const defaultMedia = { type: 'tv', id: 63174 };
+
     try {
         const response = await api.get(
             `/${mediaType}/${mediaId}/recommendations?language=pt-BR`
         );
+
+        if (!response.data.results || response.data.results.length === 0) {
+            return await getSimilarMedia(defaultMedia.type, defaultMedia.id);
+        }
+
         return response.data.results;
     } catch (error) {
         console.error(
@@ -132,7 +139,8 @@ export const getSimilarMedia = async (mediaType, mediaId) => {
         );
         return [];
     }
-}
+};
+
 
 export const searchResults = async (query, options = {}) => {
     if (!query || query.trim().length < 2) {

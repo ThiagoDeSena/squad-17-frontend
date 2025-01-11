@@ -21,7 +21,7 @@ export const Login = () => {
     const [password, setPassword] = useState("");
     const [alert, setAlert] = useState({ show: false, type: "", message: "" });
     const [isLoading, setIsLoading] = useState(false);
-    const { login } = useContext(UserContext); 
+    const { login } = useContext(UserContext);
 
     const navigate = useNavigate();
 
@@ -70,7 +70,7 @@ export const Login = () => {
                         type: "error",
                     });
                 } else {
-                    const { token } = response
+                    const { token } = response;
                     setAlert({
                         show: true,
                         message:
@@ -113,17 +113,17 @@ export const Login = () => {
             </div>
 
             <div
-                className="absolute right-0 top-0 w-full h-screen xl:w-2/4 flex flex-col items-center justify-center overflow-hidden p-2"
+                className="fixed right-0  top-10 md:top-0 w-full max-h-[100vh] xl:w-2/4 flex flex-col items-center justify-center p-2"
                 data-aos="zoom-in"
             >
-                <div className="w-full md:w-2/4 xl:w-3/4 flex justify-center gap-5 items-center border border-neutral60 rounded-xl shadow-lg">
-                    <div className="w-full flex flex-col gap-4 p-4 xl:px-12 rounded-lg text-white">
+                <div className="w-full md:w-2/4 xl:w-3/4 flex justify-center gap-6 items-center border border-neutral60 rounded-xl shadow-lg overflow-auto">
+                    <div className="w-full flex flex-col gap-4 p-4 xl:px-12 rounded-lg text-white  max-h-full">
                         {/* Logo em Destaque */}
-                        <div className="flex flex-col items-center mb-4">
+                        <div className="flex flex-col items-center mb-4 md:mt-4">
                             <img
                                 src="/images/logo.svg"
                                 alt="Logo da Aplicação"
-                                className="w-32 h-32 xl:w-24 xl:h-24"
+                                className="w-32 h-32 xl:w-36 xl:h-36"
                             />
                             <p className="text-[1em] xl:text-[1.2em] font-semibold text-primary30 text-center">
                                 Descubra, avalie e compartilhe filmes e séries
@@ -143,17 +143,21 @@ export const Login = () => {
                                     <input
                                         type="email"
                                         placeholder="m@exemple.com"
-                                        className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm  text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                                        className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                         value={email}
                                         required
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
                                     />
                                     <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
                                 </div>
                                 {/* Senha */}
                                 <div className="relative">
                                     <input
-                                        type={showPassword ? "text" : "password"}
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
                                         placeholder="********"
                                         className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                         required
@@ -178,7 +182,7 @@ export const Login = () => {
                                 <div className="mt-2 flex flex-row justify-between text-sm xl:text-lg">
                                     <label
                                         htmlFor="remember-me"
-                                        className="flex items-center gap-2"
+                                        className="flex items-center gap-2 mb-2"
                                     >
                                         <input
                                             type="checkbox"
@@ -190,7 +194,9 @@ export const Login = () => {
                                     <a
                                         href="#"
                                         className="text-primary40 hover:underline"
-                                        onClick={() => navigate("/forgot-password")}
+                                        onClick={() =>
+                                            navigate("/forgot-password")
+                                        }
                                     >
                                         Esqueceu a senha?
                                     </a>

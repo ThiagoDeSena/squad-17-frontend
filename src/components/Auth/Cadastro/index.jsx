@@ -161,15 +161,15 @@ export const Cadastro = () => {
 
             {/* Formulário */}
             <div
-                className="absolute right-0 top-0 w-full h-screen xl:w-2/4 flex flex-col items-center justify-center overflow-hidden p-5"
+                className="fixed right-0 top-10 md:top-0 w-full max-h-[100vh] xl:w-2/4 flex flex-col items-center justify-center overflow-hidden p-4"
                 data-aos="zoom-in"
             >
                 <form
-                    className="w-full md:w-3/4 xl:w-2/3 flex justify-center gap-5 items-center border border-neutral60 rounded-xl shadow-lg"
+                    className="w-full md:w-3/4 xl:w-2/3 flex justify-center gap-5 items-center border border-neutral60 rounded-xl shadow-lg overflow-auto"
                     onSubmit={handleSubmit}
                 >
                     <div className="w-full flex flex-col gap-6 p-4 xl:px-12 rounded-lg text-white">
-                        <h1 className="text-5xl xl:text-6xl font-bold font-moonjelly text-center mb-6 text-white">
+                        <h1 className="text-5xl xl:text-6xl font-bold font-moonjelly text-center mb-2 mt-0 md:mt-6 text-white">
                             Cadastro
                         </h1>
 
@@ -220,7 +220,11 @@ export const Cadastro = () => {
                                     value={formData.password}
                                     onChange={handleInputChange}
                                     onFocus={() => setsShowCriteries(true)}
-                                    onBlur={() => setsShowCriteries(false)}
+                                    onBlur={() => {
+                                        setTimeout(() => {
+                                            setsShowCriteries(false);
+                                        }, 2000);
+                                    }}
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                 />
                                 <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
@@ -320,7 +324,11 @@ export const Cadastro = () => {
                                     value={formData.confirmPassword}
                                     onChange={handleInputChange}
                                     onFocus={() => setsShowCriteries(true)}
-                                    onBlur={() => setsShowCriteries(false)}
+                                    onBlur={() => {
+                                        setTimeout(() => {
+                                            setsShowCriteries(false);
+                                        }, 2000);
+                                    }}
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                 />
                                 <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
