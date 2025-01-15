@@ -176,7 +176,7 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
                         </button>
                         <button
                             onClick={() => console.log(`${mediaTitle} added to watchlist`)}
-                            className="bg-primary30 text-white px-8 py-4 rounded-full flex items-center justify-center text-sm sm:text-md md:text-lg shadow-lg hover:bg-primary60 hover:scale-110 transition duration-300 transform hover:shadow-xl"
+                            className="bg-primary30 text-white px-4 py-4 rounded-full flex items-center justify-center text-sm sm:text-md md:text-lg shadow-lg hover:bg-primary60 hover:scale-110 transition duration-300 transform hover:shadow-xl"
                         >
                             <FaBookmark size={24} className="mr-3" />
                             Add to Watchlist

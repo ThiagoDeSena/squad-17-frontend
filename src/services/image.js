@@ -7,10 +7,9 @@ const imgAPI = axios.create({
 export const fetchFileImage = async (next_cursor = null, folder = 'critix_profile') => {
     try {
         const endpoint = next_cursor 
-            ? `api/images?folder_name=${folder}&next_cursor=${next_cursor}` 
-            : `api/images?folder_name=${folder}`;
+            ? `api/images?folder_name=${folder}&next_cursor=${next_cursor}&limit=6` 
+            : `api/images?folder_name=${folder}&limit=6`;
         const response = await imgAPI.get(endpoint);
-        console.log(folder)
         return response;
     } catch (error) {
         console.log(error);

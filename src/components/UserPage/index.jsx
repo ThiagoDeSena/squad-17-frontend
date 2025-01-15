@@ -133,7 +133,7 @@ export const UserPage = () => {
     window.addEventListener("resize", () => setWidth(window.innerWidth));
 
     return (
-        <div className="relative w-full lg:w-[90%] mx-auto top-0 flex flex-col overflow-hidden">
+        <div className="relative w-full mx-auto top-0 flex flex-col overflow-hidden">
             {alertWindow.message && (
                 <AlertWindow
                     message={alertWindow.message}
@@ -142,7 +142,7 @@ export const UserPage = () => {
             )}
             {/* Banner Section */}
             <div
-                className="banner bg-cover bg-center h-[344px] w-full rounded-lg absolute object-cover"
+                className="banner bg-cover bg-center h-[465px] w-full rounded-lg absolute object-cover"
                 style={{ backgroundImage: `url(${userInfo.banner})` }}
                 onMouseEnter={() => setEditBanner(true)}
                 onMouseLeave={() =>
@@ -161,8 +161,8 @@ export const UserPage = () => {
                 )}
             </div>
 
-            <div className="relative z-10 flex flex-col lg:flex-row mt-[200px] gap-2">
-                <div className="w-full lg:w-[40%] text-center flex flex-col items-center lg:items-start relative left-8 md:left-12">
+            <div className="relative z-10 flex flex-col lg:flex-row mt-[330px] gap-2">
+                <div className="w-full lg:w-[40%] text-center flex flex-col items-center lg:items-start relative left-8 md:left-[10vw]">
                     <div className="relative">
                         <div className="w-[250px] lg:w-[294px] h-[250px] lg:h-[294px] mb-4 rounded-full overflow-hidden p-2">
                             <img
@@ -286,6 +286,7 @@ export const UserPage = () => {
                                     <img
                                         key={index}
                                         src={img.url}
+                                        loading="lazy"
                                         className={`w-20 h-20 rounded-full cursor-pointer border-2 transition duration-300 ${
                                             selectedProfileImage === img.url
                                                 ? "border-primary40 border-4 scale-105"
@@ -342,16 +343,16 @@ export const UserPage = () => {
                 <Modal
                     isOpen={isSelectBannerOpen}
                     onRequestClose={() => setIsSelectBannerOpen(false)}
-                    className="bg-neutral80 p-8 rounded-xl h-auto w-[90%] max-w-lg shadow-lg"
+                    className="bg-neutral80 p-8 rounded-xl h-auto w-[100%] max-w-2xl shadow-lg"
                     overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                     contentLabel="Select Banner"
                     style={{ overlay: { zIndex: 9999 } }}
                 >
-                    <div className="flex flex-col items-center max-h-[80vh] overflow-y-auto font-poppins">
+                    <div className="flex flex-col items-center max-h-[80vh] w-[100%] overflow-y-auto font-poppins">
                         <h2 className="text-3xl font-bold text-neutral10 font-moonjelly mb-6">
                             Select Banner
                         </h2>
-                        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-3 h-full overflow-auto max-w-full p-2">
+                        <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3 h-full overflow-auto max-w-full p-2">
                             {loading ? (
                                 <div className="flex items-center justify-center">
                                     <Loading />
@@ -363,7 +364,7 @@ export const UserPage = () => {
                                         src={img.url}
                                         className={`w-full h-28 rounded-xl cursor-pointer border-2 transition duration-300 transform hover:scale-105 ${
                                             selectedBanner === img.url
-                                                ? "border-primary40 border-4 scale-110"
+                                                ? "border-primary40 border-4 scale-105"
                                                 : "border-neutral30 hover:border-primary20"
                                         } shadow-lg hover:shadow-xl`}
                                         onClick={() => {
@@ -386,7 +387,7 @@ export const UserPage = () => {
                             )}
                             {profileImage.profileImages.length > 0 &&
                                 !loading && (
-                                    <div className="flex items-center justify-center">
+                                    <div className="flex items-center justify-left">
                                         <button
                                             className="mt-6 px-6 py-2 bg-primary30 text-white rounded-lg hover:bg-primary20 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                             onClick={() =>

@@ -5,7 +5,11 @@ import Modal from "react-modal";
 import { Loading } from "../../Utils/Loading";
 import { SphereSpinner } from "react-spinners-kit";
 
-export const ReviewPost = () => {
+export const ReviewPost = ({
+    unique = false,
+    uniqueTitle = null,
+    uniqueMedia = [],
+}) => {
     const [containsSpoilers, setContainsSpoilers] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [selectedRating, setSelectedRating] = useState(0);
@@ -94,6 +98,12 @@ export const ReviewPost = () => {
         setIsModalOpen(false);
     };
 
+    useEffect(() => {
+        if (unique && uniqueMedia) {
+            handleMediaSelect(uniqueMedia);
+        }
+    }, [unique, uniqueMedia]);
+
     const handleSubmit = async () => {
         if (!reviewText || !selectedMediaId) {
             alert("Preencha todos os campos antes de publicar.");
@@ -107,7 +117,7 @@ export const ReviewPost = () => {
             mediaId: selectedMediaId,
         };
         alert("Resenha publicada com sucesso!");
-
+        console.log(payload);
         setReviewText("");
         setContainsSpoilers(false);
         setSelectedRating(0);
@@ -120,7 +130,9 @@ export const ReviewPost = () => {
             {/* Cabeçalho */}
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
                 <h2 className="text-lg md:text-xl font-semibold">
-                    Poste uma Nova Resenha sobre um filme ou série
+                    {unique
+                        ? <p>Poste uma Nova Resenha sobre <span className="text-primary50">{uniqueTitle}</span></p>
+                        : <p>Poste uma Nova Resenha sobre um filme ou série</p>}
                 </h2>
                 <div className="flex items-center gap-2">
                     <label className="text-sm">* Contém Spoilers</label>
@@ -179,12 +191,14 @@ export const ReviewPost = () => {
                 </div>
                 {/* Botão de Seleção de Mídia */}
                 <div className="mt-4 w-full lg:w-72">
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="w-full bg-primary30 hover:bg-primary40 text-white py-2 px-4 rounded-lg"
-                    >
-                        * Escolher Filme/Série
-                    </button>
+                    {!unique && (
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="w-full bg-primary30 hover:bg-primary40 text-white py-2 px-4 rounded-lg"
+                        >
+                            * Escolher Filme/Série
+                        </button>
+                    )}
                     {selectedMediaBanner ? (
                         <div
                             className="w-full h-52 md:h-48 bg-cover bg-center rounded-xl border border-dotted border-neutral80 mt-4"
@@ -283,11 +297,14 @@ export const ReviewPost = () => {
                             </div>
                         )}
                         {/* Caso não haja nenhum resultado */}
-                        {searchQuery.length > 0 && !loading && searchResultsList.length === 0 && (
-                            <p className="mt-6 text-white absolute flex justify-center items-center font-semibold">
-                                Nenhum resultado encontrado para {searchQuery}
-                            </p>
-                        )}
+                        {searchQuery.length > 0 &&
+                            !loading &&
+                            searchResultsList.length === 0 && (
+                                <p className="mt-6 text-white absolute flex justify-center items-center font-semibold">
+                                    Nenhum resultado encontrado para{" "}
+                                    {searchQuery}
+                                </p>
+                            )}
                     </div>
                 </div>
             </Modal>

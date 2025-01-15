@@ -7,12 +7,11 @@ import {
     AiOutlinePoweroff,
     AiOutlineUser,
 } from "react-icons/ai";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { FaAngleLeft, FaAngleRight, FaStar } from "react-icons/fa";
 import {
     FiGrid,
     FiBookmark,
     FiBookOpen,
-    FiStar,
     FiSearch,
 } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
@@ -36,7 +35,6 @@ export const SideBar = () => {
             path: "/watchlist",
             icon: <FiBookmark size={28} />,
         },
-        { name: "Blog", path: "/blog", icon: <FiBookOpen size={28} /> },
         {
             name: "Search",
             path: "/search",
@@ -45,7 +43,7 @@ export const SideBar = () => {
         {
             name: "Tier Rank",
             path: "/tier-rank",
-            icon: <FiStar size={28} color="#FFD700" />,
+            icon: <FaStar size={28} color="#FFD700" />,
         },
     ];
     const userImg = localStorage.getItem("profilePath") || "/images/profile.png";

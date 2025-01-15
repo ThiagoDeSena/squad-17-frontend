@@ -10,6 +10,7 @@ import { MdEmergency } from "react-icons/md";
 import { MdEmojiFlags } from "react-icons/md";
 import { RiMovie2Fill } from "react-icons/ri";
 import { Recomended } from "../../FeedPage/Recomended";
+import { ReviewPost } from "../../FeedPage/ReviewPost";
 const ficticieUser = {
     id: 1,
     name: "Ava Andersson",
@@ -40,6 +41,7 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
                 if (data) {
                     setMediaData(data);
                 }
+          
             } catch (error) {
                 console.error(error.message);
             }
@@ -424,42 +426,19 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
                             </span>
                         }
                         viewMore={false}
-                        
                     />
                 </div>
             )}
 
             {activeTab === "reviews" && (
-                <div className="mt-4">
-                    <h2 className="text-base text-center sm:text-lg md:text-left font-semibold mb-2 text-neutral10">
+                <div className="mt-1">
+                    <h2 className="text-base text-center sm:text-lg md:text-left font-semibold text-neutral10">
                         Avaliações
                     </h2>
-                    {reviews && reviews.length > 0 ? (
-                        reviews.map((review, index) => (
-                            <div key={index} className="w-full">
-                                {review}
-                            </div>
-                        ))
-                    ) : (
-                        <div className="w-full flex flex-col justify-center items-center">
-                            <img
-                                src="/images/no-content.svg"
-                                alt="No Content"
-                                width={400}
-                            />
-                            <p className="text-neutral40">
-                                Nenhuma avaliação encontrada
-                            </p>
-                        </div>
-                    )}
-                </div>
-            )}
+                    <div className="mb-8 relative right-[20vw] md:left-0">
+                        <ReviewPost unique={true} uniqueTitle={details.original_title || details.name} uniqueMedia={details}/>
+                    </div>
 
-            {activeTab === "reviews" && (
-                <div className="mt-4">
-                    <h2 className="text-base text-center sm:text-lg md:text-left font-semibold mb-2 text-neutral10">
-                        Avaliações
-                    </h2>
                     {reviews && reviews.length > 0 ? (
                         reviews.map((review, index) => (
                             <div key={index} className="w-full">
