@@ -129,7 +129,7 @@ export const SearchPage = () => {
                 {searchTerm &&
                     results.map(
                         (item) =>
-                            item.backdrop_path && (
+                            item.backdrop_path && item.adult === false && (
                                 <div
                                     key={item.id}
                                     className="p-2"

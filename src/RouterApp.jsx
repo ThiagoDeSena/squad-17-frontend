@@ -12,6 +12,7 @@ import { UserContext } from "./Contexts/UserContext";
 import { Loading } from "./components/Utils/Loading";
 import { WatchlistScreen } from "./Screens/WatchListScreen";
 import { WatchlistCategoryScreen } from "./Screens/WatchListCategoryScreen";
+import { CommentPostScreen } from "./Screens/CommentPostScreen";
 
 export const RouterApp = () => {
     const { user, loading } = useContext(UserContext);
@@ -44,6 +45,12 @@ export const RouterApp = () => {
                     path="/feed"
                     element={user ? <FeedScreen /> : <Navigate to="/" />}
                 />
+
+                <Route
+                    path="/review/:id"
+                    element={user ? <CommentPostScreen/> : <Navigate to="/" />}
+                />
+
                 <Route
                     path="/search"
                     element={user ? <SearchScreen /> : <Navigate to="/" />}

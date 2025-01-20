@@ -219,7 +219,9 @@ export const ReviewPost = ({
 
             <button
                 onClick={handleSubmit}
-                className="bg-primary50 hover:bg-primary40 text-white py-2 px-4 md:px-6 rounded-lg flex items-center lg:absolute lg:bottom-4 gap-2 self-center lg:self-start"
+                className={`bg-primary50 hover:bg-primary40 text-white py-2 px-4 md:px-6 rounded-lg flex items-center lg:absolute lg:bottom-4 gap-2 self-center lg:self-start
+                ${reviewText.length === 0 || selectedMediaId === "" ? "pointer-events-none opacity-50 cursor-not-allowed" : " cursor-pointer"}`}
+                disabled={reviewText.length === 0 || selectedMediaId === "" || loading}
             >
                 Publicar Resenha
                 <BiMessageRoundedDetail size={28} />

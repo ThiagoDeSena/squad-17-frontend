@@ -281,7 +281,7 @@ export const UserPage = () => {
                                 <div className="flex items-center justify-center">
                                     <Loading />
                                 </div>
-                            ) : profileImage.profileImages.length > 0 ? (
+                            ) : profileImage.profileImages && profileImage.profileImages.length > 0 ? (
                                 profileImage.profileImages.map((img, index) => (
                                     <img
                                         key={index}
@@ -310,7 +310,7 @@ export const UserPage = () => {
                                     No images available
                                 </p>
                             )}
-                            {profileImage.profileImages.length > 0 &&
+                            {  profileImage.profileImages && profileImage.profileImages.length > 0 &&
                                 !loading && (
                                     <div className="flex items-center justify-center">
                                         <button
@@ -357,7 +357,7 @@ export const UserPage = () => {
                                 <div className="flex items-center justify-center">
                                     <Loading />
                                 </div>
-                            ) : profileImage.profileImages.length > 0 ? (
+                            ) :  profileImage.profileImages && profileImage.profileImages.length > 0 ? (
                                 profileImage.profileImages.map((img, index) => (
                                     <img
                                         key={index}
@@ -385,7 +385,7 @@ export const UserPage = () => {
                                     No images available
                                 </p>
                             )}
-                            {profileImage.profileImages.length > 0 &&
+                            { profileImage.profileImages && profileImage.profileImages.length > 0 &&
                                 !loading && (
                                     <div className="flex items-center justify-left">
                                         <button
