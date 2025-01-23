@@ -92,7 +92,7 @@ export const SearchPage = () => {
             {/* Formulário de Busca */}
             <form
                 onSubmit={handleSearch}
-                className="flex items-center gap-4 bg-gray-900 p-4 rounded-lg shadow-lg mx-auto w-[80%] md:w-full md:max-w-2xl absolute top-4 left-[15%] md:left-0 right-0 z-10"
+                className="flex items-center gap-4 bg-gray-800 p-4 rounded-lg shadow-lg mx-auto w-[80%] md:w-full md:max-w-2xl absolute top-4 left-[15%] md:left-0 right-0 z-10"
             >
                 <input
                     type="text"
@@ -100,7 +100,7 @@ export const SearchPage = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     enterKeyHint="search"
                     placeholder="Busque por filmes, séries..."
-                    className="flex-grow border border-gray-600 rounded-full py-3 px-5 focus:outline-none focus:ring-2 focus:ring-primary60 bg-gray-700 text-white placeholder-gray-400 sm:w-full"
+                    className="flex-grow border border-gray-600 rounded-full py-3 px-5 focus:outline-none focus:ring-2 focus:ring-primary60 bg-neutral10 text-neutral90 font-bold placeholder-neutral90 sm:w-full"
                 />
 
                 {searchTerm && (

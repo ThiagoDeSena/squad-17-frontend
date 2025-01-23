@@ -35,7 +35,7 @@ export const loginUser = async (email, senha) => {
             return { error: true, message: "Email ou senha incorretos." };
         }
         console.error("Erro fazer Login:", error);
-        return { error: true, message: "Ocorreu um erro inesperado. Tente novamente mais tarde." };
+        return { error: true, message: error.response.data.message };
     }
 }
 

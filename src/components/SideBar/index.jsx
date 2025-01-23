@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
 import { ScrollToTop } from "../Utils/ScrollToTop";
 import { UserContext } from "../../Contexts/UserContext";
+import { getUser } from "../../services/userApi";
+import { Loading } from "../Utils/Loading";
 
 export const SideBar = () => {
     const location = useLocation();
@@ -46,8 +48,29 @@ export const SideBar = () => {
             icon: <FaStar size={28} color="#FFD700" />,
         },
     ];
-    const userImg = localStorage.getItem("profilePath") || "/images/profile.png";
     const toggleMenu = () => setIsOpen(!isOpen);
+    const [userInfo, setUserInfo] = useState({
+        name: "",
+        imagePath: localStorage.getItem("profilePath") || "/images/profile.png",
+        bannerPath: localStorage.getItem("bannerPath") || "/images/user-banner.png",
+    })
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await getUser();
+                setUserInfo({
+                    name: response.name,
+                    imagePath: response.imagePath,
+                    bannerPath: response.bannerPath
+                });
+                localStorage.setItem("profilePath", response.imagePath);
+                localStorage.setItem("bannerPath", response.bannePath);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchUserInfo();
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -136,13 +159,13 @@ export const SideBar = () => {
                         <div
                             className={` group cursor-pointer border border-primary60 p-1 rounded-full absolute bottom-2 ${
                                 location.pathname === "/profile"
-                                    ? "bg-primary60"
+                                    ? "bg-primary90"
                                     : ""
                             }`}
                             onClick={() => setShowProfileMenu(!showProfileMenu)}
                         >
                             <img
-                                src={userImg}
+                                src={userInfo.imagePath}
                                 alt="User Avatar"
                                 className="w-12 h-12 rounded-full"
                             />
@@ -314,7 +337,7 @@ export const SideBar = () => {
                                 }
                             >
                                 <img
-                                    src={userImg}
+                                    src={userInfo.imagePath}
                                     alt="User Avatar"
                                     className="w-12 h-12 rounded-full"
                                 />
@@ -325,7 +348,7 @@ export const SideBar = () => {
                                     setShowProfileMenu(!showProfileMenu)
                                 }
                             >
-                                Klark Crente
+                                {userInfo.name}
                             </span>
                             <Link to="/notifications">
                                 <AiOutlineBell size={28} color="#FFD700" />

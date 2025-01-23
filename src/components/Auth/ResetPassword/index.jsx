@@ -220,6 +220,7 @@ export const ResetPassword = () => {
                             className="flex flex-col gap-4 p-6 bg-black rounded-xl shadow-lg text-white"
                             data-aos="fade-left"
                           >
+                            <p className="text-center">Digite o código enviado para <span className="text-primary60 underline">{formData.email}</span></p>
                             <div className="flex justify-center gap-2">
                               {code.map((digit, index) => (
                                 <input

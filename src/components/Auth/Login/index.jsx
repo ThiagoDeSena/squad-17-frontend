@@ -62,7 +62,7 @@ export const Login = () => {
             setIsLoading(true);
             try {
                 const response = await loginUser(email, password);
-
+                console.log(response)
                 if (response.error) {
                     setAlert({
                         show: true,
@@ -77,7 +77,7 @@ export const Login = () => {
                             "Login realizado com sucesso! Redirecionando...",
                         type: "success",
                     });
-                    setTimeout(() => login(token), 4000);
+                    setTimeout(() => login(token), 2500);
                 }
             } catch (error) {
                 setAlert({

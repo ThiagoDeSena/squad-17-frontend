@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import Modal from "react-modal";
 import { ReviewPost } from "../FeedPage/ReviewPost";
@@ -8,37 +8,59 @@ import { fetchFileImage } from "../../services/image";
 import { Loading } from "../Utils/Loading";
 import { FaPlus } from "react-icons/fa";
 import { AlertWindow } from "../Utils/AlertWindow";
+import {getUser, putBannerProfile, putImageProfile} from "../../services/userApi"
 
-const userInfo = {
-    name: "Clack Crente",
-    email: "bB2qH@example.com",
-    image: localStorage.getItem("profilePath") || "/images/profile.png",
-    banner: localStorage.getItem("bannerPath") || "/images/user-banner.png",
-    reviewsCount: 10,
-    followersCount: 5,
-    followingCount: 3,
-    followers: ["2", "3"],
-};
 Modal.setAppElement("#root");
 
 export const UserPage = () => {
+    const [userInfo, setUserInfo] = useState({
+        id: 0,
+        name: "",
+        email: "",
+        imagePath: localStorage.getItem("profilePath") || "/images/profile.png",
+        bannerPath: localStorage.getItem("bannerPath") || "/images/user-banner.png",
+        reviews: 0,
+        followers: 0,
+        followings: 0,
+    });
     const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
     const [editImage, setEditImage] = useState(false);
     const [editBanner, setEditBanner] = useState(false);
     const [isSelectImageOpen, setIsSelectImageOpen] = useState(false);
     const [isSelectBannerOpen, setIsSelectBannerOpen] = useState(false);
     const [selectedProfileImage, setSelectedProfileImage] = useState(
-        userInfo.image
+        userInfo.imagePath
     );
-    const [selectedBanner, setSelectedBanner] = useState(userInfo.banner);
+    const [selectedBanner, setSelectedBanner] = useState(userInfo.bannerPath);
     const [clickMore, setClickMore] = useState(false);
     const [loading, setLoading] = useState(false);
     const [profileImage, setProfileImage] = useState({
         profileImages: [],
         next_cursor: null,
     });
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await getUser();
+                setUserInfo({
+                    id: response.id,
+                    name: response.name,
+                    email: response.email,
+                    imagePath: response.imagePath,
+                    bannerPath: response.bannePath,
+                    reviews: response.reviews,
+                    followers: response.followers,
+                    followings: response.followings,
+                });
+            }catch(error){
+                console.log(error);
+            }
+        };
+        fetchUserInfo();
+    }, []);
 
     const [alertWindow, setAlertWindow] = useState({});
+
     useEffect(() => {
         const fetchImages = async () => {
             let folder;
@@ -63,6 +85,7 @@ export const UserPage = () => {
 
         fetchImages();
     }, [isSelectImageOpen, isSelectBannerOpen]);
+
 
     const handleMore = async () => {
         try {
@@ -96,42 +119,54 @@ export const UserPage = () => {
         }
     };
 
-    const handleProfileImage = (selected) => {
-        if (selected !== localStorage.getItem("profilePath")) {
+    
+
+    const handleProfileImage = async (selected) => {
+        const currentProfilePath = localStorage.getItem("profilePath");
+        if (selected === currentProfilePath) {
+            return setAlertWindow({
+                message: "Select our profile Image!",
+                type: "error",
+            });
+        }
+        try {
+            await putImageProfile(selected);
             localStorage.setItem("profilePath", selected);
             setAlertWindow({
                 message: "Profile image updated successfully!",
                 type: "success",
             });
             setTimeout(() => window.location.reload(), 2000);
-        } else {
-            setAlertWindow({
-                message: "Select profile Image!",
-                type: "error",
-            });
+        } catch (error) {
+            console.log(error);
         }
     };
 
-    const handleProfileBanner = (selected) => {
-        if (selected !== localStorage.getItem("bannerPath")) {
+    const handleProfileBanner = async (selected) => {
+        const currentBannerPath = localStorage.getItem("bannerPath");
+        if (selected === currentBannerPath) {
+            return setAlertWindow({
+                message: "Select our banner Image!",
+                type: "error",
+            });
+        } 
+        try{
+            await putBannerProfile(selected);
             localStorage.setItem("bannerPath", selected);
             setAlertWindow({
                 message: "Banner image updated successfully!",
                 type: "success",
             });
             setTimeout(() => window.location.reload(), 2000);
-        } else {
-            setAlertWindow({
-                message: "Select Banner Image!",
-                type: "error",
-            });
+        }catch(error){
+            console.log(error);
         }
     }
 
     const [width, setWidth] = useState(window.innerWidth);
 
     window.addEventListener("resize", () => setWidth(window.innerWidth));
-
+    console.log(selectedBanner)
     return (
         <div className="relative w-full mx-auto top-0 flex flex-col overflow-hidden">
             {alertWindow.message && (
@@ -142,8 +177,8 @@ export const UserPage = () => {
             )}
             {/* Banner Section */}
             <div
-                className="banner bg-cover bg-center h-[465px] w-full rounded-lg absolute object-cover"
-                style={{ backgroundImage: `url(${userInfo.banner})` }}
+                className="banner bg-cover bg-center h-[465px] w-full rounded-lg absolute object-cover border-b-2 border-neutral60"
+                style={{ backgroundImage: `url(${userInfo.bannerPath})` }}
                 onMouseEnter={() => setEditBanner(true)}
                 onMouseLeave={() =>
                     setTimeout(() => setEditBanner(false), 2000)
@@ -166,8 +201,8 @@ export const UserPage = () => {
                     <div className="relative">
                         <div className="w-[250px] lg:w-[294px] h-[250px] lg:h-[294px] mb-4 rounded-full overflow-hidden p-2">
                             <img
-                                className="w-full h-full rounded-full object-cover border-2 border-primary30"
-                                src={userInfo.image}
+                                className="w-full h-full rounded-full object-cover border-2 border-neutral60"
+                                src={userInfo.imagePath}
                                 alt="User"
                                 style={{ objectFit: "cover" }}
                                 onMouseEnter={() => setEditImage(true)}
@@ -194,19 +229,19 @@ export const UserPage = () => {
                     <div className="flex justify-center lg:justify-start gap-8 mt-4 text-neutral10 font-poppins">
                         <div>
                             <p className="text-sm font-bold text-center">
-                                {userInfo.reviewsCount}
+                                {userInfo.reviews}
                             </p>
                             <p className="text-sm">Reviews</p>
                         </div>
                         <div>
                             <p className="text-sm font-bold text-center">
-                                {userInfo.followersCount}
+                                {userInfo.followers}
                             </p>
                             <p className="text-sm">Followers</p>
                         </div>
                         <div>
                             <p className="text-sm font-bold text-center">
-                                {userInfo.followingCount}
+                                {userInfo.followings}
                             </p>
                             <p className="text-sm">Following</p>
                         </div>
@@ -237,25 +272,25 @@ export const UserPage = () => {
                         <ReviewContainer
                             movieId={239770}
                             plataform="tv"
-                            profileImage={userInfo.image}
+                            profileImage={userInfo.imagePath}
                             profileName={userInfo.name}
                         />
                         <ReviewContainer
                             movieId={93405}
                             plataform="tv"
-                            profileImage={userInfo.image}
+                            profileImage={userInfo.imagePath}
                             profileName={userInfo.name}
                         />
                         <ReviewContainer
                             movieId={939243}
                             plataform="movie"
-                            profileImage={userInfo.image}
+                            profileImage={userInfo.imagePath}
                             profileName={userInfo.name}
                         />
                         <ReviewContainer
                             movieId={426063}
                             plataform="movie"
-                            profileImage={userInfo.image}
+                            profileImage={userInfo.imagePath}
                             profileName={userInfo.name}
                         />
                     </div>
@@ -415,66 +450,66 @@ export const UserPage = () => {
                 <Modal
                     isOpen={isEditProfileOpen}
                     onRequestClose={() => setIsEditProfileOpen(false)}
-                    className="bg-neutral10 p-8 rounded-xl h-auto  w-[90%] max-w-lg shadow-lg"
+                    className="bg-gradient-to-r from-neutral60 via-neutral70 to-neutral80 p-8 rounded-xl h-auto w-[90%] max-w-lg shadow-xl"
                     overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                     contentLabel="Edit Profile"
                     style={{ overlay: { zIndex: 9999 } }}
                 >
                     <div className="flex flex-col items-center relative">
-                        <h2 className="text-3xl border-b-2 border-primary30 font-bold text-neutral90 mb-6">
+                        <h2 className="text-3xl border-b-2 border-primary30 font-bold text-neutral10 font-moonjelly mb-6">
                             Edit Profile
                         </h2>
                         <form className="w-full space-y-5">
                             {/* Name Field */}
                             <div>
-                                <label className="block text-sm font-semibold text-neutral70 mb-1">
+                                <label className="block text-sm font-semibold text-neutral10 mb-1">
                                     Name
                                 </label>
                                 <input
                                     type="text"
                                     value={userInfo.name}
                                     placeholder="Enter your name"
-                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
                                 />
                             </div>
 
                             {/* Email Field */}
                             <div>
-                                <label className="block text-sm font-semibold text-neutral70 mb-1">
+                                <label className="block text-sm font-semibold text-neutral10 mb-1">
                                     Email
                                 </label>
                                 <input
                                     type="email"
                                     value={userInfo.email}
                                     placeholder="Enter your email"
-                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
                                 />
                             </div>
 
                             {/* Password Field */}
                             <div>
-                                <label className="block text-sm font-semibold text-neutral70 mb-1">
+                                <label className="block text-sm font-semibold text-neutral10 mb-1">
                                     Password
                                 </label>
                                 <input
                                     type="password"
                                     placeholder="Enter a new password"
-                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
                                 />
-                                <p className="text-xs text-neutral50 mt-1">
+                                <p className="text-xs text-neutral10 font-bold mt-1">
                                     Password must be at least 8 characters long.
                                 </p>
                             </div>
 
                             {/* Confirm Password Field */}
                             <div>
-                                <label className="block text-sm font-semibold text-neutral70 mb-1">
+                                <label className="block text-sm font-semibold text-neutral10 mb-1">
                                     Confirm Password
                                 </label>
                                 <input
                                     type="password"
                                     placeholder="Confirm your new password"
-                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
                                 />
                             </div>
 
@@ -491,7 +526,7 @@ export const UserPage = () => {
 
                         {/* Close Button */}
                         <button
-                            className="absolute top-0 right-4 text-semanticError hover:text-neutral70 transition duration-300"
+                            className="absolute top-0 right-4 text-red-300 hover:text-semanticError transition duration-300"
                             onClick={() => setIsEditProfileOpen(false)}
                         >
                             <IoCloseSharp size={34} />
