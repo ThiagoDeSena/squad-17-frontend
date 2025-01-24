@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 
+
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -21,6 +22,8 @@ export const UserProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem("jwtToken");
+        localStorage.removeItem("profilePath");
+        localStorage.removeItem("bannerPath");
         setUser(null);
     };
 

@@ -11,7 +11,6 @@ export const CommentPostScreen = () => {
 
     return (
         <>
-            <SideBar />
             <div className="overflow-hidden">
                 <CommentPostPage postId={postId} />
             </div>

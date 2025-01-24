@@ -6,8 +6,7 @@ export const NotFoundScreen = () => {
     document.body.style.backgroundColor = '#191919'
     const navigate = useNavigate();
     return (
-        <div className="flex">
-            <SideBar />
+        <div className="flex overflow-hidden">
             <div className="flex-1 flex items-center justify-center p-6 min-h-screen font-poppins">
                 <div className="text-center relative left-8 md:left-0">
                     <h1 className="text-primary50 md:text-2xl font-bold mb-12 w-[70%] md:w-[100%] mx-auto">

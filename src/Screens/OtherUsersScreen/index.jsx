@@ -14,7 +14,6 @@ export const OutherUserScreen = () => {
     }, [userId]);
     return (
         <>
-            <SideBar />
             <OutherUserPage id={userId} />
         </>
     );

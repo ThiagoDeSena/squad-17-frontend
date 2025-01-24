@@ -51,9 +51,10 @@ export const SideBar = () => {
     const toggleMenu = () => setIsOpen(!isOpen);
     const [userInfo, setUserInfo] = useState({
         name: "",
-        imagePath: localStorage.getItem("profilePath") || "/images/profile.png",
-        bannerPath: localStorage.getItem("bannerPath") || "/images/user-banner.png",
-    })
+        imagePath: null,
+        bannerPath: null,
+    });
+
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
@@ -61,10 +62,10 @@ export const SideBar = () => {
                 setUserInfo({
                     name: response.name,
                     imagePath: response.imagePath,
-                    bannerPath: response.bannerPath
+                    bannerPath: response.bannePath,
                 });
-                localStorage.setItem("profilePath", response.imagePath);
-                localStorage.setItem("bannerPath", response.bannePath);
+                localStorage.setItem("profilePath", response.imagePath || "/images/profile.png");
+                localStorage.setItem("bannerPath", response.bannePath || "/images/user-banner.png");
             } catch (error) {
                 console.log(error);
             }
@@ -84,9 +85,9 @@ export const SideBar = () => {
             {isOpen ? (
                 ""
             ) : (
-                <div className="bg-[#191919] border-r border-neutral60 p-4 w-[70px] h-screen fixed top-0 left-0 z-50 flex flex-col items-center justify-center space-y-4 text-white">
+                <div className="bg-[#191919] border-r border-neutral60 p-4 w-[75px] h-screen fixed top-0 left-0 z-50 flex flex-col items-center justify-center space-y-4 text-white">
                     <div className=" absolute top-0 flex items-center justify-center py-4 mb-10">
-                        <a href="/">
+                        <a onClick={() => navigate("/feed")}>
                             <img
                                 src="/images/logo.svg"
                                 alt="Critix Logo"
@@ -193,6 +194,7 @@ export const SideBar = () => {
                                         setLoading(true);
                                         setTimeout(async () => {
                                             logout()
+                                            navigate("/");
                                         }, 2000);
                                     }}
                                 >
@@ -270,7 +272,7 @@ export const SideBar = () => {
                 >
                     <div className="h-full flex flex-col justify-between">
                         <div className="flex items-center justify-center py-4 mb-10">
-                            <a href="/">
+                            <a onClick={() => navigate("/feed")}>
                                 <img
                                     src="/images/logo.svg"
                                     alt="Critix Logo"
@@ -368,6 +370,7 @@ export const SideBar = () => {
                                         setLoading(true);
                                         setTimeout(async () => {
                                             logout();
+                                            navigate("/");
                                         }, 2000);
                                     }}
                                 >

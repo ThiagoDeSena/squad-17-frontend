@@ -13,7 +13,6 @@ export const UserScreen = () => {
     }, []);
     return (
         <>
-            <SideBar />
             <UserPage />
         </>
     );

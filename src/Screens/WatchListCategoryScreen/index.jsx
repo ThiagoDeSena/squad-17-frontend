@@ -8,7 +8,6 @@ export const WatchlistCategoryScreen = () => {
     const category = params.category
     return (
         <>
-        <SideBar/>
         <WatchlistCategoryPage category={category} />
         </>
     )   

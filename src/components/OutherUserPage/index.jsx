@@ -22,7 +22,7 @@ export const OutherUserPage = ({ id }) => {
     };
 
     return (
-        <div className="relative w-full lg:w-[90%] mx-auto top-0 flex flex-col">
+        <div className="relative w-full lg:w-[90%] mx-auto top-0 flex flex-col overflow-x-hidden">
             {/* Banner Section */}
             <div
                 className="banner bg-cover bg-center h-[344px] w-full rounded-lg absolute"
@@ -104,7 +104,7 @@ export const OutherUserPage = ({ id }) => {
                     </div>
 
                     {/* Review Container */}
-                    <div className="relative left-8 md:left-0 w-full lg:w-[90%] space-y-6">
+                    <div className="relative left-10 md:left-0 w-full lg:w-[90%] space-y-6">
                         {currentTab === "recent" && (
                             <>
                                 <ReviewContainer

@@ -13,6 +13,10 @@ import { Loading } from "./components/Utils/Loading";
 import { WatchlistScreen } from "./Screens/WatchListScreen";
 import { WatchlistCategoryScreen } from "./Screens/WatchListCategoryScreen";
 import { CommentPostScreen } from "./Screens/CommentPostScreen";
+import { TierRankScreen } from "./Screens/TierRankScreen";
+
+import { Layout } from "./layout";
+import { PrivateRoutes } from "./PrivateRoutes";
 
 export const RouterApp = () => {
     const { user, loading } = useContext(UserContext);
@@ -20,50 +24,65 @@ export const RouterApp = () => {
     if (loading) {
         return <Loading />;
     }
+
+    const publicRoutes = [
+        { path: "/register", element: <AuthScreen c={2} /> },
+        { path: "/forgot-password", element: <AuthScreen c={3} /> },
+    ];
+
+    const privateRoutes = [
+        { path: "/profile", element: <UserScreen /> },
+        { path: "/user/:id", element: <OutherUserScreen /> },
+        { path: "/media/:type/:id", element: <MediaScreen /> },
+        { path: "/feed", element: <FeedScreen /> },
+        { path: "/review/:id", element: <CommentPostScreen /> },
+        { path: "/search", element: <SearchScreen /> },
+        { path: "/watchlist", element: <WatchlistScreen /> },
+        { path: "/watchlist/:category", element: <WatchlistCategoryScreen /> },
+        { path: "/tier-rank", element: <TierRankScreen /> },
+    ];
+
     return (
         <BrowserRouter basename="/">
             <Routes>
                 <Route
                     path="/"
-                    element={user ? <FeedScreen /> : <AuthScreen c={1} />}
+                    element={
+                        user ? (
+                            <Layout>
+                                <FeedScreen />
+                            </Layout>
+                        ) : (
+                            <AuthScreen c={1} />
+                        )
+                    }
                 />
-                <Route path="/register" element={<AuthScreen c={2} />} />
-                <Route path="/forgot-password" element={<AuthScreen c={3} />} />
+                {publicRoutes.map((route) => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={route.element}
+                    />
+                ))}
+                {privateRoutes.map((route) => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={
+                            <PrivateRoutes>
+                                <Layout>{route.element}</Layout>
+                            </PrivateRoutes>
+                        }
+                    />
+                ))}
                 <Route
-                    path="/profile"
-                    element={user ? <UserScreen /> : <Navigate to="/" />}
+                    path="*"
+                    element={
+                        <Layout>
+                            <NotFoundScreen />
+                        </Layout>
+                    }
                 />
-                <Route
-                    path="/user/:id"
-                    element={user ? <OutherUserScreen /> : <Navigate to="/" />}
-                />
-                <Route
-                    path="/media/:type/:id"
-                    element={user ? <MediaScreen /> : <Navigate to="/" />}
-                />
-                <Route
-                    path="/feed"
-                    element={user ? <FeedScreen /> : <Navigate to="/" />}
-                />
-
-                <Route
-                    path="/review/:id"
-                    element={user ? <CommentPostScreen/> : <Navigate to="/" />}
-                />
-
-                <Route
-                    path="/search"
-                    element={user ? <SearchScreen /> : <Navigate to="/" />}
-                />
-                <Route
-                    path="/watchlist"
-                    element={user ? <WatchlistScreen /> : <Navigate to="/" />}
-                />
-                <Route
-                    path="/watchlist/:category"
-                    element={user ? <WatchlistCategoryScreen /> : <Navigate to="/" />}
-                />
-                <Route path="*" element={<NotFoundScreen />} />
             </Routes>
         </BrowserRouter>
     );

@@ -15,7 +15,6 @@ export const MediaScreen = () => {
     }, [mediaId, mediaType]); 
     return (
         <>  
-            <SideBar/>
             <MediaPage type={mediaType} id={mediaId}/>
         </>
     )

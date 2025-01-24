@@ -9,7 +9,6 @@ export const FeedScreen = () => {
     document.body.style.backgroundColor = '#191919'
     return (
         <>  
-            <SideBar/>
             <div className="overflow-hidden">
                 <TrendingBanner/>
                 <Recomended mt={'mt-20'} title={"Recomendado para você"} viewMore={true}/>

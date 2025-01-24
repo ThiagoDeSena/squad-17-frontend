@@ -5,7 +5,6 @@ import { WatchList } from "../../components/Watchlist";
 export const WatchlistScreen = () => {
     return(
         <>
-            <SideBar/>
             <WatchList/>
         </>
     )
