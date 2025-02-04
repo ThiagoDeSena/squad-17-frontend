@@ -1,6 +1,12 @@
 {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/" }
-    ]
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "builds": [
+    {
+      "src": "src/**/*",
+      "use": "@vercel/node"
+    }
+  ],
+  "cleanUrls": true
 }
-  
