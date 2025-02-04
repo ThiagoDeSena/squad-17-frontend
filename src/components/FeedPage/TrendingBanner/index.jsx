@@ -51,6 +51,8 @@ export const TrendingBanner = () => {
     const [imageLoaded, setImageLoaded] = useState(true);
     const navigate = useNavigate();
 
+
+
     useEffect(() => {
         const fetchTrendingMovies = async () => {
             try {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const TOKEN = localStorage.getItem("jwtToken");
+let token = localStorage.getItem("jwtToken");
 const isTokenExpired = (token) => {
     if (!token) return true;
 
@@ -23,13 +23,14 @@ const userApi = axios.create({
 
 userApi.interceptors.request.use(
     async (config) => {
-        if (TOKEN) {
-            if (isTokenExpired(TOKEN)) {
+        token = localStorage.getItem("jwtToken"); 
+        if (token) {
+            if (isTokenExpired(token)) {
                 localStorage.removeItem("jwtToken");
-                window.location.href = "/"; 
+                window.location.href = "/";
                 throw new Error("Token expirado. Faça login novamente.");
             }
-            config.headers.Authorization = `Bearer ${TOKEN}`;
+            config.headers.Authorization = `Bearer ${token}`; 
         }
         return config;
     },
@@ -37,6 +38,7 @@ userApi.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
 
 userApi.interceptors.response.use(
     (response) => response,

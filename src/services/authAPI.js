@@ -39,6 +39,17 @@ export const loginUser = async (email, senha) => {
     }
 }
 
+export const loginWithGoogle = async (token) =>{
+    try {
+        const response = await authAPI.post('/google', {
+            idToken: token
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao logar com o Google:", error);
+        return { error: true, message: error.response.data.message };
+    }
+}
 export const sendEmailRecoverPassword = async (email) => {
     try {
         const response = await authAPI.post(`/recover?login=${email}`);

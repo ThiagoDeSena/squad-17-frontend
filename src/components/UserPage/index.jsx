@@ -8,7 +8,7 @@ import { fetchFileImage } from "../../services/image";
 import { Loading } from "../Utils/Loading";
 import { FaPlus } from "react-icons/fa";
 import { AlertWindow } from "../Utils/AlertWindow";
-import {getUser, putBannerProfile, putImageProfile} from "../../services/userApi"
+import { getUser, putBannerProfile, putImageProfile } from "../../services/userApi";
 
 Modal.setAppElement("#root");
 
@@ -40,8 +40,10 @@ export const UserPage = () => {
     });
     useEffect(() => {
         const fetchUserInfo = async () => {
+            setLoading(true)
             try {
                 const response = await getUser();
+
                 setUserInfo({
                     id: response.id,
                     name: response.name,
@@ -54,6 +56,8 @@ export const UserPage = () => {
                 });
             }catch(error){
                 console.log(error);
+            }finally{
+                setLoading(false)
             }
         };
         fetchUserInfo();
@@ -166,7 +170,6 @@ export const UserPage = () => {
     const [width, setWidth] = useState(window.innerWidth);
 
     window.addEventListener("resize", () => setWidth(window.innerWidth));
-    console.log(selectedBanner)
     return (
         <div className="relative w-full mx-auto top-0 flex flex-col overflow-hidden">
             {alertWindow.message && (

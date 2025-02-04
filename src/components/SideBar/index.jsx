@@ -8,19 +8,14 @@ import {
     AiOutlineUser,
 } from "react-icons/ai";
 import { FaAngleLeft, FaAngleRight, FaStar } from "react-icons/fa";
-import {
-    FiGrid,
-    FiBookmark,
-    FiBookOpen,
-    FiSearch,
-} from "react-icons/fi";
+import { FiGrid, FiBookmark, FiBookOpen, FiSearch } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
 import { ScrollToTop } from "../Utils/ScrollToTop";
 import { UserContext } from "../../Contexts/UserContext";
 import { getUser } from "../../services/userApi";
-import { Loading } from "../Utils/Loading";
+
 
 export const SideBar = () => {
     const location = useLocation();
@@ -49,27 +44,33 @@ export const SideBar = () => {
         },
     ];
     const toggleMenu = () => setIsOpen(!isOpen);
+
     const [userInfo, setUserInfo] = useState({
         name: "",
         imagePath: null,
         bannerPath: null,
     });
+    const fetchUserInfo = async () => {
+        setLoading(true);
+        try {
+            const response = await getUser();
+            const profileImage = response.imagePath || "/images/profile.png";
+            const bannerImage = response.bannePath || "/images/user-banner.png";
+            setUserInfo({
+                name: response.name,
+                imagePath: profileImage,
+                bannerPath: bannerImage,
+            });
+            localStorage.setItem("profilePath", profileImage);
+            localStorage.setItem("bannerPath", bannerImage);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                const response = await getUser();
-                setUserInfo({
-                    name: response.name,
-                    imagePath: response.imagePath,
-                    bannerPath: response.bannePath,
-                });
-                localStorage.setItem("profilePath", response.imagePath || "/images/profile.png");
-                localStorage.setItem("bannerPath", response.bannePath || "/images/user-banner.png");
-            } catch (error) {
-                console.log(error);
-            }
-        };
         fetchUserInfo();
     }, []);
 
@@ -101,11 +102,10 @@ export const SideBar = () => {
                                 <Link
                                     key={item.name}
                                     to={item.path}
-                                    className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl transition-colors hover:bg-gray-700 hover:scale-105 ${
-                                        location.pathname === item.path
-                                            ? "border-l-8 border-primary60 text-primary60 font-bold"
-                                            : ""
-                                    }`}
+                                    className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl transition-colors hover:bg-gray-700 hover:scale-105 ${location.pathname === item.path
+                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                        : ""
+                                        }`}
                                 >
                                     <span className="text-xl">{item.icon}</span>
                                 </Link>
@@ -120,11 +120,10 @@ export const SideBar = () => {
                         <div className="relative flex items-center group">
                             <Link
                                 to="/help"
-                                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${
-                                    location.pathname === "/help"
-                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
-                                        : ""
-                                }`}
+                                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${location.pathname === "/help"
+                                    ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                    : ""
+                                    }`}
                             >
                                 <AiOutlineQuestionCircle
                                     size={28}
@@ -140,11 +139,10 @@ export const SideBar = () => {
                         <div className="relative flex items-center group">
                             <Link
                                 to="/settings"
-                                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${
-                                    location.pathname === "/settings"
-                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
-                                        : ""
-                                }`}
+                                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${location.pathname === "/settings"
+                                    ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                    : ""
+                                    }`}
                             >
                                 <AiOutlineSetting
                                     size={28}
@@ -158,11 +156,10 @@ export const SideBar = () => {
                         </div>
 
                         <div
-                            className={` group cursor-pointer border border-primary60 p-1 rounded-full absolute bottom-2 ${
-                                location.pathname === "/profile"
-                                    ? "bg-primary90"
-                                    : ""
-                            }`}
+                            className={` group cursor-pointer border border-primary60 p-1 rounded-full absolute bottom-2 ${location.pathname === "/profile"
+                                ? "bg-primary90"
+                                : ""
+                                }`}
                             onClick={() => setShowProfileMenu(!showProfileMenu)}
                         >
                             <img
@@ -170,6 +167,7 @@ export const SideBar = () => {
                                 alt="User Avatar"
                                 className="w-12 h-12 rounded-full"
                             />
+
                             <span className="absolute left-full ml-2 hidden text-sm text-white bg-primary30 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out w-20 bottom-4">
                                 User
                                 <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary30"></span>
@@ -193,7 +191,7 @@ export const SideBar = () => {
                                     onClick={async () => {
                                         setLoading(true);
                                         setTimeout(async () => {
-                                            logout()
+                                            logout();
                                             navigate("/");
                                         }, 2000);
                                     }}
@@ -225,9 +223,8 @@ export const SideBar = () => {
                 {showToggle && (
                     <div
                         onClick={toggleMenu}
-                        className={`fixed top-32 ${
-                            isOpen ? "left-72" : "left-12"
-                        } p-2 border-l-2 border-neutral60 rounded-xl cursor-pointer bg-black`}
+                        className={`fixed top-32 ${isOpen ? "left-72" : "left-12"
+                            } p-2 border-l-2 border-neutral60 rounded-xl cursor-pointer bg-black`}
                         style={{
                             zIndex: 2000,
                             transition: "left 0.4s ease-in-out",
@@ -285,11 +282,10 @@ export const SideBar = () => {
                                 <Link
                                     key={item.name}
                                     to={item.path}
-                                    className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${
-                                        location.pathname === item.path
-                                            ? "border-l-8 border-primary60 text-primary60 text-bold"
-                                            : ""
-                                    }`}
+                                    className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${location.pathname === item.path
+                                        ? "border-l-8 border-primary60 text-primary60 text-bold"
+                                        : ""
+                                        }`}
                                 >
                                     <span className="text-xl">{item.icon}</span>
                                     {item.name}
@@ -299,11 +295,10 @@ export const SideBar = () => {
                             <hr className="border-gray-700 my-4" />
                             <Link
                                 to="/help"
-                                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${
-                                    location.pathname === "/help"
-                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
-                                        : ""
-                                }`}
+                                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${location.pathname === "/help"
+                                    ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                    : ""
+                                    }`}
                             >
                                 <AiOutlineQuestionCircle
                                     size={28}
@@ -313,11 +308,10 @@ export const SideBar = () => {
                             </Link>
                             <Link
                                 to="/settings"
-                                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${
-                                    location.pathname === "/settings"
-                                        ? "border-l-8 border-primary60 text-primary60 font-bold"
-                                        : ""
-                                }`}
+                                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${location.pathname === "/settings"
+                                    ? "border-l-8 border-primary60 text-primary60 font-bold"
+                                    : ""
+                                    }`}
                             >
                                 <AiOutlineSetting
                                     size={28}
@@ -327,31 +321,34 @@ export const SideBar = () => {
                             </Link>
                         </nav>
 
-                        <div className="flex items-center gap-4 p-2 rounded-full border border-gray-500 hover:border-primary90 cursor-pointer absolute bottom-2">
-                            <div
-                                className={`border border-primary60 p-1 rounded-full ${
-                                    location.pathname === "/profile"
-                                        ? "border-2 border-primary60"
-                                        : ""
-                                }`}
-                                onClick={() =>
-                                    setShowProfileMenu(!showProfileMenu)
-                                }
-                            >
-                                <img
-                                    src={userInfo.imagePath}
-                                    alt="User Avatar"
-                                    className="w-12 h-12 rounded-full"
-                                />
-                            </div>
-                            <span
-                                className="flex-1"
-                                onClick={() =>
-                                    setShowProfileMenu(!showProfileMenu)
-                                }
-                            >
-                                {userInfo.name}
-                            </span>
+                        <div className="flex items-center gap-4 p-2 rounded-full border border-gray-500 hover:border-primary90 cursor-pointer absolute bottom-2 ">
+                            {!loading && (
+                                <>
+                                    <div
+                                        className={`border border-primary60 p-1 rounded-full ${location.pathname === "/profile"
+                                            ? "border-2 border-primary60"
+                                            : ""
+                                            }`}
+                                        onClick={() =>
+                                            setShowProfileMenu(!showProfileMenu)
+                                        }
+                                    >
+                                        <img
+                                            src={userInfo.imagePath}
+                                            alt="User Avatar"
+                                            className="w-12 h-12 rounded-full"
+                                        />
+                                    </div>
+                                    <span
+                                        className="flex-1 font-poppins text-neutral20 text-ellipsis text-xl overflow-hidden whitespace-nowrap"
+                                        onClick={() =>
+                                            setShowProfileMenu(!showProfileMenu)
+                                        }
+                                    >
+                                        {userInfo.name}
+                                    </span>
+                                </>
+                            )}
                             <Link to="/notifications">
                                 <AiOutlineBell size={28} color="#FFD700" />
                             </Link>
@@ -396,7 +393,7 @@ export const SideBar = () => {
                     </div>
                 </Menu>
             </div>
-            <ScrollToTop/>
+            <ScrollToTop />
         </>
     );
 };

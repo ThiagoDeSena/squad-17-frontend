@@ -10,148 +10,35 @@ import { MdDriveFileRenameOutline } from "react-icons/md";
 import { AlertWindow } from "../../Utils/AlertWindow";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../../../services/authAPI";
 import { SphereSpinner } from "react-spinners-kit";
+import { useCadastro } from "../../../hooks/useCadastro";
+import { GoogleLoginButton } from "../../Utils/GoogleLoginButton";
 
 export const Cadastro = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
-    const [errors, setErrors] = useState({});
-    const [alert, setAlert] = useState({
-        visible: false,
-        message: "",
-        type: "",
-    });
-    const [showCriteries, setsShowCriteries] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        Aos.init({
-            duration: 2000,
-            easing: "ease-in-out",
-        });
-    }, []);
-
-    const togglePasswordVisibility = () => setShowPassword(!showPassword);
-    const toggleConfirmPasswordVisibility = () =>
-        setShowConfirmPassword(!showConfirmPassword);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const validateForm = () => {
-        const newErrors = {};
-
-        // Name validation
-        if (!formData.name.trim()) {
-            newErrors.name = "Nome é obrigatório.";
-        }
-
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!formData.email.trim()) {
-            newErrors.email = "Email é obrigatório.";
-        } else if (!emailRegex.test(formData.email)) {
-            newErrors.email = "Email inválido.";
-        }
-
-        // Password validation
-        if (!formData.password) {
-            newErrors.password = "Senha é obrigatória.";
-        } else {
-            const passwordCriteria = [
-                { regex: /.{8,}/, message: "Pelo menos 8 caracteres." },
-                { regex: /[A-Z]/, message: "Pelo menos uma letra maiúscula." },
-                { regex: /[a-z]/, message: "Pelo menos uma letra minúscula." },
-                { regex: /\d/, message: "Pelo menos um número." },
-                {
-                    regex: /[!@#$%^&*]/,
-                    message: "Pelo menos um caractere especial.",
-                },
-            ];
-
-            const failedCriteria = passwordCriteria.filter(
-                (criterion) => !criterion.regex.test(formData.password)
-            );
-            if (failedCriteria.length > 0) {
-                newErrors.password = `Senha não atende aos critérios: ${failedCriteria
-                    .map((c) => c.message)
-                    .join(", ")}`;
-            }
-        }
-
-        // Confirm Password validation
-        if (!formData.confirmPassword) {
-            newErrors.confirmPassword = "Confirmação de senha é obrigatória.";
-        } else if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = "As senhas não correspondem.";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (validateForm()) {
-            setLoading(true);
-            try {
-                const response = await registerUser(formData);
-                if (response.message && !response.error) {
-                    formData.name = "";
-                    formData.email = "";
-                    formData.password = "";
-                    formData.confirmPassword = "";
-                    setAlert({
-                        visible: true,
-                        message: "Cadastro realizado com sucesso!",
-                        type: "success",
-                    });
-                    setTimeout(() => navigate("/"), 4000);
-                } else if (response.error) {
-                    setAlert({
-                        visible: true,
-                        message: response.error,
-                        type: "error",
-                    });
-                }
-            } catch (error) {
-                setAlert({
-                    visible: true,
-                    message: error || "Ocorreu um erro inesperado.",
-                    type: "error",
-                });
-            } finally {
-                setLoading(false);
-            }
-        } else {
-            setAlert({
-                visible: true,
-                message: "Por favor, corrija os erros no formulário.",
-                type: "error",
-            });
-        }
-    };
+    const {
+        formData,
+        errors,
+        alert,
+        showPassword,
+        showConfirmPassword,
+        showCriteries,
+        loading,
+        setLoading,
+        handleInputChange,
+        handleSubmit,
+        togglePasswordVisibility,
+        toggleConfirmPasswordVisibility,
+        setsShowCriteries,
+        setAlert,
+    } = useCadastro();
 
     return (
         <>
-            {alert.visible && (
+            {alert.show && (
                 <AlertWindow
                     message={alert.message}
                     type={alert.type}
-                    onClose={() => setAlert({ visible: false })}
+                    onClose={() => setAlert({ show: false })}
                 />
             )}
 
@@ -247,7 +134,7 @@ export const Cadastro = () => {
 
                                 {/* Critérios de Senha */}
                                 {showCriteries && (
-                                    <ul className="mt-2 text-sm text-gray-400">
+                                    <ul className="mt-2 text-sm text-neutral10">
                                         <li
                                             className={
                                                 /.{8,}/.test(formData.password)
@@ -299,8 +186,8 @@ export const Cadastro = () => {
                                             className={
                                                 formData.password ===
                                                     formData.confirmPassword &&
-                                                formData.confirmPassword
-                                                    .length > 0
+                                                    formData.confirmPassword
+                                                        .length > 0
                                                     ? "text-green-500 line-through"
                                                     : ""
                                             }
@@ -354,9 +241,8 @@ export const Cadastro = () => {
                         {/* Botão de Registrar */}
                         <div className="flex items-center justify-center w-full">
                             <button
-                                className={`${
-                                    loading ? "opacity-50" : "w-full"
-                                } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110`}
+                                className={`${loading ? "opacity-50" : "w-full"
+                                    } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110`}
                                 disabled={loading}
                                 type="submit"
                             >
@@ -375,17 +261,17 @@ export const Cadastro = () => {
                             <span className="flex-grow border-t border-gray-400"></span>
                         </div>
 
-                        <button className="w-[6em] flex justify-center m-auto items-center gap-3 bg-zinc-800 p-3 xl:p-4 text-base xl:text-2xl rounded-xl hover:bg-zinc-700 transition">
-                            <FcGoogle size={44} />
-                        </button>
+                        {/* Continue com Google */}
+                        <div>
+                            <GoogleLoginButton isLoading={loading} setIsLoading={setLoading} alert={alert} setAlert={setAlert} />
+                        </div>
 
                         {/* Criar conta */}
                         <p className="text-center text-sm xl:text-lg text-gray-400">
                             Já Possui uma Conta?{" "}
                             <a
-                                href="#"
-                                className="text-primary70 hover:underline"
-                                onClick={() => navigate("/")}
+                                href="/"
+                                className="pointer text-primary70 hover:underline"
                             >
                                 Login!
                             </a>

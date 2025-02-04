@@ -4,11 +4,14 @@ import "./index.css";
 import { RouterApp } from "./RouterApp";
 import { Analytics } from "@vercel/analytics/react";
 import { UserProvider } from "./Contexts/UserContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 createRoot(document.getElementById("root")).render(
     <>
-        <UserProvider>
-            <RouterApp />
-        </UserProvider>
+        <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
+            <UserProvider>
+                <RouterApp />
+            </UserProvider>
+        </GoogleOAuthProvider>
         <Analytics />
     </>
 );

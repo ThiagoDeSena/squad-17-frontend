@@ -1,27 +1,33 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useLogin } from "../../../hooks/useLogin";
 import { BannerLateral } from "../../Utils/BannerLateral";
+import { AlertWindow } from "../../Utils/AlertWindow";
+import { MetroSpinner } from "react-spinners-kit";
 import {
     AiOutlineMail,
     AiOutlineLock,
     AiFillEye,
     AiFillEyeInvisible,
 } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
-import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router-dom";
-import { AlertWindow } from "../../Utils/AlertWindow";
-import { MetroSpinner } from "react-spinners-kit";
-import { loginUser } from "../../../services/authAPI";
-import { UserContext } from "../../../Contexts/UserContext";
+import { GoogleLoginButton } from "../../Utils/GoogleLoginButton";
 
 export const Login = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [alert, setAlert] = useState({ show: false, type: "", message: "" });
-    const [isLoading, setIsLoading] = useState(false);
-    const { login } = useContext(UserContext);
+    const {
+        email,
+        setEmail,
+        password,
+        setPassword,
+        showPassword,
+        togglePasswordVisibility,
+        alert,
+        setAlert,
+        isLoading,
+        setIsLoading,
+        handleLogin,
+    } = useLogin();
 
     const navigate = useNavigate();
 
@@ -31,75 +37,8 @@ export const Login = () => {
             easing: "ease-in-out",
         });
     }, []);
-
-    const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
-    const validateFields = () => {
-        if (!email || !password) {
-            setAlert({
-                show: true,
-                type: "error",
-                message: "Por favor, preencha todos os campos!",
-            });
-            return false;
-        }
-
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setAlert({
-                show: true,
-                type: "error",
-                message: "Por favor, insira um e-mail válido!",
-            });
-            return false;
-        }
-
-        return true;
-    };
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        if (validateFields()) {
-            setIsLoading(true);
-            try {
-                const response = await loginUser(email, password);
-                console.log(response)
-                if (response.error) {
-                    setAlert({
-                        show: true,
-                        message: response.message,
-                        type: "error",
-                    });
-                } else {
-                    const { token } = response;
-                    setAlert({
-                        show: true,
-                        message:
-                            "Login realizado com sucesso! Redirecionando...",
-                        type: "success",
-                    });
-                    setTimeout(() => login(token), 2500);
-                }
-            } catch (error) {
-                setAlert({
-                    show: true,
-                    message: "Ocorreu um erro inesperado. Tente novamente.",
-                    type: "error",
-                });
-            } finally {
-                setIsLoading(false);
-            }
-        } else {
-            setAlert({
-                visible: true,
-                message: "Por favor, corrija os erros no formulário.",
-                type: "error",
-            });
-        }
-    };
-
     return (
         <>
-            {/* Alert Window */}
             {alert.show && (
                 <AlertWindow
                     type={alert.type}
@@ -113,7 +52,7 @@ export const Login = () => {
             </div>
 
             <div
-                className="fixed right-0  top-10 md:top-0 w-full max-h-[100vh] xl:w-2/4 flex flex-col items-center justify-center p-2"
+                className="fixed right-0 top-4 w-full max-h-[100vh] xl:w-2/4 flex flex-col items-center justify-center p-2"
                 data-aos="zoom-in"
             >
                 <div className="w-full md:w-2/4 xl:w-3/4 flex justify-center gap-6 items-center border border-neutral60 rounded-xl shadow-lg overflow-auto">
@@ -136,7 +75,12 @@ export const Login = () => {
                         </h1>
 
                         {/* Inputs */}
-                        <form onSubmit={handleLogin}>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleLogin();
+                            }}
+                        >
                             <div className="flex flex-col gap-6">
                                 {/* Email */}
                                 <div className="relative">
@@ -205,14 +149,13 @@ export const Login = () => {
                             {/* Botão de Login */}
                             <div className="flex items-center justify-center w-full">
                                 <button
-                                    className={`${
-                                        isLoading ? "opacity-50" : "w-full"
-                                    } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110`}
-                                    disabled={isLoading}
+                                    className={`${isLoading ? "opacity-50" : "w-full"
+                                        } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-105 ease-linear duration-300 cursor-pointer`}
+                                    disabled={isLoading || !email || !password}
                                     type="submit"
                                 >
                                     {isLoading ? (
-                                        <MetroSpinner size={50} color="#fff" />
+                                        <MetroSpinner size={24} color="#fff" />
                                     ) : (
                                         "Login"
                                     )}
@@ -220,16 +163,17 @@ export const Login = () => {
                             </div>
                         </form>
 
-                        {/* Continue com Google */}
+
                         <div className="flex items-center my-2 xl:text-lg text-gray-400">
                             <div className="flex-grow border-t border-gray-400"></div>
                             <span className="mx-2">Continuar Com</span>
                             <div className="flex-grow border-t border-gray-400"></div>
                         </div>
 
-                        <button className="w-[6em] flex justify-center m-auto items-center gap-3 bg-zinc-800 p-3 xl:p-4 text-base xl:text-2xl rounded-xl hover:bg-zinc-700 transition">
-                            <FcGoogle size={44} />
-                        </button>
+                        {/* Continue com Google */}
+                        <div>
+                            <GoogleLoginButton isLoading={isLoading} setIsLoading={setIsLoading} alert={alert} setAlert={setAlert}/>
+                        </div>
 
                         {/* Criar conta */}
                         <p className="text-center text-sm xl:text-lg text-gray-400">
