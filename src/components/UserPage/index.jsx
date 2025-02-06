@@ -8,7 +8,7 @@ import { fetchFileImage } from "../../services/image";
 import { Loading } from "../Utils/Loading";
 import { FaPlus } from "react-icons/fa";
 import { AlertWindow } from "../Utils/AlertWindow";
-import { getUser, putBannerProfile, putImageProfile } from "../../services/userApi";
+import { getUser, putBannerProfile, putImageProfile } from "../../services/userAPI";
 
 Modal.setAppElement("#root");
 
