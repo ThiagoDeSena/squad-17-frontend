@@ -51,6 +51,7 @@ export const UserProvider = ({ children }) => {
         Cookies.remove("refreshToken");
         localStorage.removeItem("profilePath");
         localStorage.removeItem("bannerPath");
+        localStorage.removeItem("hasSeenWelcome");
         setUser(null);
     };
 
