@@ -10,7 +10,6 @@ export const GoogleLoginButton = ({ isLoading, setIsLoading, alert, setAlert }) 
     const { login } = useContext(UserContext);
     const navigate = useNavigate()
     const handleGoogleLogin = async (response) => {
-        console.log(response);
         if (!response || !response.credential) {
             setAlert({
                 show: true,
@@ -28,14 +27,15 @@ export const GoogleLoginButton = ({ isLoading, setIsLoading, alert, setAlert }) 
                     type: "error",
                 });
             } else {
-                const { token } = rest;
+
+                const { token, refreshToken } = rest;
                 setAlert({
                     show: true,
                     message: rest.message,
                     type: "success",
                 });
                 setTimeout(() => {
-                    login(token);
+                    login(token, refreshToken);
                     navigate("/feed");
                 }, 2500);
                 

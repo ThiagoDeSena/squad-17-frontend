@@ -1,30 +1,44 @@
+import { useContext, useEffect, useState } from "react";
+
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { AuthScreen } from "./Screens/AuthScreen";
 import { FeedScreen } from "./Screens/FeedScreen";
-import { Navigate } from "react-router-dom";
 import { NotFoundScreen } from "./Screens/NotFoundScreen";
 import { UserScreen } from "./Screens/UserScreen";
 import { OutherUserScreen } from "./Screens/OtherUsersScreen";
 import { MediaScreen } from "./Screens/MediaScreen";
 import { SearchScreen } from "./Screens/SearchScreen";
-import { useContext } from "react";
 import { UserContext } from "./Contexts/UserContext";
 import { Loading } from "./components/Utils/Loading";
 import { WatchlistScreen } from "./Screens/WatchListScreen";
 import { WatchlistCategoryScreen } from "./Screens/WatchListCategoryScreen";
 import { CommentPostScreen } from "./Screens/CommentPostScreen";
 import { TierRankScreen } from "./Screens/TierRankScreen";
-
 import { Layout } from "./layout";
 import { PrivateRoutes } from "./PrivateRoutes";
+import { WelcomeScreen } from "./Screens/WelcomeScreen";
 
 export const RouterApp = () => {
     const { user, loading } = useContext(UserContext);
+    const [showWelcome, setShowWelcome] = useState(false);
+    
+    useEffect(() => {
+        if (!user) return;
+        const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
+
+        if (!hasSeenWelcome) {
+            setShowWelcome(true);
+            localStorage.setItem("hasSeenWelcome", "true");
+            setTimeout(() => {
+                setShowWelcome(false);
+            }, 3000);
+        }
+    }, [user]);
 
     if (loading) {
         return <Loading />;
     }
-
+    
     const publicRoutes = [
         { path: "/register", element: <AuthScreen c={2} /> },
         { path: "/forgot-password", element: <AuthScreen c={3} /> },
@@ -49,6 +63,22 @@ export const RouterApp = () => {
                     path="/"
                     element={
                         user ? (
+                            showWelcome ? (
+                                <WelcomeScreen userName={user.name} />
+                            ) : (
+                                <Layout>
+                                    <FeedScreen />
+                                </Layout>
+                            )
+                        ) : (
+                            <AuthScreen c={1} />
+                        )
+                    }
+                />
+                {/* <Route
+                    path="/"
+                    element={
+                        user ? (
                             <Layout>
                                 <FeedScreen />
                             </Layout>
@@ -56,7 +86,7 @@ export const RouterApp = () => {
                             <AuthScreen c={1} />
                         )
                     }
-                />
+                /> */}
                 {publicRoutes.map((route) => (
                     <Route
                         key={route.path}

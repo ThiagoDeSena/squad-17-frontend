@@ -27,6 +27,8 @@ export const Login = () => {
         isLoading,
         setIsLoading,
         handleLogin,
+        remeberMe,
+        handleRememberMeChange
     } = useLogin();
 
     const navigate = useNavigate();
@@ -93,6 +95,7 @@ export const Login = () => {
                                         onChange={(e) =>
                                             setEmail(e.target.value)
                                         }
+                                        disabled={isLoading}
                                     />
                                     <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
                                 </div>
@@ -109,6 +112,7 @@ export const Login = () => {
                                         onChange={(e) =>
                                             setPassword(e.target.value)
                                         }
+                                        disabled={isLoading}
                                     />
                                     <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
                                     <button
@@ -132,6 +136,9 @@ export const Login = () => {
                                             type="checkbox"
                                             className="w-4 h-4 border-primary60"
                                             id="remember-me"
+                                            draggable="false"
+                                            checked={remeberMe}
+                                            onChange={handleRememberMeChange}
                                         />
                                         Lembrar-me
                                     </label>

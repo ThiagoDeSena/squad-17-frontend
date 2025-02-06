@@ -47,7 +47,7 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
             </div>
         );
     }
-    console.log(mediaDetails);
+   
     if (!mediaDetails) {
         return (
             <div className="absolute inset-0 flex justify-center items-center bg-neutral90 bg-opacity-50 z-10 text-center">

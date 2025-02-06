@@ -74,10 +74,7 @@ export const SearchPage = () => {
         );
 
         if (lastResultElementRef.current) {
-            console.log("observando o ultimo");
             observer.current.observe(lastResultElementRef.current);
-        } else {
-            console.log("Nada para observar");
         }
     }, [isLoading, hasMore]);
 

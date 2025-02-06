@@ -71,6 +71,7 @@ export const Cadastro = () => {
                                     value={formData.name}
                                     onChange={handleInputChange}
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                                    disabled={loading}
                                 />
                                 <MdDriveFileRenameOutline className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
                                 {errors.name && (
@@ -89,6 +90,7 @@ export const Cadastro = () => {
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                                    disabled={loading}
                                 />
                                 <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
                                 {errors.email && (
@@ -112,6 +114,7 @@ export const Cadastro = () => {
                                             setsShowCriteries(false);
                                         }, 2000);
                                     }}
+                                    disabled={loading}
                                     className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
                                 />
                                 <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
@@ -209,6 +212,7 @@ export const Cadastro = () => {
                                     name="confirmPassword"
                                     placeholder="Confirmar Senha"
                                     value={formData.confirmPassword}
+                                    disabled={loading}
                                     onChange={handleInputChange}
                                     onFocus={() => setsShowCriteries(true)}
                                     onBlur={() => {

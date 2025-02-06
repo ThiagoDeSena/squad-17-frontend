@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
 import { ScrollToTop } from "../Utils/ScrollToTop";
 import { UserContext } from "../../Contexts/UserContext";
-import { getUser } from "../../services/userApi";
+import { getUser } from "../../services/userAPI";
 
 
 export const SideBar = () => {
@@ -136,24 +136,7 @@ export const SideBar = () => {
                             </span>
                         </div>
 
-                        <div className="relative flex items-center group">
-                            <Link
-                                to="/settings"
-                                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${location.pathname === "/settings"
-                                    ? "border-l-8 border-primary60 text-primary60 font-bold"
-                                    : ""
-                                    }`}
-                            >
-                                <AiOutlineSetting
-                                    size={28}
-                                    className="text-xl"
-                                />
-                            </Link>
-                            <span className="absolute left-full ml-2 hidden text-sm text-white bg-neutral50 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
-                                Settings
-                                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-neutral50"></span>
-                            </span>
-                        </div>
+                        
 
                         <div
                             className={` group cursor-pointer border border-primary60 p-1 rounded-full absolute bottom-2 ${location.pathname === "/profile"
@@ -306,19 +289,7 @@ export const SideBar = () => {
                                 />
                                 Help
                             </Link>
-                            <Link
-                                to="/settings"
-                                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${location.pathname === "/settings"
-                                    ? "border-l-8 border-primary60 text-primary60 font-bold"
-                                    : ""
-                                    }`}
-                            >
-                                <AiOutlineSetting
-                                    size={28}
-                                    className="text-xl"
-                                />
-                                Setting
-                            </Link>
+                           
                         </nav>
 
                         <div className="flex items-center gap-4 p-2 rounded-full border border-gray-500 hover:border-primary90 cursor-pointer absolute bottom-2 ">

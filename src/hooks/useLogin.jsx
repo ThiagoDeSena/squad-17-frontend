@@ -1,15 +1,14 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import { loginUser } from "../services/authAPI";
-import { useGoogleLogin } from "@react-oauth/google";
 
 export const useLogin = () => {
+    const { login, setRemeberMe, remeberMe } = useContext(UserContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [alert, setAlert] = useState({ show: false, type: "", message: "" });
     const [isLoading, setIsLoading] = useState(false);
-    const { login } = useContext(UserContext);
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
     const validateFields = () => {
@@ -34,6 +33,10 @@ export const useLogin = () => {
         return true;
     };
 
+    const handleRememberMeChange = (e) => {
+        setRemeberMe(e.target.checked);
+    };
+
     // Lógica de login
     const handleLogin = async () => {
         if (!validateFields()) return;
@@ -49,13 +52,13 @@ export const useLogin = () => {
                     type: "error",
                 });
             } else {
-                const { token } = response;
+                const { token, refreshToken } = response;
                 setAlert({
                     show: true,
                     message: response.message,
                     type: "success",
                 });
-                setTimeout(() => login(token), 2500);
+                setTimeout(() => login(token, refreshToken), 2500);
             }
         } catch (error) {
             setAlert({
@@ -81,6 +84,7 @@ export const useLogin = () => {
         isLoading,
         setIsLoading,
         handleLogin,
-       
+        remeberMe,
+        handleRememberMeChange
     };
 };

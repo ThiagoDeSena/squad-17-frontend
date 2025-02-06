@@ -1,20 +1,31 @@
 import { createContext, useState, useEffect } from "react";
-import { getUser } from "../services/userApi.js"; 
+import { getUser } from "../services/userAPI.js"; 
+import Cookies from "js-cookie";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [remeberMe, setRemeberMe] = useState();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem("jwtToken");
+        const token = Cookies.get("jwtToken");
         if (token) {
             fetchUserData(); 
         } else {
             setLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        const remember = Cookies.get("rememberMe") === "true";
+        setRemeberMe(remember);
+    }, []);
+
+    useEffect(() => {
+        Cookies.set("rememberMe", remeberMe, {expires: 7},);
+    }, [remeberMe])
 
     const fetchUserData = async () => {
         try {
@@ -29,20 +40,23 @@ export const UserProvider = ({ children }) => {
         }
     };
 
-    const login = async (token) => {
-        localStorage.setItem("jwtToken", token);
+    const login = async (token, refreshToken) => {
+        Cookies.set("jwtToken", token, {expires: 1, secure: true, sameSite: "strict"});
+        Cookies.set("refreshToken", refreshToken, { expires: 7, secure: true, sameSite: "strict" });
         await fetchUserData();
     };
 
     const logout = () => {
-        localStorage.removeItem("jwtToken");
+        Cookies.remove("jwtToken");
+        Cookies.remove("refreshToken");
         localStorage.removeItem("profilePath");
         localStorage.removeItem("bannerPath");
         setUser(null);
     };
 
+    
     return (
-        <UserContext.Provider value={{ user, login, logout, loading }}>
+        <UserContext.Provider value={{ user, login, logout, loading, remeberMe, setRemeberMe}}>
             {children}
         </UserContext.Provider>
     );

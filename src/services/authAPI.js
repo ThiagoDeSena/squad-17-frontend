@@ -84,3 +84,15 @@ export const resetPassword = async (code,email, password, confirmPassword) =>{
         return response.data.error;
     }
 }
+
+export const refreshToken = async (refreshToken) => {
+    try{
+        const response = await authAPI.post("/refresh-token", {
+            refreshToken: refreshToken
+        });
+        const { acessToken } = response.data;
+        return acessToken
+    }catch(error){
+        console.error("Falha ao gerar RefreshToken: " + error);
+    }
+}
