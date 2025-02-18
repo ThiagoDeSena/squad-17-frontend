@@ -1,76 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReviewContainer } from "../FeedPage/Feed/ReviewContainer";
+import { getUsersInfo } from "../../services/userAPI";
+import { useNavigate } from "react-router-dom";
 
-const ficticieUser = {
-    id: 1,
-    name: "Ava Andersson",
-    email: "bB2qH@example.com",
-    image: "/images/user-img2.png",
-    banner: "/images/user-banner2.png",
-    reviewsCount: 10,
-    followersCount: "101K",
-    followingCount: "11K",
-    followers: ["2", "3"],
-};
 
 export const OutherUserPage = ({ id }) => {
-    const [currentTab, setCurrentTab] = useState("recent"); // "recent" or "top"
+    const [currentTab, setCurrentTab] = useState("recent");
     const [isFollowing, setIsFollowing] = useState(false);
+    const navigate = useNavigate();
+    const [isUser, setIsUser] = useState({
+        name: "",
+        bannerPath: "",
+        profilePath: "",
+    });
 
     const handleFollowToggle = () => {
         setIsFollowing(!isFollowing);
     };
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await getUsersInfo(id);
+                if (response.user) {
+                    return navigate("/profile")
+                }
+                let isUserDto = {
+                    name: response.name,
+                    followers: response.followers,
+                    followings: response.followings,
+                    imagePath: response.imagePath ? response.imagePath : "/public/images/profile.png",
+                    bannerPath: response.bannerPath ? response.bannerPath : "/public/images/user-banner.png",
+                }
+                setIsUser(isUserDto);
+            } catch (error) {
+                return console.error(error);
+            }
+        }
+        fetchUser();
+    }, [])
+
     return (
-        <div className="relative w-full lg:w-[90%] mx-auto top-0 flex flex-col overflow-x-hidden">
+        <div className="relative w-full mx-auto top-0 flex flex-col overflow-hidden min-h-screen">
             {/* Banner Section */}
             <div
-                className="banner bg-cover bg-center h-[344px] w-full rounded-lg absolute"
-                style={{ backgroundImage: `url(${ficticieUser.banner})` }}
+                className="banner bg-cover bg-center h-[465px] w-full rounded-lg absolute object-cover border-b-2 border-neutral60"
+                style={{ backgroundImage: `url(${isUser.bannerPath})` }}
             ></div>
 
-            <div className="relative z-10 flex flex-col lg:flex-row mt-[200px] gap-2">
-                {/* User Image and Info */}
-                <div className="w-full lg:w-[40%] text-center flex flex-col items-center lg:items-start relative left-8 md:left-12">
-                    <div className="relative">
-                        <div className="w-[250px] lg:w-[294px] h-[250px] lg:h-[294px] mb-4 rounded-full overflow-hidden border-4 border-primary30 hover:scale-105 ease-linear duration-300">
-                            <img
-                                className="w-full h-full object-cover"
-                                src={ficticieUser.image}
-                                alt="User"
-                            />
-                        </div>
+            <div className="relative z-10 flex flex-col lg:flex-row mt-[330px] gap-2">
+                {/* User Info */}
+                <div className="w-full lg:w-[40%] text-center flex flex-col items-center lg:items-start relative left-8 md:left-[10vw]">
+                    <div className="w-[250px] lg:w-[294px] h-[250px] lg:h-[294px] mb-4 rounded-full overflow-hidden p-2">
+                        <img
+                            className="w-full h-full rounded-full object-cover border-2 border-neutral60"
+                            src={isUser.imagePath}
+                            alt="User"
+                        />
                     </div>
-
                     <h1 className="text-4xl md:text-5xl font-bold text-neutral10 mb-4 font-moonjelly">
-                        {ficticieUser.name}
+                        {isUser.name}
                     </h1>
                     <div className="flex justify-center lg:justify-start gap-8 mt-4 text-neutral10 font-poppins">
                         <div>
-                            <p className="text-sm font-bold text-center">
-                                {ficticieUser.reviewsCount}
-                            </p>
+                            <p className="text-sm font-bold text-center">{isUser.reviews}</p>
                             <p className="text-sm">Reviews</p>
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-center">
-                                {ficticieUser.followersCount}
-                            </p>
+                            <p className="text-sm font-bold text-center">{isUser.followers}</p>
                             <p className="text-sm">Followers</p>
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-center">
-                                {ficticieUser.followingCount}
-                            </p>
+                            <p className="text-sm font-bold text-center">{isUser.followings}</p>
                             <p className="text-sm">Following</p>
                         </div>
                     </div>
                     <button
-                        className={`relative md:left-[-12px] w-[290px] mt-6 p-2 rounded transition duration-300 ${
-                            isFollowing
+                        className={`relative md:left-[-12px] w-[290px] mt-6 p-2 rounded transition duration-300 ${isFollowing
                                 ? "bg-neutral10 text-neutral80 hover:bg-neutral20"
                                 : " bg-primary40 text-white hover:bg-primary30"
-                        }`}
+                            }`}
                         onClick={handleFollowToggle}
                     >
                         {isFollowing ? "Unfollow" : "Follow"}
@@ -78,25 +87,23 @@ export const OutherUserPage = ({ id }) => {
                 </div>
 
                 {/* Reviews Section */}
-                <div className="w-full lg:w-[100%] relative left-0 md:left-8 top-0 lg:top-40">
+                <div className="w-full lg:w-[100%] relative left-0 md:left-8 top-0 lg:top-32">
                     {/* Tabs */}
-                    <div className="flex justify-evenly  mt-12 lg:justify-start gap-4 mb-6 text-neutral10 font-poppins">
+                    <div className="flex justify-evenly mt-12 lg:justify-start gap-4 mb-6 text-neutral10 font-poppins">
                         <button
-                            className={`px-4 py-2 rounded-lg ${
-                                currentTab === "recent"
+                            className={`px-4 py-2 rounded-lg ${currentTab === "recent"
                                     ? "bg-primary40 text-white"
                                     : "bg-neutral10 text-neutral80 hover:bg-neutral20"
-                            }`}
+                                }`}
                             onClick={() => setCurrentTab("recent")}
                         >
                             {window.innerWidth > 768 ? "Most Recent" : "Recent"}
                         </button>
                         <button
-                            className={`px-4 py-2 rounded-lg ${
-                                currentTab === "top"
+                            className={`px-4 py-2 rounded-lg ${currentTab === "top"
                                     ? "bg-primary40 text-white"
                                     : "bg-neutral10 text-neutral80 hover:bg-neutral20"
-                            }`}
+                                }`}
                             onClick={() => setCurrentTab("top")}
                         >
                             {window.innerWidth > 768 ? "Top Reviews" : "Top"}
@@ -104,20 +111,32 @@ export const OutherUserPage = ({ id }) => {
                     </div>
 
                     {/* Review Container */}
-                    <div className="relative left-10 md:left-0 w-full lg:w-[90%] space-y-6">
+                    <div className="relative left-8 md:left-0 w-full lg:w-[90%] space-y-12 mb-[16vh]">
                         {currentTab === "recent" && (
                             <>
                                 <ReviewContainer
                                     movieId={239770}
                                     plataform="tv"
-                                    profileImage={ficticieUser.image}
-                                    profileName={ficticieUser.name}
+                                    profileImage={isUser.imagePath}
+                                    profileName={isUser.name}
                                 />
                                 <ReviewContainer
                                     movieId={93405}
                                     plataform="tv"
-                                    profileImage={ficticieUser.image}
-                                    profileName={ficticieUser.name}
+                                    profileImage={isUser.imagePath}
+                                    profileName={isUser.name}
+                                />
+                                <ReviewContainer
+                                    movieId={111803}
+                                    plataform="tv"
+                                    profileImage={isUser.imagePath}
+                                    profileName={isUser.name}
+                                />
+                                 <ReviewContainer
+                                    movieId={762509}
+                                    plataform="movie"
+                                    profileImage={isUser.imagePath}
+                                    profileName={isUser.name}
                                 />
                             </>
                         )}
@@ -126,14 +145,20 @@ export const OutherUserPage = ({ id }) => {
                                 <ReviewContainer
                                     movieId={939243}
                                     plataform="movie"
-                                    profileImage={ficticieUser.image}
-                                    profileName={ficticieUser.name}
+                                    profileImage={isUser.imagePath}
+                                    profileName={isUser.name}
                                 />
                                 <ReviewContainer
                                     movieId={426063}
                                     plataform="movie"
-                                    profileImage={ficticieUser.image}
-                                    profileName={ficticieUser.name}
+                                    profileImage={isUser.imagePath}
+                                    profileName={isUser.name}
+                                />
+                                <ReviewContainer
+                                    movieId={1126166}
+                                    plataform="movie"
+                                    profileImage={isUser.imagePath}
+                                    profileName={isUser.name}
                                 />
                             </>
                         )}
@@ -142,4 +167,6 @@ export const OutherUserPage = ({ id }) => {
             </div>
         </div>
     );
+
+
 };

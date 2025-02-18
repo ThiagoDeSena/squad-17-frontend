@@ -20,28 +20,24 @@ const isTokenExpired = (token) => {
     }
 };
 
-const userApi = axios.create({
-    baseURL: "http://localhost:8081/user",
-    withCredentials: true,
-    headers: {
-        "Content-Type": "application/json;charset=utf-8",
-    },
-});
+    const userApi = axios.create({
+        baseURL: "http://localhost:8081/user",
+        withCredentials: true,
+        headers: {
+            "Content-Type": "application/json;charset=utf-8",
+        },
+    });
 
 userApi.interceptors.request.use(
     async (config) => {
         let token = Cookies.get("jwtToken");
         let refreshTokenValue = Cookies.get("refreshToken");
         let remeberMe = Cookies.get("rememberMe");
-
-        console.log(remeberMe)
-        console.log(refreshTokenValue)
         if (!token || isTokenExpired(token)) {
             if (remeberMe === 'true' && refreshTokenValue && !isTokenExpired(refreshTokenValue)) {
                 try {
                     console.log("🔄 Tentando renovar o token...");
                     const newToken = await refreshToken(refreshTokenValue)
-                    console.log(newToken)
                     if (newToken) {
                         console.log("✅ Token renovado com sucesso!");
                         Cookies.set('jwtToken', newToken);
@@ -73,9 +69,6 @@ userApi.interceptors.response.use(
         if (error.response?.status === 401) {
             let refreshTokenValue = Cookies.get("refreshToken");
             let remeberMe = Cookies.get("rememberMe");
-            
-            console.log(remeberMe)
-            console.log(refreshTokenValue)
             if (remeberMe === "true" && refreshTokenValue && !isTokenExpired(refreshTokenValue)) {
                 try {
                     const newToken = await refreshToken(refreshTokenValue);
@@ -128,5 +121,13 @@ export const putBannerProfile = async (banner) => {
     }
 }
 
+export const getUsersInfo = async (id) => {
+    try {
+        const response = await userApi.get(`/${id}`);
+        return response.data;
+    } catch (error) {
+        return console.error(error);
+    }
+}
 
 

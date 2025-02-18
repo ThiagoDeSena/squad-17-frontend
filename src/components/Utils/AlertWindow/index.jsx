@@ -7,7 +7,7 @@ export const AlertWindow = ({ message, type }) => {
 
     const colorType = {
         error: "bg-red-100 text-semanticError border-red-400",
-        success: "bg-green-100 text-semanticSucess border-green-400",
+        success: "bg-green-100 text-green-600 border-green-400",
         info: "bg-blue-100 text-semanticInfo border-blue-400",
         warning: "bg-yellow-100 text-semanticWarning border-yellow-400",
     };

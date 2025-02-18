@@ -61,7 +61,7 @@ export const WelcomeScreen = ({ userName, onEnd }) => {
                             transition={{ duration: 1, delay: 1 }}
                             className="text-primary80"
                         >
-                            {userName}!
+                            {userName.split(" ")[0]}!
                         </motion.span>
                     </h1>
                     <p className="mt-4 text-lg flex items-center justify-center">

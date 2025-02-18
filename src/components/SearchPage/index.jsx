@@ -3,6 +3,7 @@ import { FiX } from "react-icons/fi";
 import { searchResults } from "../../services/movieAPI";
 import { SearchBanner } from "./SearchBanner";
 import { Loading } from "../Utils/Loading";
+import { useInView } from "react-intersection-observer";
 
 export const SearchPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -11,13 +12,13 @@ export const SearchPage = () => {
     const [error, setError] = useState("");
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const {ref, inView } = useInView({threshold: 1}); 
 
-    const observer = useRef();
-    const lastResultElementRef = useRef(null);
     useEffect(() => {
         if (!searchTerm) return;
         setPage(1);
         searchResults([]);
+        setHasMore(true);
     }, [searchTerm]);
 
     useEffect(() => {
@@ -56,27 +57,14 @@ export const SearchPage = () => {
                 setIsLoading(false);
             }
         };
-
         fetchData();
     }, [searchTerm, page]);
 
     useEffect(() => {
-        if (isLoading || !hasMore) return;
-        if (observer.current) observer.current.disconnect();
-
-        observer.current = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    setPage((prevPage) => prevPage + 1);
-                }
-            },
-            { threshold: 1.0 }
-        );
-
-        if (lastResultElementRef.current) {
-            observer.current.observe(lastResultElementRef.current);
+        if (inView && hasMore && !isLoading) {
+            setPage((prev) => prev + 1);
         }
-    }, [isLoading, hasMore]);
+    }, [inView, hasMore, isLoading]);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -84,6 +72,7 @@ export const SearchPage = () => {
         setResults([]);
     };
 
+    
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#181818]">
             {/* Formulário de Busca */}
@@ -125,12 +114,12 @@ export const SearchPage = () => {
             <div className="w-[80%] md:w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-10 mt-6 p-4 relative left-[8%] md:left-8 sm:mx-auto">
                 {searchTerm &&
                     results.map(
-                        (item) =>
-                            item.backdrop_path && item.adult === false && (
+                        (item, index) =>
+                            item.backdrop_path && !item.adult && (
                                 <div
                                     key={item.id}
                                     className="p-2"
-                                    ref={lastResultElementRef}
+                                    ref={index === results.length - 1 ? ref : null}
                                 >
                                     <SearchBanner
                                         image={`https://image.tmdb.org/t/p/w500/${
@@ -139,11 +128,6 @@ export const SearchPage = () => {
                                         }`}
                                         title={item.title || item.name}
                                         genre={item.genre_ids}
-                                        onAddToWatchlist={() =>
-                                            console.log(
-                                                `${item.title} adicionado à watchlist.`
-                                            )
-                                        }
                                         type={item.media_type}
                                         id={item.id}
                                         year={

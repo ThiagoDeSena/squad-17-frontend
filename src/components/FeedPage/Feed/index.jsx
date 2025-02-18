@@ -41,8 +41,8 @@ export const Feed = () => {
                 {activeTab === "bestReviews" && (
                     <div>
                         {/* Resenhas mais relevantes */}
-                        <ReviewContainer movieId={845781} plataform="movie" profileImage={"/images/user-img2.png"} profileName={"Ava Andersson"} profileId={1}/>
-                        <ReviewContainer movieId={125988} plataform="tv" profileImage={"/images/user-img2.png"} profileName={"Ava Andersson"} profileId={1}/>
+                        <ReviewContainer movieId={845781} plataform="movie" profileImage={"/images/user-img2.png"} profileName={"Ava Andersson"} profileId={8}/>
+                        <ReviewContainer movieId={125988} plataform="tv" profileImage={"/images/user-img2.png"} profileName={"Ava Andersson"} profileId={8}/>
                     </div>
                 )}
                 {activeTab === "followedReviews" && (

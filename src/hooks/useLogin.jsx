@@ -53,6 +53,7 @@ export const useLogin = () => {
                 });
             } else {
                 const { token, refreshToken } = response;
+                console.log(token, refreshToken)
                 setAlert({
                     show: true,
                     message: response.message,
