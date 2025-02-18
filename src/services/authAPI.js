@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const authAPI = axios.create({
-    baseURL: "http://localhost:8081/auth"
+    baseURL: "http://localhost:8081/auth",
+    withCredentials: true,
 });
 
 export const registerUser = async ({ name, email, password, confirmPassword }) => {

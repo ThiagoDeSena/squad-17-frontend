@@ -101,15 +101,10 @@ export const getMediaMoreDetails = async (mediaType, mediaId) => {
     try {
         const detailsEndpoint = `/${mediaType}/${mediaId}?language=pt-BR`;
         const creditsEndpoint = `/${mediaType}/${mediaId}/credits?language=en-US`;
-        
-
-        // Fazer as requisições simultaneamente
         const [details, credits] = await Promise.all([
             api.get(detailsEndpoint) || null,
             api.get(creditsEndpoint) || null,
         ]);
-        
-        // Retornar os dados combinados
         return {
             details: details.data,
             credits: credits.data,
@@ -143,7 +138,7 @@ export const getSimilarMedia = async (mediaType, mediaId) => {
 
 
 export const searchResults = async (query, options = {}) => {
-    if (!query || query.trim().length < 2) {
+    if (!query || typeof query !== 'string' || query.trim().length < 2) {
         return {
             success: false,
             message: "O termo de busca deve ter pelo menos 2 caracteres.",

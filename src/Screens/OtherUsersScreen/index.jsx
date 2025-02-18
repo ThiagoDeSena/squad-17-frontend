@@ -14,7 +14,8 @@ export const OutherUserScreen = () => {
     }, [userId]);
     return (
         <>
-            <OutherUserPage id={userId} />
+                <OutherUserPage id={userId} />
+
         </>
     );
 };

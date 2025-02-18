@@ -22,7 +22,9 @@ export const Recomended = ({mt, title, viewMore}) => {
         };
 
         fetchRecomended();
-    }, []);
+    }, [title]);
+
+
     return (
         <div className={`${mt} px-4 flex items-center justify-center`}>
             <div className="max-w-[1200px] w-full mx-auto">
@@ -57,11 +59,8 @@ export const Recomended = ({mt, title, viewMore}) => {
                                     image={`https://image.tmdb.org/t/p/w1280/${movie.poster_path || movie.backdrop_path}`}
                                     title={movie.title || movie.name || "Título não disponível"}
                                     genre={movie.genre_ids}
-                                    onAddToWatchlist={() =>
-                                        console.log(`Adicionado à Watchlist: ${movie.title || movie.name}`)
-                                    }
                                     className="relative w-48 h-72 rounded-lg overflow-hidden shadow-sm cursor-pointer hover:scale-90 font-poppins"
-                                    id={movie.id}
+                                    id={movie.id} 
                                     type={movie.media_type}
                                 />
                             </SwiperSlide>

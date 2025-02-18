@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import { getMediaDetails, getMovieTrailer } from "../../../services/movieAPI";
+import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../services/watchlistApi"
 import { CircleSpinner, RotateSpinner } from "react-spinners-kit";
-import { FaBookmark, FaStar } from "react-icons/fa";
+import { FaBookmark, FaRegStar, FaStar } from "react-icons/fa";
 import Modal from "react-modal";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+
 
 Modal.setAppElement("#root");
 
@@ -15,7 +17,10 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
     const [isTrailerModalOpen, setTrailerModalOpen] = useState(false);
     const [trailer, setTrailer] = useState(null);
     const [error, setError] = useState(false);
+    const [inWatchlist, setInWatchList] = useState(false);
     const navigate = useNavigate();
+
+
     useEffect(() => {
         setLoading(true);
         const fetchMediaDetails = async () => {
@@ -36,8 +41,34 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
                 setLoading(false);
             }
         };
+
+        const checkWatchlist = async () => {
+            try {
+                const response = await isToTheWatchList(mediaId, mediaType);
+                setInWatchList(!!response);
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        checkWatchlist();
         fetchMediaDetails();
     }, [mediaType, mediaId]);
+
+    const handleWatchlistToggle = async (e) => {
+        e.stopPropagation();
+        try {
+            if (inWatchlist) {
+                const response = await removeToWatchlist(mediaId, mediaType);
+                if (response === 204) setInWatchList(false);
+            } else {
+                const response = await addToWatchList(mediaId, mediaType);
+                if (response) setInWatchList(true);
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar watchlist:", error);
+        }
+    };
 
     if (loading) {
         return (
@@ -47,7 +78,7 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
             </div>
         );
     }
-   
+
     if (!mediaDetails) {
         return (
             <div className="absolute inset-0 flex justify-center items-center bg-neutral90 bg-opacity-50 z-10 text-center">
@@ -93,10 +124,10 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
     const releaseYear = mediaDetails.release_date
         ? mediaDetails.release_date.slice(0, 4)
         : mediaDetails.first_air_date
-        ? mediaDetails.first_air_date.slice(0, 4)
-        : mediaDetails.realesed_date
-        ? mediaDetails.realesed_date.slice(0, 4)
-        : "";
+            ? mediaDetails.first_air_date.slice(0, 4)
+            : mediaDetails.realesed_date
+                ? mediaDetails.realesed_date.slice(0, 4)
+                : "";
     const closeModal = () => {
         setTrailerModalOpen(false);
     };
@@ -174,33 +205,51 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
                             <AiOutlinePlayCircle size={20} className="mr-2" />
                             Watch Trailer
                         </button>
-                        <button
-                            onClick={() => console.log(`${mediaTitle} added to watchlist`)}
-                            className="bg-primary30 text-white px-4 py-4 rounded-full flex items-center justify-center text-sm sm:text-md md:text-lg shadow-lg hover:bg-primary60 hover:scale-110 transition duration-300 transform hover:shadow-xl"
-                        >
-                            <FaBookmark size={24} className="mr-3" />
-                            Add to Watchlist
-                        </button>
+                        {inWatchlist ?
+                            <button
+                                onClick={handleWatchlistToggle}
+                                className="bg-neutral80 text-primary40 px-4 py-4 rounded-full flex items-center justify-center text-sm sm:text-md md:text-lg shadow-md hover:bg-neutral90 hover:scale-110 transition duration-300 transform hover:shadow-lg"
+                            >
+                                <FaBookmark size={24} className="mr-3 text-primary40 opacity-70" />
+                                <span className="text-primary40 font-medium">Remove to Watchlist</span>
+                            </button>
+                            :
+                            <button
+                                onClick={handleWatchlistToggle}
+                                className="bg-primary30 text-white px-4 py-4 rounded-full flex items-center justify-center text-sm sm:text-md md:text-lg shadow-lg hover:bg-primary60 hover:scale-110 transition duration-300 transform hover:shadow-xl"
+                            >
+                                <FaBookmark size={24} className="mr-3" />
+                                Add to Watchlist
+                            </button>
+                        }
                     </div>
                 </div>
 
                 {/* Rating */}
-                <div className="flex flex-col justify-center items-center mt-6">
-                    <div className="flex cursor-pointer">
+                <div className="flex flex-col justify-center items-center mt-6 py-4">
+                    <div className="flex items-center gap-1 cursor-pointer">
                         {Array.from({ length: 5 }).map((_, index) => (
                             <span key={index}>
-                               
                                 {index + 1 <= Math.round(vote_average / 2) ? (
                                     <FaStar size={40} className="text-yellow-500 hover:scale-125" />
                                 ) : (
-                                    <FaStar
-                                        size={35}
+                                    <FaRegStar
+                                        size={40}
                                         className="text-neutral10 opacity-50"
                                     />
                                 )}
                             </span>
                         ))}
                     </div>
+             
+                        <div className="flex flex-col items-center justify-center absolute bottom-0">
+                            <span className="text-sm md:text-md text-neutral10">
+                                {Math.round(vote_average * 10)}%
+                            </span>
+                            <span className="text-white font-poppins">
+                                ({vote_average.toFixed(1)}/10)
+                            </span>
+                        </div>
                 </div>
 
             </div>

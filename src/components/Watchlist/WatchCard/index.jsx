@@ -2,11 +2,13 @@ import { useEffect, useState, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMediaDetails } from "../../../services/movieAPI";
 import { RotateSpinner } from "react-spinners-kit";
+import { FaTrash } from "react-icons/fa"
 
-export const WatchCard = forwardRef(({ id, mediaType, className,  ...props }, ref) => {
+export const WatchCard = forwardRef(({ id, mediaType, className,onRemove, ...props }, ref) => {
     const [mediaData, setMediaData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,10 +35,27 @@ export const WatchCard = forwardRef(({ id, mediaType, className,  ...props }, re
         );
     }
 
+    const removeFromWatchlist = async (e) => {
+        e.stopPropagation();
+        try {
+            if(onRemove){
+                const remove = await onRemove(id, mediaType);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <div
             className={className}
             onClick={() => navigate(`/media/${mediaType}/${id}`)}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseOut={() => {
+                setTimeout(() => {
+                    setIsHovered(false);
+                }, 2500)
+            }}
             ref={ref}
             {...props}
         >
@@ -59,6 +78,14 @@ export const WatchCard = forwardRef(({ id, mediaType, className,  ...props }, re
                             {mediaData.genres.map((genre) => genre.name).join(", ")}
                         </p>
                     </div>
+                    {isHovered && (
+                        <button
+                            onClick={removeFromWatchlist}
+                            className="absolute top-2 right-2 bg-black/60 hover:bg-red-600 text-white p-2 rounded-full transition duration-200"
+                        >
+                            <FaTrash size={16} />
+                        </button>
+                    )}
                 </>
             )}
         </div>

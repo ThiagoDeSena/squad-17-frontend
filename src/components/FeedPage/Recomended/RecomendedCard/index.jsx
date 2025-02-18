@@ -1,6 +1,10 @@
 import React from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../../services/watchListApi";
+
 
 const genres = {
     28: "Ação",
@@ -35,7 +39,6 @@ export const RecomendedCard = ({
     image,
     title,
     genre = [],
-    onAddToWatchlist,
     className,
     type,
     id,
@@ -44,6 +47,37 @@ export const RecomendedCard = ({
     const genreString = Array.isArray(genre) && genre.length > 0
         ? genre.map((g) => genres[g] || genres.default).join(", ")
         : genres.default;
+
+    const [inWatchList, setInWatchList] = useState(false);
+    useEffect(() => {
+        const checkWatchlist = async () => {
+            try {
+                setTimeout( async () => {
+                    const response = await isToTheWatchList(id, type);
+                    setInWatchList(!!response);
+                }, 2500)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        checkWatchlist();
+    }, [id, type,])
+
+    const handleWatchlistToggle = async (e) => {
+        e.stopPropagation();
+        try {
+            if (inWatchList) {
+                const response = await removeToWatchlist(id, type);
+                if (response === 204) setInWatchList(false);
+            } else {
+                const response = await addToWatchList(id, type);
+                if (response) setInWatchList(true);
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar watchlist:", error);
+        }
+    };
+
     return (
         <div
             className={className}
@@ -55,11 +89,8 @@ export const RecomendedCard = ({
             ></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
             <button
-                className="absolute top-2 right-2 bg-black/20 p-2 rounded-full text-white hover:bg-red-600 transition"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onAddToWatchlist();
-                }}
+                className={`absolute top-2 right-2 ${inWatchList ? 'bg-red-600' : 'bg-black/20'} p-2 rounded-full text-white ${inWatchList ? 'hover:bg-black/20' : 'hover:bg-red-600'} transition duration-200`}
+                onClick={handleWatchlistToggle}
             >
                 <FaHeart size={18} />
             </button>
@@ -72,4 +103,5 @@ export const RecomendedCard = ({
         </div>
     );
 };
+
 
