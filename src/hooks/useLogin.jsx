@@ -86,6 +86,7 @@ export const useLogin = () => {
         setIsLoading,
         handleLogin,
         remeberMe,
+        setRemeberMe,
         handleRememberMeChange
     };
 };

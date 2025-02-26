@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ReviewContainer } from "../FeedPage/Feed/ReviewContainer";
 import { getUsersInfo } from "../../services/userAPI";
 import { useNavigate } from "react-router-dom";
+import { getReviewsByUserId } from "../../services/review";
 
 
 export const OutherUserPage = ({ id }) => {
@@ -13,7 +14,7 @@ export const OutherUserPage = ({ id }) => {
         bannerPath: "",
         profilePath: "",
     });
-
+    const [userReview, setUserReview] = useState([]);
     const handleFollowToggle = () => {
         setIsFollowing(!isFollowing);
     };
@@ -26,7 +27,9 @@ export const OutherUserPage = ({ id }) => {
                     return navigate("/profile")
                 }
                 let isUserDto = {
+                    id: response.id,
                     name: response.name,
+                    reviews: response.reviews,
                     followers: response.followers,
                     followings: response.followings,
                     imagePath: response.imagePath ? response.imagePath : "/public/images/profile.png",
@@ -37,6 +40,17 @@ export const OutherUserPage = ({ id }) => {
                 return console.error(error);
             }
         }
+
+        const fetchUserReview = async () => {
+            try {
+                const response = await getReviewsByUserId(id);
+                setUserReview(response);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchUserReview();
         fetchUser();
     }, [])
 
@@ -77,8 +91,8 @@ export const OutherUserPage = ({ id }) => {
                     </div>
                     <button
                         className={`relative md:left-[-12px] w-[290px] mt-6 p-2 rounded transition duration-300 ${isFollowing
-                                ? "bg-neutral10 text-neutral80 hover:bg-neutral20"
-                                : " bg-primary40 text-white hover:bg-primary30"
+                            ? "bg-neutral10 text-neutral80 hover:bg-neutral20"
+                            : " bg-primary40 text-white hover:bg-primary30"
                             }`}
                         onClick={handleFollowToggle}
                     >
@@ -92,8 +106,8 @@ export const OutherUserPage = ({ id }) => {
                     <div className="flex justify-evenly mt-12 lg:justify-start gap-4 mb-6 text-neutral10 font-poppins">
                         <button
                             className={`px-4 py-2 rounded-lg ${currentTab === "recent"
-                                    ? "bg-primary40 text-white"
-                                    : "bg-neutral10 text-neutral80 hover:bg-neutral20"
+                                ? "bg-primary40 text-white"
+                                : "bg-neutral10 text-neutral80 hover:bg-neutral20"
                                 }`}
                             onClick={() => setCurrentTab("recent")}
                         >
@@ -101,8 +115,8 @@ export const OutherUserPage = ({ id }) => {
                         </button>
                         <button
                             className={`px-4 py-2 rounded-lg ${currentTab === "top"
-                                    ? "bg-primary40 text-white"
-                                    : "bg-neutral10 text-neutral80 hover:bg-neutral20"
+                                ? "bg-primary40 text-white"
+                                : "bg-neutral10 text-neutral80 hover:bg-neutral20"
                                 }`}
                             onClick={() => setCurrentTab("top")}
                         >
@@ -113,53 +127,42 @@ export const OutherUserPage = ({ id }) => {
                     {/* Review Container */}
                     <div className="relative left-8 md:left-0 w-full lg:w-[90%] space-y-12 mb-[16vh]">
                         {currentTab === "recent" && (
-                            <>
-                                <ReviewContainer
-                                    movieId={239770}
-                                    plataform="tv"
-                                    profileImage={isUser.imagePath}
-                                    profileName={isUser.name}
-                                />
-                                <ReviewContainer
-                                    movieId={93405}
-                                    plataform="tv"
-                                    profileImage={isUser.imagePath}
-                                    profileName={isUser.name}
-                                />
-                                <ReviewContainer
-                                    movieId={111803}
-                                    plataform="tv"
-                                    profileImage={isUser.imagePath}
-                                    profileName={isUser.name}
-                                />
-                                 <ReviewContainer
-                                    movieId={762509}
-                                    plataform="movie"
-                                    profileImage={isUser.imagePath}
-                                    profileName={isUser.name}
-                                />
-                            </>
+                            userReview && userReview.length > 0 ? (
+                                userReview.map((review) => (
+                                    <ReviewContainer
+                                        key={review.id}
+                                        movieId={review.mediaId}
+                                        plataform={review.mediaType}
+                                        profileId={isUser.id}
+                                        reviewId={review.id}
+                                        
+                                    />
+                                ))
+                            ) : (
+                                <div className="flex items-center flex-col justify-center">
+                                    <img
+                                        src="/images/no-content.svg"
+                                        alt="Sem conteúdo"
+                                        className="w-[400px] h-[350px] mx-auto"
+                                    />
+                                    <p className="text-2xl font-bold text-neutral10 font-moonjelly">
+                                        Nehuma Resenha Publicada!
+                                    </p>
+                                </div>
+                            )
                         )}
                         {currentTab === "top" && (
                             <>
-                                <ReviewContainer
-                                    movieId={939243}
-                                    plataform="movie"
-                                    profileImage={isUser.imagePath}
-                                    profileName={isUser.name}
-                                />
-                                <ReviewContainer
-                                    movieId={426063}
-                                    plataform="movie"
-                                    profileImage={isUser.imagePath}
-                                    profileName={isUser.name}
-                                />
-                                <ReviewContainer
-                                    movieId={1126166}
-                                    plataform="movie"
-                                    profileImage={isUser.imagePath}
-                                    profileName={isUser.name}
-                                />
+                                <div className="flex items-center flex-col justify-center">
+                                    <img
+                                        src="/images/no-content.svg"
+                                        alt="Sem conteúdo"
+                                        className="w-[400px] h-[350px] mx-auto"
+                                    />
+                                    <p className="text-2xl font-bold text-neutral10 font-moonjelly">
+                                        Nehuma Resenha Encontrada!
+                                    </p>
+                                </div>
                             </>
                         )}
                     </div>

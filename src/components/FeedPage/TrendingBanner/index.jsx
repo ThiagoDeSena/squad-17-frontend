@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getTrendingMovies, getMovieTrailer } from "../../../services/movieAPI";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/swiper-bundle.css";
 import "swiper/css/effect-coverflow";
@@ -115,7 +116,11 @@ export const TrendingBanner = () => {
                         effect={"coverflow"}
                         grabCursor={true}
                         loop={true}
-                        onAutoplay={true}
+                        autoplay={{
+                            delay: 2500, 
+                            disableOnInteraction: false, 
+                          }}
+                        speed={1000}
                         centeredSlides={true}
                         breakpoints={{
                             640: { slidesPerView: 1 },
@@ -126,7 +131,7 @@ export const TrendingBanner = () => {
                             nextEl: ".custom-next",
                             prevEl: ".custom-prev",
                         }}
-                        modules={[EffectCoverflow, Navigation]}
+                        modules={[EffectCoverflow, Navigation, Autoplay]}
                         coverflowEffect={{
                             rotate: 50,
                             stretch: 0,

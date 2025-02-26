@@ -42,9 +42,10 @@ export const AlertWindow = ({ message, type }) => {
 
     return (
         <div
-            className={`fixed top-4 right-4 z-50 max-w-sm w-full p-2 rounded-lg shadow-lg border ${colorType[type]} font-poppins transition-transform duration-500 ease-in-out transform ${
+            className={`fixed top-4 right-4 max-w-sm w-full p-2 rounded-lg shadow-lg border ${colorType[type]} font-poppins transition-transform duration-500 ease-in-out transform ${
                 showAlert ? "translate-y-0" : "-translate-y-10"
             } max-h-72 overflow-y-auto`}
+            style={{ zIndex: 9999 }}
         >
             <div className="flex items-center text-lg">
                 {iconType[type]}

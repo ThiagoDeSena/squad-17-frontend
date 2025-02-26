@@ -19,6 +19,7 @@
     "aos": "^2.3.4",
     "axios": "^1.7.7",
     "cloudinary": "^2.5.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.4.0",
     "install": "^0.13.0",
     "js-cookie": "^3.0.5",

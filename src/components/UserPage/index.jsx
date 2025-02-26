@@ -9,6 +9,7 @@ import { Loading } from "../Utils/Loading";
 import { FaPlus } from "react-icons/fa";
 import { AlertWindow } from "../Utils/AlertWindow";
 import { getUser, putBannerProfile, putImageProfile } from "../../services/userAPI";
+import { getReviews } from "../../services/review";
 
 Modal.setAppElement("#root");
 
@@ -31,6 +32,7 @@ export const UserPage = () => {
     const [selectedProfileImage, setSelectedProfileImage] = useState(
         userInfo.imagePath
     );
+    const [isPost,setIsPost] = useState(false);
     const [selectedBanner, setSelectedBanner] = useState(userInfo.bannerPath);
     const [clickMore, setClickMore] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -38,30 +40,43 @@ export const UserPage = () => {
         profileImages: [],
         next_cursor: null,
     });
+
+    const [userReview, setUserReview] = useState([]);
+    const [isDelete, setIsDelete] = useState(false);
     useEffect(() => {
         const fetchUserInfo = async () => {
             setLoading(true)
             try {
                 const response = await getUser();
-
                 setUserInfo({
                     id: response.id,
                     name: response.name,
                     email: response.email,
                     imagePath: response.imagePath ? response.imagePath : "/images/profile.png",
-                    bannerPath: response.bannePath ? response.bannePath : "/images/user-banner.png",
+                    bannerPath: response.bannerPath ? response.bannerPath : "/images/user-banner.png",
                     reviews: response.reviews,
                     followers: response.followers,
                     followings: response.followings,
                 });
-            }catch(error){
+            } catch (error) {
                 console.log(error);
-            }finally{
+            } finally {
                 setLoading(false)
             }
         };
+
+        const fetchUserReview = async () => {
+            try {
+                const response = await getReviews();
+                setUserReview(response);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchUserReview();
         fetchUserInfo();
-    }, []);
+    }, [isPost, isDelete],[]);
 
     const [alertWindow, setAlertWindow] = useState({});
 
@@ -123,7 +138,7 @@ export const UserPage = () => {
         }
     };
 
-    
+
 
     const handleProfileImage = async (selected) => {
         const currentProfilePath = localStorage.getItem("profilePath");
@@ -153,8 +168,8 @@ export const UserPage = () => {
                 message: "Select our banner Image!",
                 type: "error",
             });
-        } 
-        try{
+        }
+        try {
             await putBannerProfile(selected);
             localStorage.setItem("bannerPath", selected);
             setAlertWindow({
@@ -162,7 +177,7 @@ export const UserPage = () => {
                 type: "success",
             });
             setTimeout(() => window.location.reload(), 2000);
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
     }
@@ -170,6 +185,8 @@ export const UserPage = () => {
     const [width, setWidth] = useState(window.innerWidth);
 
     window.addEventListener("resize", () => setWidth(window.innerWidth));
+
+    console.log(userReview)
     return (
         <div className="relative w-full mx-auto top-0 flex flex-col overflow-hidden">
             {alertWindow.message && (
@@ -262,40 +279,40 @@ export const UserPage = () => {
                     {/* Review Post */}
                     {width > 1024 && width < 1385 ? (
                         <div className="w-full mb-6" style={{ zoom: "0.7" }}>
-                            <ReviewPost />
+                            <ReviewPost setIsPost={setIsPost} />
                         </div>
                     ) : (
                         <div className=" relative w-full mb-6 right-[-1vw] md:right-12">
-                            <ReviewPost />
+                            <ReviewPost setIsPost={setIsPost} />
                         </div>
                     )}
 
                     {/* Review Container */}
-                    <div className="relative left-8  md:left-0 w-full lg:w-[90%]  space-y-6">
-                        <ReviewContainer
-                            movieId={239770}
-                            plataform="tv"
-                            profileImage={userInfo.imagePath}
-                            profileName={userInfo.name}
-                        />
-                        <ReviewContainer
-                            movieId={93405}
-                            plataform="tv"
-                            profileImage={userInfo.imagePath}
-                            profileName={userInfo.name}
-                        />
-                        <ReviewContainer
-                            movieId={939243}
-                            plataform="movie"
-                            profileImage={userInfo.imagePath}
-                            profileName={userInfo.name}
-                        />
-                        <ReviewContainer
-                            movieId={426063}
-                            plataform="movie"
-                            profileImage={userInfo.imagePath}
-                            profileName={userInfo.name}
-                        />
+                    <div className="relative left-8 md:left-0 w-full lg:w-[90%] space-y-12 mb-[16vh]">
+                        {userReview && userReview.length > 0 ? (
+                            userReview.map((review) => (
+                                <ReviewContainer
+                                    key={review.id}
+                                    reviewId={review.id}
+                                    selfProfile={true}
+                                    movieId={review.mediaId}
+                                    plataform={review.mediaType}
+                                    profileId={userInfo.id}
+                                    setDelete={setIsDelete}
+                                />
+                            ))
+                        ) : (
+                            <div className="flex items-center flex-col justify-center">
+                                <img
+                                    src="/images/no-content.svg"
+                                    alt="Sem conteúdo"
+                                    className="w-[400px] h-[350px] mx-auto"
+                                />
+                                <p className="text-2xl font-bold text-neutral10 font-moonjelly">
+                                    Nehuma Resenha Publicada!
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -325,11 +342,10 @@ export const UserPage = () => {
                                         key={index}
                                         src={img.url}
                                         loading="lazy"
-                                        className={`w-20 h-20 rounded-full cursor-pointer border-2 transition duration-300 ${
-                                            selectedProfileImage === img.url
+                                        className={`w-20 h-20 rounded-full cursor-pointer border-2 transition duration-300 ${selectedProfileImage === img.url
                                                 ? "border-primary40 border-4 scale-105"
                                                 : "border-neutral30 hover:border-primary20"
-                                        }`}
+                                            }`}
                                         onClick={() => {
                                             if (
                                                 selectedProfileImage === img.url
@@ -348,7 +364,7 @@ export const UserPage = () => {
                                     No images available
                                 </p>
                             )}
-                            {  profileImage.profileImages && profileImage.profileImages.length > 0 &&
+                            {profileImage.profileImages && profileImage.profileImages.length > 0 &&
                                 !loading && (
                                     <div className="flex items-center justify-center">
                                         <button
@@ -395,16 +411,15 @@ export const UserPage = () => {
                                 <div className="flex items-center justify-center">
                                     <Loading />
                                 </div>
-                            ) :  profileImage.profileImages && profileImage.profileImages.length > 0 ? (
+                            ) : profileImage.profileImages && profileImage.profileImages.length > 0 ? (
                                 profileImage.profileImages.map((img, index) => (
                                     <img
                                         key={index}
                                         src={img.url}
-                                        className={`w-full h-28 rounded-xl cursor-pointer border-2 transition duration-300 transform hover:scale-105 ${
-                                            selectedBanner === img.url
+                                        className={`w-full h-28 rounded-xl cursor-pointer border-2 transition duration-300 transform hover:scale-105 ${selectedBanner === img.url
                                                 ? "border-primary40 border-4 scale-105"
                                                 : "border-neutral30 hover:border-primary20"
-                                        } shadow-lg hover:shadow-xl`}
+                                            } shadow-lg hover:shadow-xl`}
                                         onClick={() => {
                                             if (
                                                 selectedBanner === img.url
@@ -423,7 +438,7 @@ export const UserPage = () => {
                                     No images available
                                 </p>
                             )}
-                            { profileImage.profileImages && profileImage.profileImages.length > 0 &&
+                            {profileImage.profileImages && profileImage.profileImages.length > 0 &&
                                 !loading && (
                                     <div className="flex items-center justify-left">
                                         <button

@@ -28,7 +28,8 @@ export const Login = () => {
         setIsLoading,
         handleLogin,
         remeberMe,
-        handleRememberMeChange
+        handleRememberMeChange,
+        setRemeberMe
     } = useLogin();
 
     const navigate = useNavigate();
@@ -38,6 +39,7 @@ export const Login = () => {
             duration: 2000,
             easing: "ease-in-out",
         });
+        setRemeberMe(true)
     }, []);
     return (
         <>
@@ -139,6 +141,7 @@ export const Login = () => {
                                             draggable="false"
                                             checked={remeberMe}
                                             onChange={handleRememberMeChange}
+                                            disabled={isLoading}
                                         />
                                         Lembrar-me
                                     </label>
