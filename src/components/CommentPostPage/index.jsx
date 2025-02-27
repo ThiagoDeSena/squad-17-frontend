@@ -57,7 +57,7 @@ export const CommentPostPage = ({ postId }) => {
   return (
     <div className="flex flex-col relative left-[7vw] md:left-0 items-center p-4 min-h-screen max-w-5xl mx-auto font-poppins">
       {/* Componente da resenha */}
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center w-full">
         <ReviewContainer
           key={review.id}
           reviewId={posterId}
@@ -67,6 +67,7 @@ export const CommentPostPage = ({ postId }) => {
           profileId={review.userId}
           isComment={isComment}
           isCommentDelete={isDelete}
+          isCommentPage={true}
         />
 
         <div className="max-w-2xl w-auto md:w-full">

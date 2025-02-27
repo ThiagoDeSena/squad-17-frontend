@@ -97,7 +97,7 @@ export const SideBar = () => {
           </div>
           <nav className="flex flex-col gap-4 justify-center">
             {menuItems.map((item) => (
-              <div className="relative flex items-center group">
+              <div className="relative flex items-center group" key={item.name}>
                 <Link
                   key={item.name}
                   to={item.path}

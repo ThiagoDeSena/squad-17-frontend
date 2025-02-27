@@ -47,6 +47,7 @@ export const getReviews = async () => {
     return response.data.content;
   } catch (error) {
     console.error("Erro ao buscar reviews:", error);
+    throw error;
   }
 };
 
@@ -66,6 +67,7 @@ export const getReviewsByUserId = async (id, query = "") => {
     return response.data.content;
   } catch (error) {
     console.error("Erro ao buscar reviews:", error);
+    throw error;
   }
 };
 
@@ -75,8 +77,30 @@ export const getReviewByMedia = async (mediaId, mediaType) => {
     return response.data.content;
   } catch (error) {
     console.error("Erro ao buscar reviews:", error);
+    throw error;
   }
 };
+
+export const getReviewByFollowing = async () => {
+  try {
+    const response = await reviewApi.get("/following");
+    return response.data.content;
+  } catch (error) {
+    console.error("Erro ao buscar reviews dos usuarios que segue:", error);
+    throw error;
+  }
+}
+
+export const getReviewInterations = async (id, type) => {
+    try {
+      const response = await reviewApi.get(`${id}/${type}/users`)
+      return response.data.content;
+    } catch (error) {
+      console.error(error);
+      throw error;
+      
+    }
+}
 
 export const createReview = async (review) => {
   try {

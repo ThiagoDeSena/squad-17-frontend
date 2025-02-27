@@ -77,6 +77,7 @@ export const getUsersInfo = async (id) => {
         const response = await userApi.get(`/${id}`);
         return response.data;
     } catch (error) {
-        return console.error(error);
+        console.error("Erro ao busca dados do usuario:", error);
+        throw error;
     }
 };

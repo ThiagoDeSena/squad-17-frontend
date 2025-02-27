@@ -13,5 +13,6 @@ export const fetchFileImage = async (next_cursor = null, folder = 'critix_profil
         return response;
     } catch (error) {
         console.log(error);
+        throw error;
     }
 };

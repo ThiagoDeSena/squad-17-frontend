@@ -275,7 +275,7 @@ export const ReviewPost = ({
 
         <button
           onClick={handleSubmit}
-          className={`bg-primary50 hover:bg-primary40 text-white py-2 px-2 md:px-4 rounded-lg flex items-center lg:absolute lg:bottom-6 gap-2 self-center lg:self-start
+          className={`bg-primary50 hover:bg-primary40 text-white py-2 px-2 md:px-4 rounded-lg flex items-center lg:absolute lg:bottom-${unique ? "4": "6"}  gap-2 self-center lg:self-start
                 ${
                   reviewText.length === 0 || selectedMediaId === ""
                     ? "pointer-events-none opacity-50 cursor-not-allowed"

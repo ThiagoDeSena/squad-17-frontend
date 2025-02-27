@@ -9,11 +9,18 @@ import { Loading } from "../../../Utils/Loading";
 import { formatDistanceToNow } from "date-fns";
 import Modal from "react-modal";
 import { ReviewPost } from "../../ReviewPost";
-import { deleteReview, getReviewsById, interationReview, verifyInteraction } from "../../../../services/review";
+import {
+  deleteReview,
+  getReviewInterations,
+  getReviewsById,
+  interationReview,
+  verifyInteraction,
+} from "../../../../services/review";
 import { getUsersInfo } from "../../../../services/userAPI";
 import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import ConfirmDelete from "../../../Utils/ConfirmDelete";
+import { InterationList } from "../../../Utils/InterationList";
 Modal.setAppElement("#root");
 
 export const ReviewContainer = ({
@@ -23,6 +30,7 @@ export const ReviewContainer = ({
   reviewId,
   isComment = false,
   isCommentDelete = false,
+  isCommentPage = false,
   selfProfile = false,
   setDelete = false,
 }) => {
@@ -37,6 +45,9 @@ export const ReviewContainer = ({
   const [isDelete, setIsDelete] = useState(false);
   const [likeed, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+  const [isModalInterationOpen, setIsModalInterationOpen] = useState(false);
+  const [interation, setInteration] = useState([]);
+  const [isType, setIsType] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,8 +128,6 @@ export const ReviewContainer = ({
     }
   };
 
-  
-
   const handeInteration = async (interation) => {
     const fetchInteration = async () => {
       try {
@@ -165,6 +174,17 @@ export const ReviewContainer = ({
         : review.dataCriacao
       : "";
 
+  const fetchInterationList = async (id, type) => {
+    try {
+      setIsType(type);
+      setIsModalInterationOpen(true);
+      const response = await getReviewInterations(id, type);
+      console.log(response)
+      return setInteration(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div
       className={`bg-transparent  border-b  border-primary90 ${
@@ -189,7 +209,7 @@ export const ReviewContainer = ({
         <div>
           <div className="flex items-center gap-4 mb-4 relative">
             <img
-              src={user.imagePath}
+              src={user.imagePath || "/public/images/profile.png"}
               alt="Profile"
               className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-primary20 hover:scale-125 transition duration-300 hover:cursor-pointer"
               onClick={selfProfile ? () => navigate("/profile") : () => navigate(`/user/${profileId}`)}
@@ -255,7 +275,7 @@ export const ReviewContainer = ({
           </div>
 
           {/* Conteúdo da Resenha */}
-          {review.containsSpoilers && !selfProfile && !showSpoiler ? (
+          {review.containsSpoiler && !selfProfile && !showSpoiler && !isCommentPage ? (
             <div className="bg-orange-700 p-2 mb-4 rounded flex items-center justify-between">
               <p className="text-sm text-white">
                 <strong>Aviso de Spoiler:</strong> Esta resenha contém spoilers.
@@ -294,7 +314,7 @@ export const ReviewContainer = ({
               />
             </button>
             <span
-              onClick={() => console.log("Aparece aqui os usuarios que curtiu")}
+              onClick={() => review.likes > 0 ? fetchInterationList(reviewId, "like") : ""}
               className={`${review.likes > 0 ? "text-neutral10 font-bold cursor-pointer" : ""}`}
             >
               {review.likes}
@@ -318,7 +338,7 @@ export const ReviewContainer = ({
               />
             </button>
             <span
-              onClick={() => console.log("Aparece aqui os usuarios que curtiu")}
+              onClick={() => review.deslikes > 0 ? fetchInterationList(reviewId, "dislike") : ""}
               className={`${review.deslikes > 0 ? "text-neutral10 font-bold cursor-pointer" : ""}`}
             >
               {review.deslikes}
@@ -373,6 +393,15 @@ export const ReviewContainer = ({
             </div>
           </div>
         </Modal>
+      )}
+
+      {isModalInterationOpen && (
+        <InterationList
+          showInteration={isModalInterationOpen}
+          setShowInteration={setIsModalInterationOpen}
+          interation={interation}
+          isType={isType}
+        />
       )}
     </div>
   );

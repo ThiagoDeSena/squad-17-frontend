@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import { loginUser } from "../services/authAPI";
 
@@ -53,7 +53,6 @@ export const useLogin = () => {
                 });
             } else {
                 const { token, refreshToken } = response;
-                console.log(token, refreshToken)
                 setAlert({
                     show: true,
                     message: response.message,
@@ -72,7 +71,13 @@ export const useLogin = () => {
         }
     };
 
-   
+    useEffect(() => {
+        if (alert.show) {
+            setTimeout(() => {
+                setAlert({ show: false, message: "", type: "" });
+            }, 3000);
+        }
+    }, [alert.show]);
     return {
         email,
         setEmail,

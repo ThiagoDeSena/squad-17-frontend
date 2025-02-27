@@ -7,101 +7,113 @@ import { Loading } from "./components/Utils/Loading";
 
 const AuthScreen = lazy(() => import("./Screens/AuthScreen").then((module) => ({ default: module.AuthScreen })));
 const FeedScreen = lazy(() => import("./Screens/FeedScreen").then((module) => ({ default: module.FeedScreen })));
-const NotFoundScreen = lazy(() => import("./Screens/NotFoundScreen").then((module) => ({ default: module.NotFoundScreen })));
+const NotFoundScreen = lazy(() =>
+  import("./Screens/NotFoundScreen").then((module) => ({ default: module.NotFoundScreen }))
+);
 const UserScreen = lazy(() => import("./Screens/UserScreen").then((module) => ({ default: module.UserScreen })));
-const OtherUserScreen = lazy(() => import("./Screens/OtherUsersScreen").then((module) => ({ default: module.OutherUserScreen })));
+const OtherUserScreen = lazy(() =>
+  import("./Screens/OtherUsersScreen").then((module) => ({ default: module.OutherUserScreen }))
+);
 const MediaScreen = lazy(() => import("./Screens/MediaScreen").then((module) => ({ default: module.MediaScreen })));
 const SearchScreen = lazy(() => import("./Screens/SearchScreen").then((module) => ({ default: module.SearchScreen })));
-const WatchlistScreen = lazy(() => import("./Screens/WatchListScreen").then((module) => ({ default: module.WatchlistScreen })));
-const WatchlistCategoryScreen = lazy(() => import("./Screens/WatchListCategoryScreen").then((module) => ({ default: module.WatchlistCategoryScreen })));
-const CommentPostScreen = lazy(() => import("./Screens/CommentPostScreen").then((module) => ({ default: module.CommentPostScreen })));
-const TierRankScreen = lazy(() => import("./Screens/TierRankScreen").then((module) => ({ default: module.TierRankScreen })));
-const WelcomeScreen = lazy(() => import("./Screens/WelcomeScreen").then((module) => ({ default: module.WelcomeScreen })));
-
+const WatchlistScreen = lazy(() =>
+  import("./Screens/WatchListScreen").then((module) => ({ default: module.WatchlistScreen }))
+);
+const WatchlistCategoryScreen = lazy(() =>
+  import("./Screens/WatchListCategoryScreen").then((module) => ({ default: module.WatchlistCategoryScreen }))
+);
+const CommentPostScreen = lazy(() =>
+  import("./Screens/CommentPostScreen").then((module) => ({ default: module.CommentPostScreen }))
+);
+const TierRankScreen = lazy(() =>
+  import("./Screens/TierRankScreen").then((module) => ({ default: module.TierRankScreen }))
+);
+const WelcomeScreen = lazy(() =>
+  import("./Screens/WelcomeScreen").then((module) => ({ default: module.WelcomeScreen }))
+);
 
 export const RouterApp = () => {
-    const { user, loading } = useContext(UserContext);
-    const [showWelcome, setShowWelcome] = useState(false);
+  const { user, loading } = useContext(UserContext);
+  const [showWelcome, setShowWelcome] = useState(false);
 
-    useEffect(() => {
-        if (!user) return;
-        const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
+  useEffect(() => {
+    if (!user) return;
+    const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
 
-        if (!hasSeenWelcome) {
-            setShowWelcome(true);
-            localStorage.setItem("hasSeenWelcome", "true");
-            setTimeout(() => {
-                setShowWelcome(false);
-            }, 4000);
-        }
-    }, [user]);
-
-    if (loading) {
-        return <Loading />;
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+      localStorage.setItem("hasSeenWelcome", "true");
+      setTimeout(() => {
+        setShowWelcome(false);
+      }, 4000);
     }
+  }, [user]);
 
-    const publicRoutes = [
-        { path: "/register", element: <AuthScreen c={2} /> },
-        { path: "/forgot-password", element: <AuthScreen c={3} /> },
-    ];
+  if (loading) {
+    return <Loading />;
+  }
 
-    const privateRoutes = [
-        { path: "/profile", element: <UserScreen /> },
-        { path: "/user/:id", element: <OtherUserScreen /> },
-        { path: "/media/:type/:id", element: <MediaScreen /> },
-        { path: "/feed", element: <FeedScreen /> },
-        { path: "/review/:id", element: <CommentPostScreen /> },
-        { path: "/search", element: <SearchScreen /> },
-        { path: "/watchlist", element: <WatchlistScreen /> },
-        { path: "/watchlist/:category", element: <WatchlistCategoryScreen /> },
-        { path: "/tier-rank", element: <TierRankScreen /> },
-    ];
+  const publicRoutes = [
+    { path: "/register", element: <AuthScreen c={2} /> },
+    { path: "/forgot-password", element: <AuthScreen c={3} /> },
+  ];
 
-    return (
-        <BrowserRouter basename="/">
-            <Suspense fallback={<Loading />}>
-                <Routes>
-                    <Route
-                        path="/"
-                        element={
-                            user ? (
-                                showWelcome ? (
-                                    <WelcomeScreen userName={user.name} />
-                                ) : (
-                                    <Layout>
-                                        <FeedScreen />
-                                    </Layout>
-                                )
-                            ) : (
-                                <AuthScreen c={1} />
-                            )
-                        }
-                    />
-                    {publicRoutes.map((route) => (
-                        <Route key={route.path} path={route.path} element={route.element} />
-                    ))}
-                    {privateRoutes.map((route) => (
-                        <Route
-                            key={route.path}
-                            path={route.path}
-                            element={
-                                <PrivateRoutes>
-                                    <Layout>{route.element}</Layout>
-                                </PrivateRoutes>
-                            }
-                        />
-                    ))}
-                    <Route
-                        path="*"
-                        element={
-                            <Layout>
-                                <NotFoundScreen />
-                            </Layout>
-                        }
-                    />
-                </Routes>
-            </Suspense>
-        </BrowserRouter>
-    );
+  const privateRoutes = [
+    { path: "/profile", element: <UserScreen /> },
+    { path: "/user/:id", element: <OtherUserScreen /> },
+    { path: "/media/:type/:id", element: <MediaScreen /> },
+    { path: "/feed", element: <FeedScreen /> },
+    { path: "/review/:id", element: <CommentPostScreen /> },
+    { path: "/search", element: <SearchScreen /> },
+    { path: "/watchlist", element: <WatchlistScreen /> },
+    { path: "/watchlist/:category", element: <WatchlistCategoryScreen /> },
+    { path: "/tier-rank", element: <TierRankScreen /> },
+  ];
+
+  return (
+    <BrowserRouter basename="/">
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              user ? (
+                showWelcome ? (
+                  <WelcomeScreen userName={user.name} />
+                ) : (
+                  <Layout>
+                    <FeedScreen />
+                  </Layout>
+                )
+              ) : (
+                <AuthScreen c={1} />
+              )
+            }
+          />
+          {publicRoutes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+          {privateRoutes.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={
+                <PrivateRoutes>
+                  <Layout>{route.element}</Layout>
+                </PrivateRoutes>
+              }
+            />
+          ))}
+          <Route
+            path="*"
+            element={
+              <Layout>
+                <NotFoundScreen />
+              </Layout>
+            }
+          />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
 };
-
