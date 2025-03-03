@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ReviewContainer } from "../../components/FeedPage/Feed/ReviewContainer";
 import { UserComment } from "./UserComment";
-import { getCommentsByReviewId, postComment } from "../../services/comments";
-import { getReviewsById } from "../../services/review";
+import { getCommentsByReviewId, postComment } from "../../api/comments";
+import { getReviewsById } from "../../api/review";
 import { set } from "date-fns";
 
 export const CommentPostPage = ({ postId }) => {

@@ -4,9 +4,12 @@ import { UserContext } from "./Contexts/UserContext";
 import { PrivateRoutes } from "./PrivateRoutes";
 import { Layout } from "./layout";
 import { Loading } from "./components/Utils/Loading";
+import { element } from "prop-types";
 
 const AuthScreen = lazy(() => import("./Screens/AuthScreen").then((module) => ({ default: module.AuthScreen })));
+
 const FeedScreen = lazy(() => import("./Screens/FeedScreen").then((module) => ({ default: module.FeedScreen })));
+
 const NotFoundScreen = lazy(() =>
   import("./Screens/NotFoundScreen").then((module) => ({ default: module.NotFoundScreen }))
 );
@@ -24,6 +27,9 @@ const WatchlistCategoryScreen = lazy(() =>
 );
 const CommentPostScreen = lazy(() =>
   import("./Screens/CommentPostScreen").then((module) => ({ default: module.CommentPostScreen }))
+);
+const NotificationScreen = lazy(() =>
+  import("./Screens/NotificationScreen").then((module) => ({ default: module.NotificationScreen }))
 );
 const TierRankScreen = lazy(() =>
   import("./Screens/TierRankScreen").then((module) => ({ default: module.TierRankScreen }))
@@ -67,6 +73,7 @@ export const RouterApp = () => {
     { path: "/search", element: <SearchScreen /> },
     { path: "/watchlist", element: <WatchlistScreen /> },
     { path: "/watchlist/:category", element: <WatchlistCategoryScreen /> },
+    { path: "/notifications", element: <NotificationScreen/>},
     { path: "/tier-rank", element: <TierRankScreen /> },
   ];
 

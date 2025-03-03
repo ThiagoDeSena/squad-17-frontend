@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getMediaMoreDetails } from "../../../services/movieAPI";
+import { getMediaMoreDetails } from "../../../api/movieAPI";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ReviewContainer } from "../../FeedPage/Feed/ReviewContainer";
 import "swiper/css";
@@ -11,7 +11,7 @@ import { MdEmojiFlags } from "react-icons/md";
 import { RiMovie2Fill } from "react-icons/ri";
 import { Recomended } from "../../FeedPage/Recomended";
 import { ReviewPost } from "../../FeedPage/ReviewPost";
-import { getReviewByMedia } from "../../../services/review";
+import { getReviewByMedia } from "../../../api/review";
 
 export const MediaDetails = ({ mediaType, mediaId }) => {
     const [mediaData, setMediaData] = useState(null);

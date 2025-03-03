@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { ReviewContainer } from "../FeedPage/Feed/ReviewContainer";
-import { getUsersInfo } from "../../services/userAPI";
+import { getUsersInfo } from "../../api/userAPI";
 import { useNavigate } from "react-router-dom";
-import { getReviewsByUserId } from "../../services/review";
-import { followUser, getFollowers, getIsFollowing, unfollowUser } from "../../services/followers";
+import { getReviewsByUserId } from "../../api/review";
+import { followUser, getFollowers, getIsFollowing, unfollowUser } from "../../api/followers";
 import Modal from "react-modal";
 import { FollowList } from "../Utils/FollowList";
 

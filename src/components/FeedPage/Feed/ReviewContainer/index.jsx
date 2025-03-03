@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaStar, FaTimes } from "react-icons/fa";
-import { getMediaDetails } from "../../../../services/movieAPI";
+import { getMediaDetails } from "../../../../api/movieAPI";
 import { RecomendedCard } from "../../Recomended/RecomendedCard";
 import { BiSolidDislike, BiSolidHeart } from "react-icons/bi";
 import { PiChatCircleTextFill } from "react-icons/pi";
@@ -15,8 +15,8 @@ import {
   getReviewsById,
   interationReview,
   verifyInteraction,
-} from "../../../../services/review";
-import { getUsersInfo } from "../../../../services/userAPI";
+} from "../../../../api/review";
+import { getUsersInfo } from "../../../../api/userAPI";
 import { FiEdit2, FiMoreVertical, FiTrash2 } from "react-icons/fi";
 import { motion } from "framer-motion";
 import ConfirmDelete from "../../../Utils/ConfirmDelete";

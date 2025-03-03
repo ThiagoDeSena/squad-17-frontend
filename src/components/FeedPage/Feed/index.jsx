@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ReviewContainer } from "./ReviewContainer"; // Componente de resenha
 import { FiStar, FiUsers } from "react-icons/fi";
-import { getReviewByFollowing, getReviews } from "../../../services/review";
-import { getUsersInfo } from "../../../services/userAPI";
+import { getReviewByFollowing, getReviews } from "../../../api/review";
+import { getUsersInfo } from "../../../api/userAPI";
 export const Feed = ({ isPost }) => {
   const [activeTab, setActiveTab] = useState("followedReviews");
   const [feedReviews, setFeedReviews] = useState([]);

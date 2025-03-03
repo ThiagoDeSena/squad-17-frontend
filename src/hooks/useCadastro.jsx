@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../services/authAPI"; // Ajuste o caminho conforme necessário
+import { registerUser } from "../api/authAPI"; // Ajuste o caminho conforme necessário
 import { useLogin } from "./useLogin";
 
 export const useCadastro = () => {

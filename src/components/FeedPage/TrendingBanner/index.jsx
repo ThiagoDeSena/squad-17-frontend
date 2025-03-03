@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getTrendingMovies, getMovieTrailer } from "../../../services/movieAPI";
+import { getTrendingMovies, getMovieTrailer } from "../../../api/movieAPI";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -117,7 +117,7 @@ export const TrendingBanner = () => {
                         grabCursor={true}
                         loop={true}
                         autoplay={{
-                            delay: 2500, 
+                            delay: 3500, 
                             disableOnInteraction: false, 
                           }}
                         speed={1000}
@@ -183,6 +183,7 @@ export const TrendingBanner = () => {
                                                             {movie.title ||
                                                                 movie.name ||
                                                                 "Título não disponível"}
+                                                            <p className="text-sm md:text-md text-neutra10 font-poppins mb-4">{`(${new Date(movie.release_date || movie.first_air_date).getFullYear()})`}</p>
                                                         </h1>
                                                         <div className="text-sm md:text-md text-white mb-4 md:mb-6 font-poppins">
                                                             {movie.genre_ids

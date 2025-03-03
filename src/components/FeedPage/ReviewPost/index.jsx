@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { BiMessageRoundedDetail, BiWindowClose } from "react-icons/bi";
-import { searchResults, getPopularMovies } from "../../../services/movieAPI";
+import { searchResults, getPopularMovies } from "../../../api/movieAPI";
 import Modal from "react-modal";
 import { Loading } from "../../Utils/Loading";
 import { SphereSpinner } from "react-spinners-kit";
-import { createReview, getReviewsById, updateReview } from "../../../services/review";
+import { createReview, getReviewsById, updateReview } from "../../../api/review";
 import { AlertWindow } from "../../Utils/AlertWindow";
 
 export const ReviewPost = ({
@@ -275,7 +275,7 @@ export const ReviewPost = ({
 
         <button
           onClick={handleSubmit}
-          className={`bg-primary50 hover:bg-primary40 text-white py-2 px-2 md:px-4 rounded-lg flex items-center lg:absolute lg:bottom-${unique ? "4": "6"}  gap-2 self-center lg:self-start
+          className={`bg-primary50 hover:bg-primary40 text-white py-2 px-2 md:px-4 rounded-lg flex items-center lg:absolute lg:bottom-${unique ? "4": "6"}  gap-4 self-center lg:self-start bottom-4
                 ${
                   reviewText.length === 0 || selectedMediaId === ""
                     ? "pointer-events-none opacity-50 cursor-not-allowed"

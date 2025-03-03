@@ -14,10 +14,13 @@ import { useNavigate } from "react-router-dom";
 import { RotateSpinner } from "react-spinners-kit";
 import { ScrollToTop } from "../Utils/ScrollToTop";
 import { UserContext } from "../../Contexts/UserContext";
-import { getUser } from "../../services/userAPI";
+import { getUser } from "../../api/userAPI";
+import NotificationContainer from "../Notification";
+import { useNotification } from "../../contexts/NotificationContext";
 
 export const SideBar = () => {
   const location = useLocation();
+  const {newNotify} = useNotification();
   const [isOpen, setIsOpen] = useState();
   const [showToggle, setShowToggle] = useState(false);
   const navigate = useNavigate();
@@ -56,6 +59,7 @@ export const SideBar = () => {
       const profileImage = response.imagePath || "/images/profile.png";
       const bannerImage = response.bannerPath || "/images/user-banner.png";
       setUserInfo({
+        id: response.id,
         name: response.name,
         imagePath: profileImage,
         bannerPath: bannerImage,
@@ -124,9 +128,24 @@ export const SideBar = () => {
               >
                 <AiOutlineQuestionCircle size={28} className="text-xl" />
               </Link>
-              <span className="absolute left-full ml-2 hidden text-sm text-white bg-neutral50 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
+              <span className="absolute left-full ml-2 hidden text-sm text-white bg-neutral70 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
                 Help
-                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-neutral50"></span>
+                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-neutral70"></span>
+              </span>
+            </div>
+
+            <div className="relative flex items-center group">
+              <Link
+                to="/notifications"
+                className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${
+                  location.pathname === "/notifications" ? "border-l-8 border-primary60 text-primary60 font-bold" : ""
+                } ${newNotify ? "animate-bounce text-primary90" : " text-yellow-400"}`}
+              >
+                <AiOutlineBell size={28} />
+              </Link>
+              <span className="absolute left-full ml-2 hidden text-sm text-white bg-neutral70 px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 group-hover:block transition-all duration-300 ease-in-out">
+                Notifications
+                <span className="absolute left-[-6px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-neutral70"></span>
               </span>
             </div>
 
@@ -263,6 +282,15 @@ export const SideBar = () => {
                 <AiOutlineQuestionCircle size={28} className="text-xl" />
                 Help
               </Link>
+              <Link
+                to="/notifications"
+                className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${
+                  location.pathname === "/notifications" ? "border-l-8 border-primary60 text-primary60 font-bold" : ""
+                } ${newNotify ? "animate-bounce text-primary90" : " text-yellow-400"}`}
+              >
+                <AiOutlineBell size={28}/>
+                <span className="text-neutral10">Notifications</span>
+              </Link>
             </nav>
 
             <div className="flex items-center gap-4 p-2 rounded-full border border-gray-500 hover:border-primary90 cursor-pointer absolute bottom-2 ">
@@ -284,9 +312,6 @@ export const SideBar = () => {
                   </span>
                 </>
               )}
-              <Link to="/notifications">
-                <AiOutlineBell size={28} color="#FFD700" />
-              </Link>
             </div>
             {showProfileMenu && (
               <div className="absolute bottom-24 right-0 bg-neutral90 text-white shadow-lg rounded-tl-xl w-auto z-50 ">
@@ -327,6 +352,7 @@ export const SideBar = () => {
         </Menu>
       </div>
       <ScrollToTop />
+      {userInfo && <NotificationContainer userId={userInfo.id} />}
     </>
   );
 };

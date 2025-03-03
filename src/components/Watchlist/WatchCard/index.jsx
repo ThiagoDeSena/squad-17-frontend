@@ -1,6 +1,6 @@
 import { useEffect, useState, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMediaDetails } from "../../../services/movieAPI";
+import { getMediaDetails } from "../../../api/movieAPI";
 import { RotateSpinner } from "react-spinners-kit";
 import { FaTrash } from "react-icons/fa"
 

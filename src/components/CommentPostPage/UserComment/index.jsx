@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
-import { deleteComment, editComment, getCommentsById } from "../../../services/comments";
-import { getUsersInfo } from "../../../services/userAPI";
+import { deleteComment, editComment, getCommentsById } from "../../../api/comments";
+import { getUsersInfo } from "../../../api/userAPI";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 

@@ -1,7 +1,7 @@
 
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
-import { loginWithGoogle } from "../../../services/authAPI";
+import { loginWithGoogle } from "../../../api/authAPI";
 import { UserContext } from "../../../Contexts/UserContext";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";

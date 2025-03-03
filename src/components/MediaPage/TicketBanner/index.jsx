@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlinePlayCircle } from "react-icons/ai";
-import { getMediaDetails, getMovieTrailer } from "../../../services/movieAPI";
-import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../services/watchlistApi"
+import { getMediaDetails, getMovieTrailer } from "../../../api/movieAPI";
+import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../api/watchlistApi"
 import { CircleSpinner, RotateSpinner } from "react-spinners-kit";
 import { FaBookmark, FaRegStar, FaStar } from "react-icons/fa";
 import Modal from "react-modal";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FiX } from "react-icons/fi";
-import { searchResults } from "../../services/movieAPI";
+import { searchResults } from "../../api/movieAPI";
 import { SearchBanner } from "./SearchBanner";
 import { Loading } from "../Utils/Loading";
 import { useInView } from "react-intersection-observer";

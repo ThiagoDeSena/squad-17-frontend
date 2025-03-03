@@ -5,7 +5,7 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AlertWindow } from "../../Utils/AlertWindow";
-import { resetPassword, sendEmailRecoverPassword, validateCode } from "../../../services/authAPI";
+import { resetPassword, sendEmailRecoverPassword, validateCode } from "../../../api/authAPI";
 
 export const ResetPassword = () => {
   const [step, setStep] = useState(1);

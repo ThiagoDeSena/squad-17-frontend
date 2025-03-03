@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../Contexts/UserContext";
-import { loginUser } from "../services/authAPI";
+import { loginUser } from "../api/authAPI";
 
 export const useLogin = () => {
     const { login, setRemeberMe, remeberMe } = useContext(UserContext);
@@ -44,14 +44,6 @@ export const useLogin = () => {
         setIsLoading(true);
         try {
             const response = await loginUser(email, password);
-
-            if (response.error) {
-                setAlert({
-                    show: true,
-                    message: response.message,
-                    type: "error",
-                });
-            } else {
                 const { token, refreshToken } = response;
                 setAlert({
                     show: true,
@@ -59,11 +51,10 @@ export const useLogin = () => {
                     type: "success",
                 });
                 setTimeout(() => login(token, refreshToken), 2500);
-            }
         } catch (error) {
             setAlert({
                 show: true,
-                message: "Ocorreu um erro inesperado. Tente novamente.",
+                message: error.response.data.message,
                 type: "error",
             });
         } finally {

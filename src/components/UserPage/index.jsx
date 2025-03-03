@@ -4,13 +4,13 @@ import Modal from "react-modal";
 import { ReviewPost } from "../FeedPage/ReviewPost";
 import { ReviewContainer } from "../FeedPage/Feed/ReviewContainer";
 import { MdModeEdit } from "react-icons/md";
-import { fetchFileImage } from "../../services/image";
+import { fetchFileImage } from "../../api/image";
 import { Loading } from "../Utils/Loading";
 import { FaPlus } from "react-icons/fa";
 import { AlertWindow } from "../Utils/AlertWindow";
-import { getUser, putBannerProfile, putImageProfile } from "../../services/userAPI";
-import { getReviews } from "../../services/review";
-import { getFollowers } from "../../services/followers";
+import { getUser, putBannerProfile, putImageProfile } from "../../api/userAPI";
+import { getReviews } from "../../api/review";
+import { getFollowers } from "../../api/followers";
 import { FollowList } from "../Utils/FollowList";
 
 Modal.setAppElement("#root");

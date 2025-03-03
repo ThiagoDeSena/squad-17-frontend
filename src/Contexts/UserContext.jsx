@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { getUser } from "../services/userAPI.js"; 
+import { getUser } from "../api/userAPI.js"; 
 import Cookies from "js-cookie";
 
 export const UserContext = createContext();

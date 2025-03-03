@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../../services/watchListApi";
+import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../../api/watchListApi";
 
 
 const genres = {

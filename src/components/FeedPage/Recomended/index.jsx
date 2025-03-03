@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { RecomendedCard } from "./RecomendedCard";
-import { getSimilarMedia } from "../../../services/movieAPI";
+import { getSimilarMedia } from "../../../api/movieAPI";
 import { FaArrowRight } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/navigation";
