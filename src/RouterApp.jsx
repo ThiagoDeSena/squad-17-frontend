@@ -38,6 +38,10 @@ const WelcomeScreen = lazy(() =>
   import("./Screens/WelcomeScreen").then((module) => ({ default: module.WelcomeScreen }))
 );
 
+const HelpScreen = lazy(() =>
+  import("./Screens/HelpScreen").then((module) => ({ default: module.HelpScreen }))
+);
+
 export const RouterApp = () => {
   const { user, loading } = useContext(UserContext);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -75,6 +79,7 @@ export const RouterApp = () => {
     { path: "/watchlist/:category", element: <WatchlistCategoryScreen /> },
     { path: "/notifications", element: <NotificationScreen/>},
     { path: "/tier-rank", element: <TierRankScreen /> },
+    { path: "/help", element: <HelpScreen /> },
   ];
 
   return (

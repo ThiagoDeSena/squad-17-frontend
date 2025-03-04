@@ -72,7 +72,7 @@ export const NotificationScreen = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
-                  className={` relative flex items-center justify-between p-4 rounded-lg border-b-2 border-neutral20 last:border-b-0 ${
+                  className={` relative flex items-center justify-between p-5 rounded-lg border-b-2 border-neutral20 last:border-b-0 ${
                     notification.seen ? " bg-neutral80" : "bg-primary90 bg-opacity-60"
                   }`}
                 >
@@ -101,7 +101,7 @@ export const NotificationScreen = () => {
 
                   <button
                     onClick={() => removeNotification(notification.id)}
-                    className="text-neutral10 hover:text-red-500 absolute top-2 right-2"
+                    className="text-neutral40 hover:text-red-500 absolute top-1 right-1"
                   >
                     <FaTimes size={18} />
                   </button>

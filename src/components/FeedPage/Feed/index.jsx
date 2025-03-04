@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { ReviewContainer } from "./ReviewContainer"; // Componente de resenha
 import { FiStar, FiUsers } from "react-icons/fi";
-import { getReviewByFollowing, getReviews } from "../../../api/review";
+import { getReviewByFollowing, getReviews, getTopReviews } from "../../../api/review";
 import { getUsersInfo } from "../../../api/userAPI";
 export const Feed = ({ isPost }) => {
   const [activeTab, setActiveTab] = useState("followedReviews");
+  const [bestReviews, setBestReviews] = useState([])
   const [feedReviews, setFeedReviews] = useState([]);
   const [isDelete, setIsDelete] = useState(false);
   useEffect(() => {
     const fetchFeed = async () => {
       try {
-        const [followingReviews, myReviews] = await Promise.all([
+        const [followingReviews, myReviews, bestResponse] = await Promise.all([
           getReviewByFollowing(),
           getReviews(),
+          getTopReviews(),
         ]);
 
+        setBestReviews(bestResponse);
         let reviews = [];
-
         if (followingReviews && followingReviews.length > 0) {
           reviews = followingReviews;
         }
@@ -82,8 +84,18 @@ export const Feed = ({ isPost }) => {
         {activeTab === "bestReviews" && (
           <div>
             {/* Resenhas mais relevantes */}
-            <ReviewContainer movieId={426063} plataform={"movie"} reviewId={15} profileId={4}/>
-            <ReviewContainer movieId={219937} plataform={"tv"} reviewId={18} profileId={8} />
+            {bestReviews.map((review) => (
+              <ReviewContainer
+                key={review.id}
+                selfProfile={review.isUser}
+                movieId={review.mediaId}
+                plataform={review.mediaType}
+                reviewId={review.id}
+                profileId={review.userId}
+                setDelete={setIsDelete}
+              />
+            ))}
+            
           </div>
         )}
         {activeTab === "followedReviews" && (

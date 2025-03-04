@@ -26,7 +26,7 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
         setIsOpen(false);
     };
     localStorage.setItem("lastMedia", JSON.stringify({ type: mediaType, id: mediaId }));
-
+    
     useEffect(() => {
         const fetchReviews = async () => {
             try {
@@ -37,7 +37,7 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
             }
         };
         fetchReviews();
-    }, [isPost]);
+    }, [isPost, activeTab, mediaData]);
 
     useEffect(() => {
         const fetchSeriesData = async () => {

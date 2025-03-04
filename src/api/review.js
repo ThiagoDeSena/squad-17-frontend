@@ -81,6 +81,26 @@ export const getReviewByMedia = async (mediaId, mediaType) => {
   }
 };
 
+export const getTopReviews = async () => {
+  try {
+    const response = await reviewApi.get("/top");
+    return response.data.content
+  } catch (error) {
+    console.log(error);
+    throw error;    
+  }
+}
+
+export const notaGeral = async (mediaId, mediaType) => {
+  try {
+    const response = await reviewApi.get(`media/${mediaId}/${mediaType}/notaGeral`);
+    return response.data
+  } catch (error) {
+    console.log(error);
+    throw error;    
+  }
+}
+
 export const getReviewByFollowing = async () => {
   try {
     const response = await reviewApi.get("/following");
