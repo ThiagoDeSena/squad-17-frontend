@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import { loginUser } from "../api/authAPI";
 
-export const useLogin = () => {
+const useLogin = () => {
     const { login, setRemeberMe, remeberMe } = useContext(UserContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -86,3 +86,4 @@ export const useLogin = () => {
         handleRememberMeChange
     };
 };
+export default useLogin

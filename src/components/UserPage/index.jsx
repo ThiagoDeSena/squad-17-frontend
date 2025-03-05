@@ -12,6 +12,9 @@ import { getUser, putBannerProfile, putImageProfile } from "../../api/userAPI";
 import { getReviews } from "../../api/review";
 import { getFollowers } from "../../api/followers";
 import { FollowList } from "../Utils/FollowList";
+import { ProfileImageModal } from "./ProfileImageModal";
+import { BannerProfileModal } from "./BannerProfileModal";
+import { EditProfileModal } from "./EditProfileModal";
 
 Modal.setAppElement("#root");
 
@@ -32,7 +35,7 @@ export const UserPage = () => {
   const [isSelectImageOpen, setIsSelectImageOpen] = useState(false);
   const [isSelectBannerOpen, setIsSelectBannerOpen] = useState(false);
   const [selectedProfileImage, setSelectedProfileImage] = useState(userInfo.imagePath);
-  const [isPost, setIsPost] = useState(false);
+  const [isPost, setIsPost] = useState();
   const [selectedBanner, setSelectedBanner] = useState(userInfo.bannerPath);
   const [clickMore, setClickMore] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,49 +46,46 @@ export const UserPage = () => {
     profileImages: [],
     next_cursor: null,
   });
+  const [onUpdate, setOnUpdate] = useState({});
 
   const [userReview, setUserReview] = useState([]);
   const [isDelete, setIsDelete] = useState(false);
-  useEffect(
-    () => {
-      const fetchUserInfo = async () => {
-        setLoading(true);
-        try {
-          const response = await getUser();
-          setUserInfo({
-            id: response.id,
-            name: response.name,
-            email: response.email,
-            imagePath: response.imagePath ? response.imagePath : "/images/profile.png",
-            bannerPath: response.bannerPath ? response.bannerPath : "/images/user-banner.png",
-            reviews: response.reviews,
-            followers: response.followers,
-            followings: response.followings,
-          });
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setLoading(false);
-        }
-      };
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      setLoading(true);
+      try {
+        const response = await getUser();
+        setUserInfo({
+          id: response.id,
+          name: response.name,
+          email: response.email,
+          imagePath: response.imagePath ? response.imagePath : "/images/profile.png",
+          bannerPath: response.bannerPath ? response.bannerPath : "/images/user-banner.png",
+          reviews: response.reviews,
+          followers: response.followers,
+          followings: response.followings,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      const fetchUserReview = async () => {
-        try {
-          const response = await getReviews();
-          setUserReview(response);
-        } catch (error) {
-          console.error(error);
-        }
-      };
+    const fetchUserReview = async () => {
+      try {
+        const response = await getReviews();
+        setUserReview(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-      fetchUserReview();
-      fetchUserInfo();
-    },
-    [isPost, isDelete],
-    []
-  );
+    fetchUserReview();
+    fetchUserInfo();
+  }, [isPost, isDelete, onUpdate]);
 
-  const [alertWindow, setAlertWindow] = useState({});
+  const [alertWindow, setAlertWindow] = useState({ message: "", type: "" });
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -316,206 +316,43 @@ export const UserPage = () => {
 
       {/* Modals edit image profile */}
       {isSelectImageOpen && (
-        <Modal
-          isOpen={isSelectImageOpen}
-          onRequestClose={() => setIsSelectImageOpen(false)}
-          className="bg-neutral80 p-4 rounded-xl h-auto w-[95%] max-w-lg shadow-lg"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-          contentLabel="Select Profile Image"
-          style={{ overlay: { zIndex: 2002 } }}
-        >
-          <div className="flex flex-col items-center max-h-[80vh] overflow-y-auto font-poppins">
-            <h2 className="text-3xl font-bold text-neutral10 mb-6 text-center font-moonjelly">Select Profile Image</h2>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(80px,1fr))] gap-3 h-full overflow-auto max-w-full p-2">
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <Loading />
-                </div>
-              ) : profileImage.profileImages && profileImage.profileImages.length > 0 ? (
-                profileImage.profileImages.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img.url}
-                    loading="lazy"
-                    className={`w-20 h-20 rounded-full cursor-pointer border-2 transition duration-300 ${
-                      selectedProfileImage === img.url
-                        ? "border-primary40 border-4 scale-105"
-                        : "border-neutral30 hover:border-primary20"
-                    }`}
-                    onClick={() => {
-                      if (selectedProfileImage === img.url) {
-                        setSelectedProfileImage(null);
-                      } else {
-                        setSelectedProfileImage(img.url);
-                      }
-                    }}
-                  />
-                ))
-              ) : (
-                <p className="text-center text-neutral60">No images available</p>
-              )}
-              {profileImage.profileImages && profileImage.profileImages.length > 0 && !loading && (
-                <div className="flex items-center justify-center">
-                  <button
-                    className="mt-6 px-6 py-2 bg-primary30 text-white rounded-lg hover:bg-primary20 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => handleMore(selectedProfileImage)}
-                    disabled={clickMore}
-                  >
-                    <FaPlus />
-                  </button>
-                </div>
-              )}
-            </div>
-            <button
-              className="mt-6 w-full px-6 py-2 bg-primary40 text-white rounded-lg hover:bg-primary60 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => handleProfileImage(selectedProfileImage)}
-              disabled={clickMore}
-            >
-              Confirm
-            </button>
-          </div>
-        </Modal>
+        <ProfileImageModal
+          isSelectImageOpen={isSelectImageOpen}
+          setIsSelectImageOpen={setIsSelectImageOpen}
+          profileImage={profileImage}
+          selectedProfileImage={selectedProfileImage}
+          setSelectedProfileImage={setSelectedProfileImage}
+          handleMore={handleMore}
+          clickMore={clickMore}
+          loading={loading}
+          handleProfileImage={handleProfileImage}
+        />
       )}
 
       {/* Modals edit banner */}
       {isSelectBannerOpen && (
-        <Modal
-          isOpen={isSelectBannerOpen}
-          onRequestClose={() => setIsSelectBannerOpen(false)}
-          className="bg-neutral80 p-8 rounded-xl h-auto w-[100%] max-w-2xl shadow-lg"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-          contentLabel="Select Banner"
-          style={{ overlay: { zIndex: 9999 } }}
-        >
-          <div className="flex flex-col items-center max-h-[80vh] w-[100%] overflow-y-auto font-poppins">
-            <h2 className="text-3xl font-bold text-neutral10 font-moonjelly mb-6">Select Banner</h2>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3 h-full overflow-auto max-w-full p-2">
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <Loading />
-                </div>
-              ) : profileImage.profileImages && profileImage.profileImages.length > 0 ? (
-                profileImage.profileImages.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img.url}
-                    className={`w-full h-28 rounded-xl cursor-pointer border-2 transition duration-300 transform hover:scale-105 ${
-                      selectedBanner === img.url
-                        ? "border-primary40 border-4 scale-105"
-                        : "border-neutral30 hover:border-primary20"
-                    } shadow-lg hover:shadow-xl`}
-                    onClick={() => {
-                      if (selectedBanner === img.url) {
-                        setSelectedBanner(null);
-                      } else {
-                        setSelectedBanner(img.url);
-                      }
-                    }}
-                  />
-                ))
-              ) : (
-                <p className="text-center text-neutral60">No images available</p>
-              )}
-              {profileImage.profileImages && profileImage.profileImages.length > 0 && !loading && (
-                <div className="flex items-center justify-left">
-                  <button
-                    className="mt-6 px-6 py-2 bg-primary30 text-white rounded-lg hover:bg-primary20 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => handleMore(selectedProfileImage)}
-                    disabled={clickMore}
-                  >
-                    <FaPlus />
-                  </button>
-                </div>
-              )}
-            </div>
-            <button
-              className="mt-6 px-6 py-2 bg-primary40 text-white rounded-lg hover:bg-primary60 transition duration-300"
-              onClick={() => handleProfileBanner(selectedBanner)}
-            >
-              Confirm
-            </button>
-          </div>
-        </Modal>
+        <BannerProfileModal
+          isSelectBannerOpen={isSelectBannerOpen}
+          setIsSelectBannerOpen={setIsSelectBannerOpen}
+          profileImage={profileImage}
+          selectedBanner={selectedBanner}
+          setSelectedBanner={setSelectedBanner}
+          handleMore={handleMore}
+          clickMore={clickMore}
+          loading={loading}
+          handleProfileBanner={handleProfileBanner}
+        />
       )}
 
       {/* Modal for Editing Profile */}
       {isEditProfileOpen && (
-        <Modal
-          isOpen={isEditProfileOpen}
-          onRequestClose={() => setIsEditProfileOpen(false)}
-          className="bg-gradient-to-r from-neutral60 via-neutral70 to-neutral80 p-8 rounded-xl h-auto w-[90%] max-w-lg shadow-xl"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-          contentLabel="Edit Profile"
-          style={{ overlay: { zIndex: 9999 } }}
-        >
-          <div className="flex flex-col items-center relative">
-            <h2 className="text-3xl border-b-2 border-primary30 font-bold text-neutral10 font-moonjelly mb-6">
-              Edit Profile
-            </h2>
-            <form className="w-full space-y-5">
-              {/* Name Field */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral10 mb-1">Name</label>
-                <input
-                  type="text"
-                  value={userInfo.name}
-                  placeholder="Enter your name"
-                  className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
-                />
-              </div>
-
-              {/* Email Field */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral10 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={userInfo.email}
-                  placeholder="Enter your email"
-                  className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
-                />
-              </div>
-
-              {/* Password Field */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral10 mb-1">Password</label>
-                <input
-                  type="password"
-                  placeholder="Enter a new password"
-                  className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
-                />
-                <p className="text-xs text-neutral10 font-bold mt-1">Password must be at least 8 characters long.</p>
-              </div>
-
-              {/* Confirm Password Field */}
-              <div>
-                <label className="block text-sm font-semibold text-neutral10 mb-1">Confirm Password</label>
-                <input
-                  type="password"
-                  placeholder="Confirm your new password"
-                  className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary50"
-                />
-              </div>
-
-              {/* Buttons */}
-              <div className="flex justify-center space-x-4 ">
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-primary40 text-white rounded-lg hover:bg-primary60 transition duration-300"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </form>
-
-            {/* Close Button */}
-            <button
-              className="absolute top-0 right-4 text-red-300 hover:text-semanticError transition duration-300"
-              onClick={() => setIsEditProfileOpen(false)}
-            >
-              <IoCloseSharp size={34} />
-            </button>
-          </div>
-        </Modal>
+        <EditProfileModal
+          isEditProfileOpen={isEditProfileOpen}
+          setIsEditProfileOpen={setIsEditProfileOpen}
+          userInfo={userInfo}
+          setOnUpdate={setOnUpdate}
+          setAlertWindow={setAlertWindow}
+        />
       )}
       {showFollow && (
         <FollowList showFollow={showFollow} setShowFollow={setShowFollow} followers={followers} isType={isType} />

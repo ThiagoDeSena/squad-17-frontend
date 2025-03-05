@@ -121,7 +121,7 @@ export const ReviewPost = ({
             message: `Review postada com sucesso`,
             type: "success",
           });
-          setIsPost(true);
+          setIsPost(response.data.id);
         }
       } else {
         const update = {

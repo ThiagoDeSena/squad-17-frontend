@@ -236,7 +236,7 @@ export const TicketBanner = ({ mediaType, mediaId }) => {
             </div>
             <div className="flex flex-col items-center justify-center absolute bottom-0">
               <span className="text-sm md:text-md text-neutral10">{Math.round(notaMedia.notaGeral * 10)}%</span>
-              <span className="text-white font-poppins">({notaMedia.notaGeral.toFixed(1)}/10)</span>
+              <span className="text-white font-poppins">({notaMedia.notaGeral.toFixed(0)}/5)</span>
             </div>
           </div>
         ) : (

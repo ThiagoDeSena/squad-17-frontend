@@ -16,6 +16,7 @@ export const NotificationScreen = () => {
     const fetchNotifications = async () => {
       try {
         const notificationsResponse = await getNotifications();
+        console.log(notificationsResponse)
         setNotifications(notificationsResponse);
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);
@@ -81,14 +82,14 @@ export const NotificationScreen = () => {
                     className="flex items-center gap-3 cursor-pointer w-full"
                   >
                     <img
-                      src={notification.remetenteImage}
-                      alt={notification.remetenteName}
+                      src={notification.remetente_image}
+                      alt={notification.remetente_name}
                       className="rounded-full h-12 md:h-16 border-2 border-primary80 object-cover"
                     />
                     <div className="flex flex-col flex-1">
                       <p className="text-neutral10 font-semibold font-poppins md:text-lg">{notification.message}</p>
                       <span className="text-neutral20 text-sm">
-                        {new Date(notification.createdAt).toLocaleString()}
+                        {new Date(notification.created_at).toLocaleString()}
                       </span>
                     </div>
                   </div>

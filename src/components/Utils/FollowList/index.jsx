@@ -20,7 +20,7 @@ export const FollowList = ({ showFollow, setShowFollow, followers, isType }) => 
             isType === "followers" ? "indigo-500" : "primary90"
           } rounded-xl shadow-lg`}
         >
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">{`${
+          <h2 className="text-3xl font-bold text-neutral90 font-moonjelly mb-6 text-center">{`${
             isType === "followers" ? "Seguidores" : "Seguindo"
           }`}</h2>
           {followers.length === 0 ? (

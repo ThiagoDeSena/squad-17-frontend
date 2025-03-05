@@ -20,7 +20,7 @@ export const InterationList = ({showInteration, setShowInteration, interation, i
                 isType === "like" ? "orange-700" : "yellow-600"
               } rounded-xl shadow-lg`}
             >
-              <h2 className="text-3xl font-bold text-white mb-6 text-center">{`${
+              <h2 className="text-3xl font-bold text-neutral90 font-moonjelly mb-6 text-center">{`${
                 isType === "like" ? "Likes" : "Dislikes"
               }`}</h2>
               {interation.length === 0 ? (

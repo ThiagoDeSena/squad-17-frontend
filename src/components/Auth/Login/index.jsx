@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useLogin } from "../../../hooks/useLogin";
 import { BannerLateral } from "../../Utils/BannerLateral";
 import { AlertWindow } from "../../Utils/AlertWindow";
 import { MetroSpinner } from "react-spinners-kit";
@@ -8,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { GoogleLoginButton } from "../../Utils/GoogleLoginButton";
+import useLogin from "../../../hooks/useLogin";
 
 export const Login = () => {
   const {
@@ -148,7 +148,10 @@ export const Login = () => {
 
             {/* Criar conta */}
             <p className="text-center text-sm xl:text-lg text-gray-400">
-              Não possui uma conta? <Link to={"/register"} className="text-primary70 hover:underline cursor-pointer">Criar Conta!</Link>
+              Não possui uma conta?{" "}
+              <Link to={"/register"} className="text-primary70 hover:underline cursor-pointer">
+                Criar Conta!
+              </Link>
             </p>
           </div>
         </div>
