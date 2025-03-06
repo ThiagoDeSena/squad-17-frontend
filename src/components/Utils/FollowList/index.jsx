@@ -42,7 +42,7 @@ export const FollowList = ({ showFollow, setShowFollow, followers, isType }) => 
                       className="font-moonjelly text-2xl text-indigo-700 hover:underline"
                       onClick={() => {
                         setShowFollow(false);
-                        navigate(`/user/${follower.userId}`);
+                        navigate(`/user/${follower.username}`);
                       }}
                     >
                       {follower.user ? "Você" : follower.name}

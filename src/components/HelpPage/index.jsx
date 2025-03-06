@@ -61,7 +61,6 @@ export const HelpPage = () => {
     const fetchUser = async () => {
       try {
         const response = await getUser();
-        console.log(response);
         setFormData({
           name: response.name,
           email: response.email,

@@ -16,7 +16,6 @@ export const NotificationScreen = () => {
     const fetchNotifications = async () => {
       try {
         const notificationsResponse = await getNotifications();
-        console.log(notificationsResponse)
         setNotifications(notificationsResponse);
       } catch (error) {
         console.error("Erro ao buscar notificações:", error);

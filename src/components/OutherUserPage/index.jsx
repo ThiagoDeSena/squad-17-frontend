@@ -30,10 +30,11 @@ export const OutherUserPage = ({ id }) => {
         const response = await getUsersInfo(id);
         if (response.user) {
           navigate("/profile");
-          return
+          return;
         }
         let isUserDto = {
           id: response.id,
+          username: response.username,
           name: response.name,
           reviews: response.reviews,
           followers: response.followers,
@@ -114,7 +115,12 @@ export const OutherUserPage = ({ id }) => {
                 alt="User"
               />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-neutral10 mb-4 font-moonjelly">{isUser.name}</h1>
+
+            <h1 className="text-4xl md:text-5xl font-bold text-neutral10 mb-2 font-moonjelly text-center lg:text-left flex flex-col">
+              {isUser.name}
+              <span className="text-lg text-primary80 font-poppins text-center hover:underline hover:cursor-pointer">@{isUser.username}</span>
+            </h1>
+
             <div className="flex justify-center lg:justify-start gap-8 mt-4 text-neutral10 font-poppins">
               <div>
                 <p className="text-sm font-bold text-center">{isUser.reviews}</p>
@@ -184,7 +190,7 @@ export const OutherUserPage = ({ id }) => {
                       key={review.id}
                       movieId={review.mediaId}
                       plataform={review.mediaType}
-                      profileId={isUser.id}
+                      profileId={isUser.username}
                       reviewId={review.id}
                     />
                   ))

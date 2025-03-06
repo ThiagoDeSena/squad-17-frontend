@@ -58,6 +58,7 @@ export const EditProfileModal = ({
   const [formData, setFormData] = useState({
     name: userInfo.name || "",
     email: userInfo.email || "",
+    username: userInfo.username || "",
     password: "",
     confirmPassword: "",
   });
@@ -82,9 +83,9 @@ export const EditProfileModal = ({
       setIsDeleteModalOpen(false);
       setTimeout(() => {
         logout();
-      }, 2500)
+      }, 2500);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setErrors({ deletePassword: error.response.data || "Erro ao excluir conta" });
     } finally {
       setLoading(false);
@@ -111,6 +112,7 @@ export const EditProfileModal = ({
 
     const updates = {};
     if (formData.name !== userInfo.name) updates.name = formData.name;
+    if (formData.username !== userInfo.username) updates.username = formData.username;
     if (formData.email !== userInfo.email) updates.email = formData.email;
     if (formData.password) {
       updates.senha = {
@@ -135,7 +137,8 @@ export const EditProfileModal = ({
       });
       setIsEditProfileOpen(false);
     } catch (error) {
-      setErrors({ general: error.response?.data?.message || "Erro ao atualizar perfil" });
+      setErrors({ general: error.response?.data || "Erro ao atualizar perfil" });
+      console.log(error);
       setAlertWindow({
         message: "Erro ao atualizar perfil",
         type: "error",
@@ -159,7 +162,7 @@ export const EditProfileModal = ({
       >
         <div className="flex flex-col items-center relative">
           <h2 className="text-3xl font-bold text-neutral10 mb-6">Edit Profile</h2>
-          {errors.general && <p className="text-red-500 text-sm">{errors.general}</p>}
+          {errors.general && <p className="text-red-600 text-md bg-neutral10 p-2 rounded-md font-poppins font-bold">{errors.general}</p>}
 
           <form className="w-full space-y-5" onSubmit={handleSubmit}>
             {/* Name Field */}
@@ -172,6 +175,20 @@ export const EditProfileModal = ({
                 onChange={handleChange}
                 placeholder="Enter your name"
                 className="w-full px-4 py-3 border border-neutral30 rounded-lg focus:ring-2 focus:ring-primary50"
+              />
+              {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
+            </div>
+
+            {/* Username Field */}
+            <div>
+              <label className="block text-sm font-semibold text-neutral10 mb-1 ">Username</label>
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className="w-full px-4 py-3 border-2 border-primary50 rounded-lg focus:ring-2 focus:ring-primary50"
               />
               {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
             </div>

@@ -16,7 +16,6 @@ export const Feed = ({ isPost }) => {
           getReviews(),
           getTopReviews(),
         ]);
-
         setBestReviews(bestResponse);
         let reviews = [];
         if (followingReviews && followingReviews.length > 0) {
@@ -33,7 +32,7 @@ export const Feed = ({ isPost }) => {
 
         if (reviews && reviews.length > 0) {
           const userDataPromise = reviews.map(async (review) => {
-            const userData = await getUsersInfo(review.userId);
+            const userData = await getUsersInfo(review.username);
             return { ...review, userData };
           });
           const userData = await Promise.all(userDataPromise);
@@ -91,7 +90,7 @@ export const Feed = ({ isPost }) => {
                 movieId={review.mediaId}
                 plataform={review.mediaType}
                 reviewId={review.id}
-                profileId={review.userId}
+                profileId={review.username}
                 setDelete={setIsDelete}
               />
             ))}
@@ -118,7 +117,7 @@ export const Feed = ({ isPost }) => {
                     selfProfile={review.isUser}
                     movieId={review.mediaId}
                     plataform={review.mediaType}
-                    profileId={review.userId}
+                    profileId={review.username}
                     setDelete={setIsDelete}
                   />
                 ))}

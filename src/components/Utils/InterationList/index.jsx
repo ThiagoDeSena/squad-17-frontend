@@ -42,7 +42,7 @@ export const InterationList = ({showInteration, setShowInteration, interation, i
                           className="font-moonjelly text-2xl text-indigo-700 hover:underline"
                           onClick={() => {
                             setShowInteration(false);
-                            navigate(`/user/${interation.id}`);
+                            navigate(`/user/${interation.username}`);
                           }}
                         >
                           {interation.user ? "Você" : interation.nome}

@@ -3,7 +3,6 @@ import { BannerLateral } from "../../Utils/BannerLateral";
 import { AiOutlineMail, AiOutlineLock, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import { AlertWindow } from "../../Utils/AlertWindow";
-import Aos from "aos";
 import "aos/dist/aos.css";
 import { SphereSpinner } from "react-spinners-kit";
 import { useCadastro } from "../../../hooks/useCadastro";

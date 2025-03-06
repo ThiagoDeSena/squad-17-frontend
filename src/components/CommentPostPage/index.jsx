@@ -64,7 +64,7 @@ export const CommentPostPage = ({ postId }) => {
           selfProfile={review.isUser}
           movieId={review.mediaId}
           plataform={review.mediaType}
-          profileId={review.userId}
+          profileId={review.username}
           isComment={isComment}
           isCommentDelete={isDelete}
           isCommentPage={true}
@@ -110,7 +110,7 @@ export const CommentPostPage = ({ postId }) => {
         ) : (
           <div className="space-y-4">
             {comments.map((comment) => (
-              <UserComment key={comment.id} commentId={comment.id} userId={comment.userId} isDelete={isDelete} setIsDelete={setIsDelete}/>
+              <UserComment key={comment.id} commentId={comment.id} userId={comment.username} isDelete={isDelete} setIsDelete={setIsDelete}/>
             ))}
           </div>
         )}

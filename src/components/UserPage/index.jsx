@@ -22,6 +22,7 @@ export const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
     id: 0,
     name: "",
+    username: "",
     email: "",
     imagePath: localStorage.getItem("profilePath") || "/images/profile.png",
     bannerPath: localStorage.getItem("bannerPath") || "/images/user-banner.png",
@@ -58,6 +59,7 @@ export const UserPage = () => {
         setUserInfo({
           id: response.id,
           name: response.name,
+          username: response.username,
           email: response.email,
           imagePath: response.imagePath ? response.imagePath : "/images/profile.png",
           bannerPath: response.bannerPath ? response.bannerPath : "/images/user-banner.png",
@@ -184,7 +186,7 @@ export const UserPage = () => {
   const fetchFollowers = async (types) => {
     try {
       setShowFollow(true);
-      const response = await getFollowers(userInfo.id, types);
+      const response = await getFollowers(userInfo.username, types);
       setFollowers(response);
     } catch (err) {
       setError("Erro ao carregar seguidores.");
@@ -242,7 +244,12 @@ export const UserPage = () => {
             )}
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-neutral10 mb-4 font-moonjelly">{userInfo.name}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-neutral10 mb-4 font-moonjelly flex flex-col">
+            {userInfo.name}
+            <span className="text-lg text-primary80 font-poppins text-center hover:underline hover:cursor-pointer">
+              @{userInfo.username}
+            </span>
+          </h1>
           <div className="flex justify-center lg:justify-start gap-8 mt-4 text-neutral10 font-poppins">
             <div>
               <p className="text-sm font-bold text-center">{userInfo.reviews}</p>
@@ -300,7 +307,7 @@ export const UserPage = () => {
                   selfProfile={true}
                   movieId={review.mediaId}
                   plataform={review.mediaType}
-                  profileId={userInfo.id}
+                  profileId={userInfo.username}
                   setDelete={setIsDelete}
                 />
               ))

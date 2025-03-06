@@ -212,7 +212,7 @@ export const ReviewContainer = ({
               src={user.imagePath || "/public/images/profile.png"}
               alt="Profile"
               className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-primary20 hover:scale-125 transition duration-300 hover:cursor-pointer"
-              onClick={selfProfile ? () => navigate("/profile") : () => navigate(`/user/${profileId}`)}
+              onClick={selfProfile ? () => navigate("/profile") : () => navigate(`/user/${user.username}`)}
             />
             <div>
               <p className="text-xs md:text-sm text-gray-400">
@@ -220,9 +220,9 @@ export const ReviewContainer = ({
               </p>
               <p
                 className="font-semibold text-sm md:text-base hover:underline hover:cursor-pointer text-left"
-                onClick={() => navigate(`/user/${profileId}`)}
+                onClick={() => navigate(`/user/${user.username}`)}
               >
-                {selfProfile ? "Você" : user.name}
+                {selfProfile ? "Você" : user.username}
               </p>
               <div className="flex gap-1">
                 {[...Array(5)].map((_, i) => (
