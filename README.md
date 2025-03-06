@@ -26,15 +26,11 @@ O **Critix** é uma plataforma de avaliação de filmes e séries. O frontend fo
 
 <div align='center' id="tecnologias-utilizadas">
     <img align='center' height='49' width='49' title='React' alt='React' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg'/> &nbsp;
-    <img align='center' height='49' width='49' title='Tailwind' alt='Tailwind' src='
-        https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg'/> &nbsp;
+    <img align='center' height='49' width='49' title='Tailwind' alt='Tailwind' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg'/> &nbsp;
     <img align='center' height='49' width='49' title='Axios' alt='Axios' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/axios/axios-plain-wordmark.svg'/> &nbsp;
-    <img align='center' height='49' width='49' title='StoryBook' alt='StoryBook' src='
-            https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/storybook/storybook-original.svg'/> &nbsp;
-    <img align='center' height='49' width='49' style="filter: invert(1);"  title='FrameMotion' alt='FrameMotion' src='
-    https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/framermotion/framermotion-original-wordmark.svg'/> &nbsp;
-    <img align='center' height='49' width='49' style="filter: invert(1);"  title='Swiper' alt='Swiper' src='
-    https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swiper/swiper-original.svg'/> &nbsp;
+    <img align='center' height='49' width='49' title='StoryBook' alt='StoryBook' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/storybook/storybook-original.svg'/> &nbsp;
+    <img align='center' height='49' width='49' style="filter: invert(1);"  title='FrameMotion' alt='FrameMotion' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/framermotion/framermotion-original-wordmark.svg'/> &nbsp;
+    <img align='center' height='49' width='49' style="filter: invert(1);"  title='Swiper' alt='Swiper' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swiper/swiper-original.svg'/> &nbsp;
     <img align='center' height='49' width='49' title='Vite' alt='Vite' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg'/> &nbsp;
      <img align='center' height='49' width='49' title='JS' alt='JS' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg'/> &nbsp;
     <img align='center' height='49' width='49' title='Vite' alt='Vite' src='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg'/> &nbsp;
