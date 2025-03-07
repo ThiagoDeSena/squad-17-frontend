@@ -309,6 +309,7 @@ export const UserPage = () => {
                   plataform={review.mediaType}
                   profileId={userInfo.username}
                   setDelete={setIsDelete}
+                  deleted={isDelete}
                 />
               ))
             ) : (

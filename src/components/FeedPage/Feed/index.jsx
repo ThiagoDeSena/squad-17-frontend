@@ -92,6 +92,7 @@ export const Feed = ({ isPost }) => {
                 reviewId={review.id}
                 profileId={review.username}
                 setDelete={setIsDelete}
+                deleted={isDelete}
               />
             ))}
             
@@ -119,6 +120,7 @@ export const Feed = ({ isPost }) => {
                     plataform={review.mediaType}
                     profileId={review.username}
                     setDelete={setIsDelete}
+                    deleted={isDelete}
                   />
                 ))}
               </div>

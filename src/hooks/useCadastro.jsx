@@ -1,154 +1,168 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, registerUser } from "../api/authAPI";
+import { loginUser, registerUser, sendVerificationCode, verifyCode } from "../api/authAPI";
 import { UserContext } from "../Contexts/UserContext";
 
 export const useCadastro = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const { login } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const [step, setStep] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState({ show: false, message: "", type: "" });
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    code: "",
     password: "",
     confirmPassword: "",
   });
-  const [errors, setErrors] = useState({});
-  const [alert, setAlert] = useState({
-    show: false,
-    message: "",
-    type: "",
+  const [passwordCriteria, setPasswordCriteria] = useState({
+    length: false,
+    uppercase: false,
+    special: false,
+    match: false,
   });
-  const [showCriteries, setsShowCriteries] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "password") {
+      validatePasswordCriteria(value, formData.confirmPassword);
+    } else if (name === "confirmPassword") {
+      validatePasswordCriteria(formData.password, value);
+    }
   };
 
-  const validateForm = () => {
+  const validatePasswordCriteria = (password, confirmPassword) => {
+    setPasswordCriteria({
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      match: password === confirmPassword && confirmPassword.length > 0,
+    });
+  };
+
+  const validateStep = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Nome é obrigatório.";
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      newErrors.email = "Email é obrigatório.";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Email inválido.";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Senha é obrigatória.";
-    } else {
-      const passwordCriteria = [
-        { regex: /.{8,}/, message: "Pelo menos 8 caracteres." },
-        { regex: /[A-Z]/, message: "Pelo menos uma letra maiúscula." },
-        { regex: /[a-z]/, message: "Pelo menos uma letra minúscula." },
-        { regex: /\d/, message: "Pelo menos um número." },
-        { regex: /[!@#$%^&*]/, message: "Pelo menos um caractere especial." },
-      ];
-
-      const failedCriteria = passwordCriteria.filter((criterion) => !criterion.regex.test(formData.password));
-
-      if (failedCriteria.length > 0) {
-        newErrors.password = `Senha não atende aos critérios: ${failedCriteria.map((c) => c.message).join(", ")}`;
+    if (step === 1) {
+      if (!formData.name.trim()) newErrors.name = "Nome é obrigatório.";
+      if (!formData.email.trim()) {
+        newErrors.email = "Email é obrigatório.";
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        newErrors.email = "Email inválido.";
       }
     }
 
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Confirmação de senha é obrigatória.";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "As senhas não correspondem.";
+    if (step === 2) {
+      if (!formData.code.trim()) {
+        newErrors.code = "Código de verificação é obrigatório.";
+      }
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const sendVerification = async (email) => {
+    setLoading(true);
+    try {
+      const response = await sendVerificationCode(email);
+      setAlert({ show: true, message: response.message, type: "success" });
+      return response.data;
+    } catch (error) {
+      setErrors(error.response);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyCodeVerification = async (email, code) => {
+    try {
+      const response = await verifyCode(email, code);
+      setAlert({ show: true, message: response.message, type: "success" });
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao confirmar código de validação:", error.response.data.error);
+      setAlert({ show: true, message: error.response.data.error, type: "error" });
+      throw error;
+    }
+  };
+
+  const prevStep = () => setStep((prev) => prev - 1);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (validateForm()) {
-      setLoading(true);
-      try {
-        const response = await registerUser(formData);
+    if (!validateStep()) return;
+    setLoading(true);
+    try {
+      if (step === 1) {
+        await sendVerification(formData.email); // Envia o código de verificação
+        setStep(2); // Avança para a etapa 2 (Código de Verificação)
+      } else if (step === 2) {
+        await verifyCodeVerification(formData.email, formData.code);
+        setStep(3);
+      } else if (step === 3) {
+        const response = await registerUser(formData); // Faz o registro
         if (response.message && !response.error) {
-          setFormData({ password: "", confirmPassword: "" });
-          setAlert({
-            show: true,
-            message: "Cadastro realizado com sucesso!",
-            type: "success",
-          });
+          setAlert({ show: true, message: "Cadastro realizado!", type: "success" });
           setTimeout(async () => {
-            try {
-              const loginResponse = await loginUser(formData.email, formData.password);
-              const { token, refreshToken } = loginResponse;
-              setAlert({
-                show: true,
-                message: loginResponse.message,
-                type: "success",
-              });
-              setTimeout(() => {
-                login(token, refreshToken);
-                navigate("/feed");
-              }, 2500);
-            } catch (error) {
-              setAlert({
-                show: true,
-                message: error.message || String(error),
-                type: "error",
-              });
-            } finally {
-              setLoading(false);
-            }
-          }, 2500);
-        } else if (response.error) {
-          setAlert({
-            show: true,
-            message: response.error,
-            type: "error",
-          });
+            const loginResponse = await loginUser(formData.email, formData.password);
+            login(loginResponse.token, loginResponse.refreshToken);
+            navigate("/feed");
+          }, 2000);
+        } else {
+          setAlert({ show: true, message: response.error, type: "error" });
         }
-      } catch (error) {
-        setAlert({
-          show: true,
-          message: error || "Ocorreu um erro inesperado.",
-          type: "error",
-        });
-      } finally {
-        setLoading(false);
       }
-    } else {
-      setAlert({
-        show: true,
-        message: "Por favor, corrija os erros no formulário.",
-        type: "error",
-      });
+    } catch (error) {
+      setAlert({ show: true, message: errors.data.error, type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (alert.show) {
+      setTimeout(() => {
+        setAlert({ show: false, message: "", type: "" });
+      }, 3000);
+    }
+  }, [alert.show]);
+
+  const resendCode = async () => {
+    try {
+      const response = await sendVerification(formData.email);
+      setAlert({ show: true, message: response.message, type: "success" });
+    } catch (error) {
+      console.error("Error ao enviar código de validação:", error);
+      setAlert({ show: true, message: error.response.data, type: "error" });
     }
   };
 
   return {
-    formData,
     errors,
+    passwordCriteria,
+    resendCode,
+    verifyCodeVerification,
+    sendVerification,
     alert,
+    setAlert,
     showPassword,
     showConfirmPassword,
-    showCriteries,
     loading,
     setLoading,
     handleInputChange,
     handleSubmit,
-    togglePasswordVisibility,
-    toggleConfirmPasswordVisibility,
-    setsShowCriteries,
-    setAlert,
+    step,
+    formData,
+    prevStep,
+    togglePasswordVisibility: () => setShowPassword(!showPassword),
+    toggleConfirmPasswordVisibility: () => setShowConfirmPassword(!showConfirmPassword),
   };
 };

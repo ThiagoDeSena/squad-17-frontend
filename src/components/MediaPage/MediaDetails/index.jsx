@@ -356,7 +356,7 @@ export const MediaDetails = ({ mediaType, mediaId }) => {
                                 reviewId={review.id}
                                 movieId={review.mediaId}
                                 plataform={review.mediaType}
-                                profileId={review.userId}
+                                profileId={review.username  }
                                 selfProfile={review.isUser}
                             />
                         ))

@@ -33,6 +33,7 @@ export const ReviewContainer = ({
   isCommentPage = false,
   selfProfile = false,
   setDelete = false,
+  deleted=false,
 }) => {
   const [mediaData, setMediaData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -121,7 +122,7 @@ export const ReviewContainer = ({
       const response = await deleteReview(reviewId);
       if (response === 204) {
         setIsDelete(!isDelete);
-        setDelete(true);
+        setDelete(!deleted);
       }
     } catch (error) {
       console.error(error);

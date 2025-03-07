@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BannerLateral } from "../../Utils/BannerLateral";
-import { AiOutlineMail, AiOutlineLock, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { AiOutlineMail, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { IoShieldCheckmark, IoShieldCheckmarkOutline } from "react-icons/io5";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import { AlertWindow } from "../../Utils/AlertWindow";
 import "aos/dist/aos.css";
@@ -8,24 +9,52 @@ import { SphereSpinner } from "react-spinners-kit";
 import { useCadastro } from "../../../hooks/useCadastro";
 import { GoogleLoginButton } from "../../Utils/GoogleLoginButton";
 import { Link } from "react-router-dom";
+import Aos from "aos";
 
 export const Cadastro = () => {
   const {
     formData,
-    errors,
     alert,
     showPassword,
     showConfirmPassword,
-    showCriteries,
     loading,
     setLoading,
     handleInputChange,
     handleSubmit,
     togglePasswordVisibility,
     toggleConfirmPasswordVisibility,
-    setsShowCriteries,
     setAlert,
+    step,
+    passwordCriteria,
+    resendCode,
   } = useCadastro();
+
+  const [code, setCode] = useState(new Array(6).fill(""));
+  const handleChange = (value, index) => {
+    if (!/^\d$/.test(value) && value !== "") return;
+
+    const newCode = [...code];
+    newCode[index] = value;
+    formData.code = newCode.join("");
+    setCode(newCode);
+
+    if (value && index < 5) {
+      document.getElementById(`code-input-${index + 1}`).focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      document.getElementById(`code-input-${index - 1}`).focus();
+    }
+  };
+
+  useEffect(() => {
+    Aos.init({
+      duration: 2000,
+      easing: "ease-in-out",
+    });
+  }, []);
 
   return (
     <>
@@ -50,158 +79,176 @@ export const Cadastro = () => {
             <h1 className="text-5xl xl:text-6xl font-bold font-moonjelly text-center mb-2 mt-0 md:mt-6 text-white">
               Cadastro
             </h1>
-
-            {/* Inputs */}
-            <div className="flex flex-col gap-6">
-              {/* Nome */}
-              <div className="relative">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Nome"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
-                  disabled={loading}
-                />
-                <MdDriveFileRenameOutline className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
-                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-              </div>
-
-              {/* Email */}
-              <div className="relative">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
-                  disabled={loading}
-                />
-                <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
-                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-              </div>
-
-              {/* Senha */}
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="Senha"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  onFocus={() => setsShowCriteries(true)}
-                  onBlur={() => {
-                    setTimeout(() => {
-                      setsShowCriteries(false);
-                    }, 2000);
-                  }}
-                  disabled={loading}
-                  className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
-                />
-                <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
+            {/* Etapa 1: Nome e Email */}
+            {step === 1 && (
+              <>
+                <div className="flex flex-col gap-6">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Nome"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                      disabled={loading}
+                    />
+                    <MdDriveFileRenameOutline className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                      disabled={loading}
+                    />
+                    <AiOutlineMail className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
+                  </div>
+                </div>
+              </>
+            )}
+            {/* Etapa 2: Código de Verificação */}
+            {step === 2 && (
+              <div
+                className="flex flex-col gap-4 p-2 bg-black rounded-xl shadow-lg text-white overflow-hidden"
+                data-aos="fade-left"
+              >
+                <p className="text-center">
+                  Digite o código enviado para <span className="text-primary60 underline">{formData.email}</span>
+                </p>
+                <div className="flex justify-center gap-2 overflow-hidden">
+                  {code.map((digit, index) => (
+                    <input
+                      key={index}
+                      id={`code-input-${index}`}
+                      type="text"
+                      value={digit}
+                      onChange={(e) => handleChange(e.target.value, index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      maxLength={1}
+                      className="w-12 h-12 text-center bg-gray-800 border-b rounded-sm text-white text-2xl focus:outline-none focus:ring-2 focus:ring-primary50"
+                    />
+                  ))}
+                </div>
                 <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
+                  className="text-primary40 underline cursor-pointer hover:text-neutral20 w-fit text-center mx-auto"
+                  onClick={resendCode}
                 >
-                  {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+                  Reenviar Código
                 </button>
-                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-
-                {/* Critérios de Senha */}
-                {showCriteries && (
-                  <ul className="mt-2 text-sm text-neutral10">
-                    <li className={/.{8,}/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                      Pelo menos 8 caracteres.
-                    </li>
-                    <li className={/[A-Z]/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                      Pelo menos uma letra maiúscula.
-                    </li>
-                    <li className={/[a-z]/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                      Pelo menos uma letra minúscula.
-                    </li>
-                    <li className={/\d/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                      Pelo menos um número.
-                    </li>
-                    <li className={/[!@#$%^&*]/.test(formData.password) ? "text-green-500 line-through" : ""}>
-                      Pelo menos um caractere especial.
-                    </li>
-                    <li
-                      className={
-                        formData.password === formData.confirmPassword && formData.confirmPassword.length > 0
-                          ? "text-green-500 line-through"
-                          : ""
-                      }
-                    >
-                      As senhas devem iguais
-                    </li>
-                  </ul>
-                )}
               </div>
+            )}
+            {/* Etapa 3: Criar Senha */}
+            {step === 3 && (
+              <>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Senha"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
+                  >
+                    {showPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    placeholder="Confirmar Senha"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleConfirmPasswordVisibility}
+                    className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
+                  >
+                    {showConfirmPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
+                  </button>
 
-              {/* Confirmação de Senha */}
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  placeholder="Confirmar Senha"
-                  value={formData.confirmPassword}
-                  disabled={loading}
-                  onChange={handleInputChange}
-                  onFocus={() => setsShowCriteries(true)}
-                  onBlur={() => {
-                    setTimeout(() => {
-                      setsShowCriteries(false);
-                    }, 2000);
-                  }}
-                  className="w-full p-3 xl:p-4 text-base xl:text-2xl bg-black border-b rounded-sm text-white focus:outline-none focus:ring-2 focus:ring-primary50 focus:border-none"
-                />
-                <AiOutlineLock className="absolute right-12 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl" />
-                <button
-                  type="button"
-                  onClick={toggleConfirmPasswordVisibility}
-                  className="absolute right-3 top-4 xl:top-5 text-gray-400 text-2xl xl:text-3xl"
-                >
-                  {showConfirmPassword ? <AiFillEye /> : <AiFillEyeInvisible />}
-                </button>
-                {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
-              </div>
-            </div>
-
-            {/* Botão de Registrar */}
+                  <div>
+                    <ul className="text-sm text-gray-300 mt-3 flex flex-col gap-2">
+                      <li
+                        className={`${
+                          passwordCriteria.length ? "line-through text-semanticSucess" : "text-semanticWarning"
+                        } flex items-center gap-2`}
+                      >
+                        {passwordCriteria.length ? <IoShieldCheckmarkOutline size={20} /> : <IoShieldCheckmark size={20} />}{" "}
+                        Mínimo de 8 caracteres
+                      </li>
+                      <li
+                        className={`${
+                          passwordCriteria.uppercase ? "line-through text-semanticSucess" : "text-semanticWarning"
+                        } flex items-center gap-2`}
+                      >
+                        {passwordCriteria.uppercase ? <IoShieldCheckmarkOutline size={20} /> : <IoShieldCheckmark size={20} />}{" "}
+                        Pelo menos 1 letra maiúscula
+                      </li>
+                      <li
+                        className={`${
+                          passwordCriteria.special ? "line-through text-semanticSucess" : "text-semanticWarning"
+                        } flex items-center gap-2`}
+                      >
+                        {passwordCriteria.special ? <IoShieldCheckmarkOutline size={20} /> : <IoShieldCheckmark size={20} />}
+                        Pelo menos 1 símbolo especial
+                      </li>
+                      <li
+                        className={`${
+                          passwordCriteria.match ? "line-through text-semanticSucess" : "text-semanticWarning"
+                        } flex items-center gap-2`}
+                      >
+                        {passwordCriteria.match ? <IoShieldCheckmarkOutline size={20} /> : <IoShieldCheckmark size={20} />}
+                        As senhas devem corresponder
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </>
+            )}
+            {/* Botão de Continuar */}
             <div className="flex items-center justify-center w-full">
               <button
                 className={`${
                   loading ? "opacity-50" : "w-full"
-                } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110`}
+                } bg-primary90 text-white p-3 xl:p-4 text-base xl:text-2xl rounded-full font-semibold hover:bg-primary70 transition hover:scale-110
+                } `}
                 disabled={loading}
                 type="submit"
               >
-                {loading ? <SphereSpinner size={50} color="#fff" /> : "Cadastro"}
+                {loading ? <SphereSpinner size={50} color="#fff" /> : "Continuar"}
               </button>
             </div>
-
             {/* Continue com Google */}
             <div className="flex items-center my-2 xl:text-lg text-gray-400">
               <span className="flex-grow border-t border-gray-400"></span>
               <span className="mx-2">Continuar Com</span>
               <span className="flex-grow border-t border-gray-400"></span>
             </div>
-
             {/* Continue com Google */}
             <div>
               <GoogleLoginButton isLoading={loading} setIsLoading={setLoading} alert={alert} setAlert={setAlert} />
             </div>
-
             {/* Criar conta */}
             <p className="text-center text-sm xl:text-lg text-gray-400">
               Já Possui uma Conta?{" "}
               <Link to={"/"} className="pointer text-primary70 hover:underline">
                 Login!
               </Link>
-            </p>
+            </p>{" "}
           </div>
         </form>
       </div>

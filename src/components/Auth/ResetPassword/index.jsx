@@ -6,6 +6,7 @@ import "aos/dist/aos.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AlertWindow } from "../../Utils/AlertWindow";
 import { resetPassword, sendEmailRecoverPassword, validateCode } from "../../../api/authAPI";
+import { IoShieldCheckmarkOutline,IoShieldCheckmark  } from "react-icons/io5";
 
 export const ResetPassword = () => {
   const [step, setStep] = useState(1);
@@ -45,6 +46,7 @@ export const ResetPassword = () => {
       document.getElementById(`code-input-${index - 1}`).focus();
     }
   };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -261,17 +263,53 @@ export const ResetPassword = () => {
                 </div>
                 <div>
                   <ul className="text-sm text-gray-300 mb-3">
-                    <li className={passwordCriteria.length ? "line-through text-green-400" : ""}>
-                      - Mínimo de 8 caracteres
+                    <li
+                      className={`${
+                        passwordCriteria.length ? "line-through text-semanticSucess" : "text-semanticWarning"
+                      } flex items-center gap-2`}
+                    >
+                      {passwordCriteria.length ? (
+                        <IoShieldCheckmarkOutline size={20} />
+                      ) : (
+                        <IoShieldCheckmark size={20} />
+                      )}{" "}
+                      Mínimo de 8 caracteres
                     </li>
-                    <li className={passwordCriteria.uppercase ? "line-through text-green-400" : ""}>
-                      - Pelo menos 1 letra maiúscula
+                    <li
+                      className={`${
+                        passwordCriteria.uppercase ? "line-through text-semanticSucess" : "text-semanticWarning"
+                      } flex items-center gap-2`}
+                    >
+                      {passwordCriteria.uppercase ? (
+                        <IoShieldCheckmarkOutline size={20} />
+                      ) : (
+                        <IoShieldCheckmark size={20} />
+                      )}{" "}
+                      Pelo menos 1 letra maiúscula
                     </li>
-                    <li className={passwordCriteria.special ? "line-through text-green-400" : ""}>
-                      - Pelo menos 1 símbolo especial
+                    <li
+                      className={`${
+                        passwordCriteria.special ? "line-through text-semanticSucess" : "text-semanticWarning"
+                      } flex items-center gap-2`}
+                    >
+                      {passwordCriteria.special ? (
+                        <IoShieldCheckmarkOutline size={20} />
+                      ) : (
+                        <IoShieldCheckmark size={20} />
+                      )}
+                      Pelo menos 1 símbolo especial
                     </li>
-                    <li className={passwordCriteria.match ? "line-through text-green-400" : ""}>
-                      - As senhas devem corresponder
+                    <li
+                      className={`${
+                        passwordCriteria.match ? "line-through text-semanticSucess" : "text-semanticWarning"
+                      } flex items-center gap-2`}
+                    >
+                      {passwordCriteria.match ? (
+                        <IoShieldCheckmarkOutline size={20} />
+                      ) : (
+                        <IoShieldCheckmark size={20} />
+                      )}
+                      As senhas devem corresponder
                     </li>
                   </ul>
                 </div>
