@@ -4,7 +4,7 @@ import { FaPlus } from "react-icons/fa";
 
 Modal.setAppElement("#root");
 
-export const BannerProfileModal = ({ isSelectBannerOpen, setIsSelectBannerOpen, profileImage, selectedBanner, setSelectedBanner, handleMore, clickMore, loading, handleProfileBanner }) => {
+export const BannerProfileModal = ({ isSelectBannerOpen, setIsSelectBannerOpen, profileImage, selectedBanner, setSelectedBanner, handleMore, clickMore, loading, handleProfileBanner, selectedProfileImage }) => {
   return (
     <>
       <Modal

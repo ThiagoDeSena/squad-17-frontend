@@ -13,7 +13,7 @@ export const FeedScreen = () => {
             <div className="overflow-hidden">
                 <TrendingBanner/>
                 <Recomended mt={'mt-20'} title={"Recomendado para você"} viewMore={true}/>
-                <ReviewPost setIsPost={setIsPost} />
+                <ReviewPost setIsPost={setIsPost} isPost={isPost} />
                 <Feed isPost={isPost}/>
             </div>
         </>

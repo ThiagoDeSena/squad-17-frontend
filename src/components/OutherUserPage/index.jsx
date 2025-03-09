@@ -16,6 +16,7 @@ export const OutherUserPage = ({ id }) => {
   const [showFollow, setShowFollow] = useState("");
   const [isType, setIsType] = useState("");
   const [followers, setFollowers] = useState([]);
+  const [topReviews, setTopReviews] = useState([]);
 
   const [isUser, setIsUser] = useState({
     name: "",
@@ -67,6 +68,18 @@ export const OutherUserPage = ({ id }) => {
         console.error(error);
       }
     };
+
+    const fetchTopReviews = async () => {
+      try {
+        const response = await getReviewsByUserId(id, "?sort=likes,desc");
+        console.response;
+        setTopReviews(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchTopReviews();
     fetchIsFollow();
     fetchUserReview();
     fetchUser();
@@ -118,7 +131,9 @@ export const OutherUserPage = ({ id }) => {
 
             <h1 className="text-4xl md:text-5xl font-bold text-neutral10 mb-2 font-moonjelly text-center lg:text-left flex flex-col">
               {isUser.name}
-              <span className="text-lg text-primary80 font-poppins text-center hover:underline hover:cursor-pointer">@{isUser.username}</span>
+              <span className="text-lg text-primary80 font-poppins text-center hover:underline hover:cursor-pointer">
+                @{isUser.username}
+              </span>
             </h1>
 
             <div className="flex justify-center lg:justify-start gap-8 mt-4 text-neutral10 font-poppins">
@@ -200,14 +215,23 @@ export const OutherUserPage = ({ id }) => {
                     <p className="text-2xl font-bold text-neutral10 font-moonjelly">Nehuma Resenha Publicada!</p>
                   </div>
                 ))}
-              {currentTab === "top" && (
-                <>
+              {currentTab === "top" &&
+                (topReviews && topReviews.length > 0 ? (
+                  topReviews.map((review) => (
+                    <ReviewContainer
+                      key={review.id}
+                      movieId={review.mediaId}
+                      plataform={review.mediaType}
+                      profileId={isUser.username}
+                      reviewId={review.id}
+                    />
+                  ))
+                ) : (
                   <div className="flex items-center flex-col justify-center">
                     <img src="/images/no-content.svg" alt="Sem conteúdo" className="w-[400px] h-[350px] mx-auto" />
-                    <p className="text-2xl font-bold text-neutral10 font-moonjelly">Nehuma Resenha Encontrada!</p>
+                    <p className="text-2xl font-bold text-neutral10 font-moonjelly">Nehuma Resenha Publicada!</p>
                   </div>
-                </>
-              )}
+                ))}
             </div>
           </div>
         </div>

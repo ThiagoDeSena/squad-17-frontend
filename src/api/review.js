@@ -2,7 +2,7 @@ import axios from "axios";
 import { handleTokenRefresh } from "./handleTokenRefresh";
 
 const reviewApi = axios.create({
-  baseURL: "http://localhost:8081/reviews",
+  baseURL: "http://localhost:8081/",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json;charset=utf-8",
@@ -41,10 +41,11 @@ reviewApi.interceptors.response.use(
   }
 );
 
-export const getReviews = async () => {
+export const getReviews = async (page = 0) => {
   try {
-    const response = await reviewApi.get();
-    return response.data.content;
+    const response = await reviewApi.get(`reviews?page=${page}`);
+
+    return response.data;
   } catch (error) {
     console.error("Erro ao buscar reviews:", error);
     throw error;
@@ -53,7 +54,7 @@ export const getReviews = async () => {
 
 export const getReviewsById = async (id) => {
   try {
-    const response = await reviewApi.get(`/${id}`);
+    const response = await reviewApi.get(`reviews/${id}`);
     return response.data;
   } catch (error) {
     console.error("Erro ao carregar review!", error);
@@ -63,7 +64,7 @@ export const getReviewsById = async (id) => {
 
 export const getReviewsByUserId = async (id, query = "") => {
   try {
-    const response = await reviewApi.get(`/user/${id}${query}`);
+    const response = await reviewApi.get(`reviews/user/${id}${query}`);
     return response.data.content;
   } catch (error) {
     console.error("Erro ao buscar reviews:", error);
@@ -73,7 +74,7 @@ export const getReviewsByUserId = async (id, query = "") => {
 
 export const getReviewByMedia = async (mediaId, mediaType) => {
   try {
-    const response = await reviewApi.get(`/media/${mediaType}/${mediaId}`);
+    const response = await reviewApi.get(`reviews/media/${mediaType}/${mediaId}`);
     return response.data.content;
   } catch (error) {
     console.error("Erro ao buscar reviews:", error);
@@ -81,10 +82,10 @@ export const getReviewByMedia = async (mediaId, mediaType) => {
   }
 };
 
-export const getTopReviews = async () => {
+export const getTopReviews = async (page = 0) => {
   try {
-    const response = await reviewApi.get("/top");
-    return response.data.content
+    const response = await reviewApi.get(`reviews/top?size=5&page=${page}`);
+    return response.data
   } catch (error) {
     console.log(error);
     throw error;    
@@ -93,7 +94,7 @@ export const getTopReviews = async () => {
 
 export const notaGeral = async (mediaId, mediaType) => {
   try {
-    const response = await reviewApi.get(`media/${mediaId}/${mediaType}/notaGeral`);
+    const response = await reviewApi.get(`reviews/media/${mediaId}/${mediaType}/notaGeral`);
     return response.data
   } catch (error) {
     console.log(error);
@@ -101,10 +102,10 @@ export const notaGeral = async (mediaId, mediaType) => {
   }
 }
 
-export const getReviewByFollowing = async () => {
+export const getReviewByFollowing = async (page = 0) => {
   try {
-    const response = await reviewApi.get("/following");
-    return response.data.content;
+    const response = await reviewApi.get(`reviews/following?&page=${page}`);
+    return response.data;
   } catch (error) {
     console.error("Erro ao buscar reviews dos usuarios que segue:", error);
     throw error;
@@ -113,7 +114,7 @@ export const getReviewByFollowing = async () => {
 
 export const getReviewInterations = async (id, type) => {
     try {
-      const response = await reviewApi.get(`${id}/${type}/users`)
+      const response = await reviewApi.get(`reviews/${id}/${type}/users`)
       return response.data.content;
     } catch (error) {
       console.error(error);
@@ -124,7 +125,7 @@ export const getReviewInterations = async (id, type) => {
 
 export const createReview = async (review) => {
   try {
-    const response = await reviewApi.post("", {
+    const response = await reviewApi.post("/reviews", {
       content: review.content,
       mediaId: review.mediaId,
       mediaType: review.mediaType,
@@ -140,7 +141,7 @@ export const createReview = async (review) => {
 
 export const deleteReview = async (id) => {
   try {
-    const response = await reviewApi.delete(`/${id}`);
+    const response = await reviewApi.delete(`reviews/${id}`);
     return response.status;
   } catch (error) {
     console.error("Erro ao deletar review!", error);
@@ -150,7 +151,7 @@ export const deleteReview = async (id) => {
 
 export const updateReview = async (id, update) => {
   try {
-    const response = await reviewApi.patch(`/${id}`, {
+    const response = await reviewApi.patch(`reviews/${id}`, {
       content: update.content,
       nota: update.nota,
       containsSpoiler: update.containsSpoiler,
@@ -165,7 +166,7 @@ export const updateReview = async (id, update) => {
 
 export const interationReview = async (id, interaction) => {
   try {
-    const response = await reviewApi.put(`${id}/${interaction}`);
+    const response = await reviewApi.put(`reviews/${id}/${interaction}`);
     return response.data;
   } catch (error) {
     console.error("Erro ao interagir com review!", error);
@@ -175,7 +176,7 @@ export const interationReview = async (id, interaction) => {
 
 export const verifyInteraction = async (id, interaction) => {
   try {
-    const response = await reviewApi.get(`${id}/${interaction}`);
+    const response = await reviewApi.get(`reviews/${id}/${interaction}`);
     return response.data;
   } catch (error) {
     console.error("Erro ao verificar review!", error);

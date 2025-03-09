@@ -33,7 +33,7 @@ export const ReviewContainer = ({
   isCommentPage = false,
   selfProfile = false,
   setDelete = false,
-  deleted=false,
+  deleted = false,
 }) => {
   const [mediaData, setMediaData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -180,12 +180,13 @@ export const ReviewContainer = ({
       setIsType(type);
       setIsModalInterationOpen(true);
       const response = await getReviewInterations(id, type);
-      console.log(response)
+      console.log(response);
       return setInteration(response);
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
     <div
       className={`bg-transparent  border-b  border-primary90 ${
@@ -197,10 +198,11 @@ export const ReviewContainer = ({
         <RecomendedCard
           image={`https://image.tmdb.org/t/p/w1280/${mediaData.backdrop_path}`}
           title={mediaData.title || mediaData.name || "Título não disponível"}
-          genre={mediaData.genres?.map((genre) => genre.name).join(", ")}
+          genre={mediaData.genres.map((genre) => genre.name).join(", ")}
           className="relative w-full h-56 md:h-96 rounded-lg overflow-hidden shadow-sm shadow-neutral60 cursor-pointer transform ease-in-out hover:scale-105 font-poppins text-center border-2 border-neutral80"
           id={movieId}
           type={plataform}
+          review={true}
         />
       </div>
 
@@ -315,7 +317,7 @@ export const ReviewContainer = ({
               />
             </button>
             <span
-              onClick={() => review.likes > 0 ? fetchInterationList(reviewId, "like") : ""}
+              onClick={() => (review.likes > 0 ? fetchInterationList(reviewId, "like") : "")}
               className={`${review.likes > 0 ? "text-neutral10 font-bold cursor-pointer" : ""}`}
             >
               {review.likes}
@@ -339,7 +341,7 @@ export const ReviewContainer = ({
               />
             </button>
             <span
-              onClick={() => review.deslikes > 0 ? fetchInterationList(reviewId, "dislike") : ""}
+              onClick={() => (review.deslikes > 0 ? fetchInterationList(reviewId, "dislike") : "")}
               className={`${review.deslikes > 0 ? "text-neutral10 font-bold cursor-pointer" : ""}`}
             >
               {review.deslikes}

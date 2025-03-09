@@ -6,12 +6,14 @@ import { Loading } from "../../Utils/Loading";
 import { SphereSpinner } from "react-spinners-kit";
 import { createReview, getReviewsById, updateReview } from "../../../api/review";
 import { AlertWindow } from "../../Utils/AlertWindow";
+import { useNavigate } from "react-router-dom";
 
 export const ReviewPost = ({
   unique = false,
   uniqueTitle = null,
   uniqueMedia = [],
   setIsPost = false,
+  isPost = false,
   reviewId,
   setEdit,
 }) => {
@@ -20,6 +22,7 @@ export const ReviewPost = ({
   const [selectedRating, setSelectedRating] = useState(0);
   const [selectedMediaId, setSelectedMediaId] = useState("");
   const [selectedMediaType, setSelectedMediaType] = useState("");
+  const [mediaName, setMediaName] = useState("");
   const [selectedMediaBanner, setSelectedMediaBanner] = useState("");
   const [mediaList, setMediaList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,6 +32,7 @@ export const ReviewPost = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const maxChars = 3000;
+  const navigate = useNavigate();
   const [alert, setAlert] = useState({
     show: false,
     message: "",
@@ -91,6 +95,7 @@ export const ReviewPost = ({
     setSelectedMediaId(media.id);
     setSelectedMediaType(media.media_type);
     setSelectedMediaBanner(media.backdrop_path || media.poster_path || "");
+    setMediaName(media.title || media.name);
     setIsModalOpen(false);
   };
 
@@ -121,7 +126,7 @@ export const ReviewPost = ({
             message: `Review postada com sucesso`,
             type: "success",
           });
-          setIsPost(response.data.id);
+          setIsPost(!isPost);
         }
       } else {
         const update = {
@@ -195,7 +200,15 @@ export const ReviewPost = ({
                 Poste uma Nova Resenha sobre <span className="text-primary50">{uniqueTitle}</span>
               </p>
             ) : (
-              <p>Poste uma Nova Resenha sobre um filme ou série</p>
+              <p>
+                {selectedMediaType === "" && "Poste uma nova Resenha de um Filme ou Série"}
+                {selectedMediaType.length > 0 && `Poste uma nova Resenha sobre: `}
+                {selectedMediaType.length > 0 && (
+                  <span className="text-primary50 font-moonjelly text-md underline cursor-pointer" onClick={() => navigate(`/media/${selectedMediaType}/${selectedMediaId}`)}>
+                    {mediaName.length > 20 ? `${mediaName.substring(0, 20)}...` : mediaName}
+                  </span>
+                )}
+              </p>
             )}
           </h2>
           <div className="flex items-center gap-2">
@@ -275,7 +288,9 @@ export const ReviewPost = ({
 
         <button
           onClick={handleSubmit}
-          className={`bg-primary50 hover:bg-primary40 text-white py-2 px-2 md:px-4 rounded-lg flex items-center lg:absolute lg:bottom-${unique ? "4": "6"}  gap-4 self-center lg:self-start bottom-4
+          className={`bg-primary50 hover:bg-primary40 text-white py-2 px-2 md:px-4 rounded-lg flex items-center lg:absolute lg:bottom-${
+            unique ? "4" : "6"
+          }  gap-4 self-center lg:self-start bottom-4
                 ${
                   reviewText.length === 0 || selectedMediaId === ""
                     ? "pointer-events-none opacity-50 cursor-not-allowed"

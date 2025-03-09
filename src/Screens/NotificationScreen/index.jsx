@@ -34,7 +34,7 @@ export const NotificationScreen = () => {
       console.error("Erro ao deletar notificação:", error);
     }
   };
-  
+
   const handleNavigate = async (notify) => {
     try {
       await readNotification(notify.id);
@@ -45,7 +45,7 @@ export const NotificationScreen = () => {
       }
     } catch (error) {
       console.error("Erro ao marcar notificação como lida:", error);
-    }finally{
+    } finally {
       setNewNotify(null);
     }
   };
@@ -54,7 +54,7 @@ export const NotificationScreen = () => {
   }
   return (
     <div className="min-h-screen bg-neutral90 flex flex-col items-center py-10 px-4 sm:px-10 relative">
-      <h1 className="text-white text-2xl font-bold mb-6">📩 Suas Notificações</h1>
+      <h1 className="text-white text-2xl font-bold mb-6 mx-auto text-center">📩 Suas Notificações</h1>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -110,7 +110,10 @@ export const NotificationScreen = () => {
             </AnimatePresence>
           </ul>
         ) : (
-          <p className="text-neutral30 text-center text-lg py-4">Nenhuma notificação no momento.</p>
+          <div className="flex flex-col gap-4 justify-center items-center">
+            <img src="public/images/no-notifications.svg" height={12}/>
+            <p className="text-neutral30 text-center text-lg py-4">Nenhuma notificação no momento.</p>
+          </div>
         )}
       </motion.div>
     </div>

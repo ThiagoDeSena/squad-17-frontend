@@ -50,6 +50,16 @@ export const getUser = async () => {
   }
 };
 
+
+export const getTopUsers =  async () => {
+  try {
+    const response = await userApi.get("top-tier");
+    return response.data;
+  } catch (error) {
+    console.error(error + "Erro ao carregar os melhores usuarios!");
+    throw error;
+  }
+}
 export const putImageProfile = async (image) => {
   try {
     const response = await userApi.put("/profile-image", { image: image });

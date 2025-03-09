@@ -42,6 +42,7 @@ export const RecomendedCard = ({
     className,
     type,
     id,
+    review = false
 }) => {
     const navigate = useNavigate();
     const genreString = Array.isArray(genre) && genre.length > 0
@@ -97,7 +98,7 @@ export const RecomendedCard = ({
             <div className="absolute bottom-0 w-full p-2 bg-black/20 backdrop-blur-md text-white">
                 <h3 className="text-md font-semibold truncate">{title}</h3>
                 <p className="text-sm text-gray-300 truncate">
-                    {genreString}
+                    {review ? genre : genreString}
                 </p>
             </div>
         </div>

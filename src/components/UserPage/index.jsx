@@ -56,6 +56,7 @@ export const UserPage = () => {
       setLoading(true);
       try {
         const response = await getUser();
+
         setUserInfo({
           id: response.id,
           name: response.name,
@@ -77,14 +78,20 @@ export const UserPage = () => {
     const fetchUserReview = async () => {
       try {
         const response = await getReviews();
-        setUserReview(response);
+        setUserReview(response.content);
       } catch (error) {
         console.error(error);
       }
     };
 
+    if (isPost) {
+      setTimeout(() => {
+        fetchUserInfo();
+      }, 1000);
+    } else {
+      fetchUserInfo();
+    }
     fetchUserReview();
-    fetchUserInfo();
   }, [isPost, isDelete, onUpdate]);
 
   const [alertWindow, setAlertWindow] = useState({ message: "", type: "" });
@@ -289,11 +296,11 @@ export const UserPage = () => {
           {/* Review Post */}
           {width > 1024 && width < 1385 ? (
             <div className="w-full mb-6" style={{ zoom: "0.7" }}>
-              <ReviewPost setIsPost={setIsPost} />
+              <ReviewPost setIsPost={setIsPost} isPost={isPost} />
             </div>
           ) : (
             <div className=" relative w-full mb-6 right-[-1vw] md:right-12">
-              <ReviewPost setIsPost={setIsPost} />
+              <ReviewPost setIsPost={setIsPost} isPost={isPost} />
             </div>
           )}
 
@@ -334,6 +341,7 @@ export const UserPage = () => {
           clickMore={clickMore}
           loading={loading}
           handleProfileImage={handleProfileImage}
+      
         />
       )}
 
