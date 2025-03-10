@@ -3,7 +3,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import Modal from "react-modal";
 import { deleteUser, updateUser } from "../../../api/userAPI";
-import { UserContext } from "../../../contexts/UserContext";
+import { UserContext } from "../../../Contexts/UserContext";
 import { DeleteProfileModal } from "../DeleteProfileModal";
 
 Modal.setAppElement("#root");

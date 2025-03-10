@@ -5,7 +5,7 @@ import { RouterApp } from "./RouterApp";
 import { Analytics } from "@vercel/analytics/react";
 import { UserProvider } from "./Contexts/UserContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { NotificationProvider } from "./contexts/NotificationContext";
+import { NotificationProvider } from "./Contexts/NotificationContext";
 
 createRoot(document.getElementById("root")).render(
   <>

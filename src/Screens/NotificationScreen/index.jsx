@@ -5,7 +5,7 @@ import { deleteNotification, getNotifications, readNotification } from "../../ap
 import { getUsersInfo } from "../../api/userAPI";
 import { FaTimes } from "react-icons/fa";
 import { Loading } from "../../components/Utils/Loading";
-import { useNotification } from "../../contexts/NotificationContext";
+import { useNotification } from "../../Contexts/NotificationContext";
 export const NotificationScreen = () => {
   const [notifications, setNotifications] = useState();
   const { newNotify, setNewNotify } = useNotification();

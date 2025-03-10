@@ -74,8 +74,14 @@ cd squad-17-frontend
 ```bash
 npm install
 ```
+### 3️⃣ Rodar a Aplicação com Docker
 
-### 4️⃣ Rodar a Aplicação
+```bash
+docker-compose up --build -d
+```
+`A aplicação estará disponível em` **http://localhost:3000**
+
+### 4️⃣ 4️⃣ Rodar a Aplicação Manualmente (Sem Docker)
 
 ```bash
 npm run dev

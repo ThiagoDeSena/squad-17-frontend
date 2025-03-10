@@ -4,7 +4,7 @@ import { WatchCard } from "./WatchCard";
 import { FiArrowUpRight, FiBookmark, FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { categoryMoved, getWatchList, removeToWatchlist } from "../../api/watchListApi";
+import { categoryMoved, getWatchList, removeToWatchlist } from "../../api/watchlistApi";
 import { AlertWindow } from "../Utils/AlertWindow";
 
 export const WatchList = () => {

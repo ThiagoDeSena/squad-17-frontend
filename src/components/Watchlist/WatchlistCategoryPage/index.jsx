@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { WatchCard } from "../WatchCard";
-import { categoryMoved, getWatchList, removeToWatchlist } from "../../../api/watchListApi";
+import { categoryMoved, getWatchList, removeToWatchlist } from "../../../api/watchlistApi";
 import { useEffect } from "react";
 import { AlertWindow } from "../../Utils/AlertWindow";
 import { useInView } from "react-intersection-observer";

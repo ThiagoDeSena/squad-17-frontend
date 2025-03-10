@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../api/watchListApi";
+import { addToWatchList, isToTheWatchList, removeToWatchlist } from "../../../api/watchlistApi";
 
 const genres = {
     28: "Ação",

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { handleTokenRefresh } from "../../api/handleTokenRefresh";
 import { useNavigate } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa";
-import { useNotification } from "../../contexts/NotificationContext";
+import { useNotification } from "../../Contexts/NotificationContext";
 const Notification = ({ message, onClose }) => {
   const navigate = useNavigate();
   useEffect(() => {

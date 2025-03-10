@@ -16,7 +16,7 @@ import { ScrollToTop } from "../Utils/ScrollToTop";
 import { UserContext } from "../../Contexts/UserContext";
 import { getUser } from "../../api/userAPI";
 import NotificationContainer from "../Notification";
-import { useNotification } from "../../contexts/NotificationContext";
+import { useNotification } from "../../Contexts/NotificationContext";
 
 export const SideBar = () => {
   const location = useLocation();
