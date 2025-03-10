@@ -50,8 +50,7 @@ export const getUser = async () => {
   }
 };
 
-
-export const getTopUsers =  async () => {
+export const getTopUsers = async () => {
   try {
     const response = await userApi.get("top-tier");
     return response.data;
@@ -59,7 +58,7 @@ export const getTopUsers =  async () => {
     console.error(error + "Erro ao carregar os melhores usuarios!");
     throw error;
   }
-}
+};
 export const putImageProfile = async (image) => {
   try {
     const response = await userApi.put("/profile-image", { image: image });
@@ -106,6 +105,16 @@ export const deleteUser = async (pass) => {
     return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+};
+
+export const searchUser = async (username, page = 0, size = 5) => {
+  try {
+    const response = await userApi.get(`search?usernameUser=${username}&page=${page}&size=${size}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };

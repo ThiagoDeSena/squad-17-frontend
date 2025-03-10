@@ -234,7 +234,7 @@ export const ReviewPost = ({
           <div className="flex-1 flex flex-col gap-4">
             <textarea
               className="w-full h-52 md:h-52 p-3 md:p-4 bg-neutral-700 border-2 border-orange-500 rounded-lg resize-none focus:outline-none mb-4"
-              placeholder="Texto de resenha (máximo de 2000 caracteres)*"
+              placeholder="Texto de resenha (máximo de 3000 caracteres)*"
               maxLength={maxChars}
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
