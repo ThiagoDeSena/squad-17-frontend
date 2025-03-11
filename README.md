@@ -2,7 +2,6 @@
 
 ![License](https://img.shields.io/static/v1?label=license&message=MIT&color=orange) &nbsp;
 ![Cargo version](https://img.shields.io/static/v1?label=cargo&message=v0.1.0&color=yellow) &nbsp;
-![Repository size](https://img.shields.io/github/repo-size/wallacemt/squad-17-frontend?color=blue) &nbsp;
 ![Pull request](https://img.shields.io/static/v1?label=PR&message=welcome&color=green)
 
 ## Indices
@@ -53,6 +52,8 @@ critix-frontend/
 │   ├── contexts/
 │   ├── hooks/
 │-- .env
+│-- docker-compose.yml
+│-- Dockerfile
 │-- package.json
 │-- tailwind.config.js
 │-- README.md
