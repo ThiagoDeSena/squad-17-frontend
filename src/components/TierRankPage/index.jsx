@@ -10,32 +10,6 @@ import { useNavigate } from "react-router-dom";
 const API_URL = "https://pixabay.com/api/";
 const API_KEY = import.meta.env.VITE_PIXABAY_API_KEY;
 
-const mockUsers = [
-  {
-    id: 1,
-    name: "João Silva",
-    profileImage: "https://res.cloudinary.com/dg9hqvlas/image/upload/v1736533356/339_-_RGPayKA_kxdqhi.png",
-    reviews: 150,
-    likes: 320,
-    followers: 500,
-  },
-  {
-    id: 2,
-    name: "Maria Oliveira",
-    profileImage: "https://res.cloudinary.com/dg9hqvlas/image/upload/v1736533473/8_-_ih6xvXa_cgmkr8.png",
-    reviews: 120,
-    likes: 290,
-    followers: 450,
-  },
-  {
-    id: 3,
-    name: "Pedro Almeida",
-    profileImage: "https://res.cloudinary.com/dg9hqvlas/image/upload/v1736533468/352_-_roiEThv_eczyqh.png",
-    reviews: 100,
-    likes: 250,
-    followers: 300,
-  },
-];
 
 export const TierRankPage = () => {
   const [images, setImages] = useState([]);
@@ -54,10 +28,11 @@ export const TierRankPage = () => {
 
     const fetchImages = async () => {
       try {
-        const response = await fetch(`${API_URL}?key=${API_KEY}&q=movies&image_type=photo`);
+        const response = await fetch(`${API_URL}?key=${API_KEY}&q=movies&image_type=photo&per_page=3`);
         const data = await response.json();
+        console.log(data);
         if (data.hits) {
-          setImages(data.hits.slice(0, mockUsers.length));
+          setImages(data.hits);
         }
       } catch (error) {
         console.error("Erro ao buscar imagens:", error);
@@ -117,7 +92,8 @@ export const TierRankPage = () => {
                       : "bg-white"
                   } text-neutral90 text-lg font-bold rounded-full w-14 h-14 flex items-center justify-center shadow-lg`}
                 >
-                  <img src={`./images/award${index + 1}st.svg`} alt={`Posição ${index + 1}ª`} loading="lazy" />
+                  <p className="text-3xl font-moonjelly text-neutral10 relative right-12">{`#${index + 1}`}</p>
+                  <img src={`./images/award${index + 1}st.svg`} alt={`Posição ${index + 1}ª`} className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                 </div>
 
                 {/* Foto do Usuário */}

@@ -24,11 +24,11 @@ const Notification = ({ message, onClose }) => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="fixed top-5 right-5 bg-neutral90 text-white px-4 py-3 rounded-lg shadow-md border border-gray-700 max-w-sm w-full sm:w-96 cursor-pointer"
+      className="fixed top-5 right-5 bg-neutral90 text-white px-4 py-3 rounded-lg shadow-md border border-primary40 max-w-sm w-full sm:w-96 cursor-pointer"
       onClick={handleViewClick}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <FaRegBell size={20} color="#F9370B" />
           <span className="font-poppins font-semibold ">{formattedMessage}</span>
         </div>

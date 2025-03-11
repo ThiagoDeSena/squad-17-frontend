@@ -104,7 +104,7 @@ export const TrendingBanner = () => {
 
     return (
         <>
-            <div className="w-full text-center  flex items-center justify-center space-x-4 absolute z-50 top-2 font-moonjelly">
+            <div className="w-full text-center  flex items-center justify-center space-x-4 absolute z-40 top-2 font-moonjelly">
                 <h2 className="text-2xl md:text-4xl font-bold text-primary60 uppercase tracking-widest">
                     <span className="text-white">🔥</span> Em Alta
                 </h2>

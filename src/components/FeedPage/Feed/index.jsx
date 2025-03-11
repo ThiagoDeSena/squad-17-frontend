@@ -70,7 +70,6 @@ export const Feed = ({ isPost }) => {
     setIsLoading(true);
     try {
       const response = await getReviews(pageNumber);
-      console.log(response.content);
       setMyReviews((prev) => (pageNumber === 0 ? response.content : [...prev, ...response.content]));
       setHasMoreMyReviews(!response.empty);
     } catch (error) {

@@ -10,7 +10,7 @@ export const InterationList = ({showInteration, setShowInteration, interation, i
           <Modal
             isOpen={showInteration}
             onRequestClose={() => setShowInteration(false)}
-            className="bg-white font-poppins rounded-3xl h-auto w-[90%] max-w-lg shadow-xl transition-all duration-300 ease-in-out transform scale-100 hover:scale-105 max-h-screen overflow-y-auto"
+            className="bg-transparent font-poppins rounded-3xl h-auto max-h-[60vh]  w-[90%] max-w-lg shadow-xl transition-all duration-300 ease-in-out transform scale-100 hover:scale-105  overflow-y-auto"
             overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
             style={{ overlay: { zIndex: 9999 }, content: { borderRadius: "1.5rem" } }}
             contentLabel={`${isType === "like" ? "Likes" : "Dislikes"}`}
@@ -20,7 +20,7 @@ export const InterationList = ({showInteration, setShowInteration, interation, i
                 isType === "like" ? "orange-700" : "yellow-600"
               } rounded-xl shadow-lg`}
             >
-              <h2 className="text-3xl font-bold text-neutral90 font-moonjelly mb-6 text-center">{`${
+              <h2 className="text-3xl font-bold text-neutral10 font-moonjelly mb-6 text-center">{`${
                 isType === "like" ? "Likes" : "Dislikes"
               }`}</h2>
               {interation.length === 0 ? (
@@ -30,7 +30,7 @@ export const InterationList = ({showInteration, setShowInteration, interation, i
                   {interation.map((interation) => (
                     <li
                       key={interation.userId}
-                      className="flex items-center gap-4 p-3 bg-white rounded-lg shadow-md hover:bg-indigo-50 transition-colors duration-200 cursor-pointer"
+                      className="flex items-center gap-4 p-3 bg-neutral30 rounded-lg shadow-md hover:bg-indigo-50 transition-colors duration-200 cursor-pointer"
                     >
                       <img
                         src={interation.image}

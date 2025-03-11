@@ -10,7 +10,7 @@ export const FollowList = ({ showFollow, setShowFollow, followers, isType }) => 
       <Modal
         isOpen={showFollow}
         onRequestClose={() => setShowFollow(false)}
-        className="bg-white font-poppins rounded-3xl h-auto w-[90%] max-w-lg shadow-xl transition-all duration-300 ease-in-out transform scale-100 hover:scale-105 max-h-screen overflow-y-auto"
+        className="bg-transparent font-poppins rounded-3xl h-auto w-[90%] max-w-lg shadow-xl transition-all duration-300 ease-in-out transform scale-100 hover:scale-105 max-h-[60vh] overflow-y-auto"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         style={{ overlay: { zIndex: 9999 }, content: { borderRadius: "1.5rem" } }}
         contentLabel={`${isType === "followers" ? "Seguidores" : "Seguindo"}`}
@@ -20,7 +20,7 @@ export const FollowList = ({ showFollow, setShowFollow, followers, isType }) => 
             isType === "followers" ? "indigo-500" : "primary90"
           } rounded-xl shadow-lg`}
         >
-          <h2 className="text-3xl font-bold text-neutral90 font-moonjelly mb-6 text-center">{`${
+          <h2 className="text-3xl font-bold text-neutral10 font-moonjelly mb-6 text-center">{`${
             isType === "followers" ? "Seguidores" : "Seguindo"
           }`}</h2>
           {followers.length === 0 ? (
@@ -30,7 +30,7 @@ export const FollowList = ({ showFollow, setShowFollow, followers, isType }) => 
               {followers.map((follower) => (
                 <li
                   key={follower.userId}
-                  className="flex items-center gap-4 p-3 bg-white rounded-lg shadow-md hover:bg-indigo-50 transition-colors duration-200 cursor-pointer"
+                  className="flex items-center gap-4 p-3 bg-neutral30 rounded-lg shadow-md hover:bg-indigo-50 transition-colors duration-200 cursor-pointer"
                 >
                   <img
                     src={follower.image}
@@ -53,7 +53,7 @@ export const FollowList = ({ showFollow, setShowFollow, followers, isType }) => 
             </ul>
           )}
           <button
-            className="absolute top-4 right-4 text-gray-200 hover:text-gray-400 transition duration-300"
+            className="absolute top-4 right-4 text-primary90 hover:text-gray-400 transition duration-300"
             onClick={() => setShowFollow(false)}
           >
             <IoCloseSharp size={30} />

@@ -126,7 +126,9 @@ export const ReviewPost = ({
             message: `Review postada com sucesso`,
             type: "success",
           });
-          setIsPost(!isPost);
+          setTimeout(() => {
+            setIsPost(!isPost);
+          }, 500);
         }
       } else {
         const update = {
@@ -204,7 +206,10 @@ export const ReviewPost = ({
                 {selectedMediaType === "" && "Poste uma nova Resenha de um Filme ou Série"}
                 {selectedMediaType.length > 0 && `Poste uma nova Resenha sobre: `}
                 {selectedMediaType.length > 0 && (
-                  <span className="text-primary50 font-moonjelly text-md underline cursor-pointer" onClick={() => navigate(`/media/${selectedMediaType}/${selectedMediaId}`)}>
+                  <span
+                    className="text-primary50 font-moonjelly text-md underline cursor-pointer"
+                    onClick={() => navigate(`/media/${selectedMediaType}/${selectedMediaId}`)}
+                  >
                     {mediaName.length > 20 ? `${mediaName.substring(0, 20)}...` : mediaName}
                   </span>
                 )}

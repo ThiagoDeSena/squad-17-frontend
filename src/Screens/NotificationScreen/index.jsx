@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { deleteNotification, getNotifications, readNotification } from "../../api/notificationApi";
+import {
+  deleteAllNotification,
+  deleteNotification,
+  getNotifications,
+  readNotification,
+} from "../../api/notificationApi";
 import { getUsersInfo } from "../../api/userAPI";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaTrash } from "react-icons/fa";
 import { Loading } from "../../components/Utils/Loading";
 import { useNotification } from "../../Contexts/NotificationContext";
 export const NotificationScreen = () => {
-  const [notifications, setNotifications] = useState();
+  const [notifications, setNotifications] = useState([]);
   const { newNotify, setNewNotify } = useNotification();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -49,13 +54,22 @@ export const NotificationScreen = () => {
       setNewNotify(null);
     }
   };
+
+  const removeAllNotification = async () => {
+    try {
+      await deleteAllNotification();
+      setNotifications([]);
+    } catch (error) {
+      throw error;
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
   return (
     <div className="min-h-screen bg-neutral90 flex flex-col items-center py-10 px-4 sm:px-10 relative">
-      <h1 className="text-white text-2xl font-bold mb-6 mx-auto text-center">📩 Suas Notificações</h1>
-
+      <h1 className="text-white text-2xl font-bold mb-6 mx-auto text-center relative">📩 Suas Notificações</h1>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -65,6 +79,23 @@ export const NotificationScreen = () => {
         {notifications.length > 0 ? (
           <ul className="space-y-4">
             <AnimatePresence>
+              {notifications.length > 1 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full flex justify-center mb-4"
+                >
+                  <button
+                    onClick={removeAllNotification}
+                    className="bg-primary30 flex items-center justify-center gap-2 text-neutral10 text-md px-6 py-3 rounded-lg shadow-md 
+                 hover:bg-primary50 active:scale-95 transition-all duration-200"
+                  >
+                    Remove All <FaTrash />
+                  </button>
+                </motion.div>
+              )}
+
               {notifications.map((notification, index) => (
                 <motion.li
                   key={notification.id}
@@ -111,7 +142,7 @@ export const NotificationScreen = () => {
           </ul>
         ) : (
           <div className="flex flex-col gap-4 justify-center items-center">
-            <img src="public/images/no-notifications.svg" height={12}/>
+            <img src="public/images/no-notifications.svg" height={12} />
             <p className="text-neutral30 text-center text-lg py-4">Nenhuma notificação no momento.</p>
           </div>
         )}

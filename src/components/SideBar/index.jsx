@@ -17,10 +17,12 @@ import { UserContext } from "../../Contexts/UserContext";
 import { getUser } from "../../api/userAPI";
 import NotificationContainer from "../Notification";
 import { useNotification } from "../../Contexts/NotificationContext";
+import { getNotifications } from "../../api/notificationApi";
 
 export const SideBar = () => {
   const location = useLocation();
-  const {newNotify} = useNotification();
+  const { newNotify } = useNotification();
+  const [notifications, setNotifications] = useState(false);
   const [isOpen, setIsOpen] = useState();
   const [showToggle, setShowToggle] = useState(false);
   const navigate = useNavigate();
@@ -73,9 +75,21 @@ export const SideBar = () => {
     }
   };
 
+  const fetchNotifications = async () => {
+    try {
+      const notificationsResponse = await getNotifications();
+      setNotifications(notificationsResponse.some((notification) => !notification.seen));
+    } catch (error) {
+      console.error("Erro ao buscar notificações:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUserInfo();
-  }, []);
+    fetchNotifications();
+  }, [newNotify, loading]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -139,7 +153,7 @@ export const SideBar = () => {
                 to="/notifications"
                 className={`flex items-center justify-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 hover:scale-105 ${
                   location.pathname === "/notifications" ? "border-l-8 border-primary60 text-primary60 font-bold" : ""
-                } ${newNotify ? "animate-bounce text-primary90" : " text-yellow-400"}`}
+                } ${newNotify || notifications ? "animate-bounce text-primary90" : " text-yellow-400"}`}
               >
                 <AiOutlineBell size={28} />
               </Link>
@@ -286,9 +300,9 @@ export const SideBar = () => {
                 to="/notifications"
                 className={`flex items-center gap-4 p-3 rounded-xl text-xl font-poppins transition-colors hover:bg-gray-700 ${
                   location.pathname === "/notifications" ? "border-l-8 border-primary60 text-primary60 font-bold" : ""
-                } ${newNotify ? "animate-bounce text-primary90" : " text-yellow-400"}`}
+                } ${newNotify || notifications ? "animate-bounce text-primary90" : " text-yellow-400"}`}
               >
-                <AiOutlineBell size={28}/>
+                <AiOutlineBell size={28} />
                 <span className="text-neutral10">Notifications</span>
               </Link>
             </nav>

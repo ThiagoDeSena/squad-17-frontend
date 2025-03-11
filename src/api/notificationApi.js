@@ -71,3 +71,13 @@ export const  deleteNotification = async (notificationId) => {
         throw error;
     }
 }
+
+export const deleteAllNotification = async () => {
+  try {
+    const response = await notificationApi.delete("/all");  
+    return response.data;  
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

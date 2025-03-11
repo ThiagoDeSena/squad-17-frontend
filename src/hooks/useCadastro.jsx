@@ -75,7 +75,8 @@ export const useCadastro = () => {
       setAlert({ show: true, message: response.message, type: "success" });
       return response.data;
     } catch (error) {
-      setErrors(error.response);
+      console.log(error)
+      setErrors(error.response.data);
       throw error;
     } finally {
       setLoading(false);
@@ -121,7 +122,8 @@ export const useCadastro = () => {
         }
       }
     } catch (error) {
-      setAlert({ show: true, message: errors.data.error, type: "error" });
+      console.log(errors)
+      setAlert({ show: true, message: errors, type: "error" });
     } finally {
       setLoading(false);
     }
