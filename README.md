@@ -53,6 +53,8 @@ critix-frontend/
 │   ├── contexts/
 │   ├── hooks/
 │-- .env
+│-- docker-compose.yml
+│-- Dockerfile
 │-- package.json
 │-- tailwind.config.js
 │-- README.md
